@@ -121,6 +121,18 @@ namespace Example
             });
         }
 
+        private async Task<int> Screen_Width()
+        {
+            int result = 500;
+
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                result = (int)Screen.ActualWidth;
+            });
+
+            return result;
+        }
+
         private void Lightning_Loaded(object sender, RoutedEventArgs e)
         {
             var me = sender as Sprite;
@@ -132,7 +144,7 @@ namespace Example
                 while (true)
                 {
                     await Delay(Random(0, 1500));
-                    await me.SetPosition(Random(0, 1000), 10);
+                    await me.SetPosition(Random(0, await Screen_Width() - 50), 10);
                     await me.Show();
 
                     var i = 8;
@@ -170,7 +182,7 @@ namespace Example
                 int i = 7;
                 while (i-- > 0)
                 {
-                    await me.SetPosition(Random(0, 1000), Random(0, 500));
+                    await me.SetPosition(Random(0, await Screen_Width() - 50), Random(0, 500));
                     await me.Show();
 
                     while (!await me.IsTouching(Astro_Cat))
