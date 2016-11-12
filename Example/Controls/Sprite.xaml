@@ -9,5 +9,9 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Image x:Name="Costume"/>
+    <Image x:Name="Costume">
+        <Image.RenderTransform>
+            <RotateTransform x:Name="Rotate" CenterX="0.5" CenterY="0.5"/>
+        </Image.RenderTransform>
+    </Image>
 </UserControl>

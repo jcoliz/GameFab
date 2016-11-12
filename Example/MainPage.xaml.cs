@@ -187,6 +187,11 @@ namespace Example
 
                     while (!await me.IsTouching(Astro_Cat))
                     {
+                        await me.ChangeYby(1);
+                        await me.TurnBy(Sprite.Direction.Right, 5);
+                        await Delay(200);
+                        await me.ChangeYby(-1);
+                        await me.TurnBy(Sprite.Direction.Right, 5);
                         await Delay(200);
                     }
 
