@@ -196,12 +196,14 @@ namespace Example
                     }
 
                     await me.PlaySound("02/Humming.wav");
+                    await Astro_Cat.Say("Got it!");
+                    await Delay(500);
+                    await Astro_Cat.Say();
                     await me.Hide();
-                    await me.Say("Got it!");
-                    await Delay(300);
                 }
 
                 await me.SetCostume("02/2.png");
+                await me.PointInDirection(0);
                 await me.Show();
                 await me.Say("Stargate Opened!!!");
             });

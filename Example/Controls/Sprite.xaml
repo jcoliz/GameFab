@@ -9,9 +9,14 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Image x:Name="Costume">
-        <Image.RenderTransform>
-            <RotateTransform x:Name="Rotate" CenterX="0.5" CenterY="0.5"/>
-        </Image.RenderTransform>
-    </Image>
+    <StackPanel>
+        <Image x:Name="Costume">
+            <Image.RenderTransform>
+                <RotateTransform x:Name="Rotate" CenterX="0.5" CenterY="0.5"/>
+            </Image.RenderTransform>
+        </Image>
+        <Border x:Name="SayTextContainer" Background="White" Margin="10" HorizontalAlignment="Center" Visibility="Collapsed">
+            <TextBlock x:Name="SayText" Style="{ThemeResource TitleTextBlockStyle}" Margin="10,2"/>
+        </Border>
+    </StackPanel>
 </UserControl>
