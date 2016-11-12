@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -32,6 +33,7 @@ namespace Example
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+
         }
 
         private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
@@ -58,5 +60,29 @@ namespace Example
             }
         }
 
+        private void Astro_Cat_Loaded(object sender, RoutedEventArgs e)
+        {
+            var me = sender as FrameworkElement;
+
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                    {
+                        var top = (double)me.GetValue(Canvas.TopProperty);
+                        me.SetValue(Canvas.TopProperty, top + 2);
+                    });
+                    await Task.Delay(300);
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                    {
+                        var top = (double)me.GetValue(Canvas.TopProperty);
+                        me.SetValue(Canvas.TopProperty, top - 2);
+                    });
+                    await Task.Delay(300);
+                }
+            });
+
+        }
     }
 }
