@@ -45,90 +45,59 @@ namespace Example
             //bgplayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/02/Techno.wav"));
         }
 
-        private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
+        private async void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Down)
             {
-                // Change Y by +15
-                var top = (double)Astro_Cat.GetValue(Canvas.TopProperty);
-                Astro_Cat.SetValue(Canvas.TopProperty, top + 15);
+                await Astro_Cat.ChangeYby(15);
             }
             if (args.VirtualKey == Windows.System.VirtualKey.Up)
             {
-                // Change Y by -15
-                var top = (double)Astro_Cat.GetValue(Canvas.TopProperty);
-                Astro_Cat.SetValue(Canvas.TopProperty, top - 15);
+                await Astro_Cat.ChangeYby(-15);
             }
             if (args.VirtualKey == Windows.System.VirtualKey.Left)
             {
-                // Change X by -15
-                var left = (double)Astro_Cat.GetValue(Canvas.LeftProperty);
-                Astro_Cat.SetValue(Canvas.LeftProperty, left - 15);
+                await Astro_Cat.ChangeXby(-15);
             }
             if (args.VirtualKey == Windows.System.VirtualKey.Right)
             {
-                // Change X by +15
-                var left = (double)Astro_Cat.GetValue(Canvas.LeftProperty);
-                Astro_Cat.SetValue(Canvas.LeftProperty, left + 15);
+                await Astro_Cat.ChangeXby(15);
             }
         }
 
         private void Astro_Cat_Loaded(object sender, RoutedEventArgs e)
         {
-            var me = sender as FrameworkElement;
+            var me = sender as Sprite;
 
             Task.Run(async () =>
             {
                 while (true)
                 {
-                    // Change Y by +2
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                    {
-                        var top = (double)me.GetValue(Canvas.TopProperty);
-                        me.SetValue(Canvas.TopProperty, top + 2);
-                    });
-                    await Task.Delay(300);
-                    // Change Y by -2
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                    {
-                        var top = (double)me.GetValue(Canvas.TopProperty);
-                        me.SetValue(Canvas.TopProperty, top - 2);
-                    });
-                    await Task.Delay(300);
+                    await me.ChangeYby(2);
+                    await Delay(300);
+                    await me.ChangeYby(-2);
+                    await Delay(300);
                 }
             });
 
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
+                await me.SetCostume("02/6.png");
                 while (true)
                 {
-                    if (await IsTouching(me, Lightning))
+                    if (await me.IsTouching(Lightning))
                     {
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                        await me.PlaySound("02/Zap.wav");
+                        await Lightning.Hide();
+                        double opacity = await me.ReduceOpacityBy(0.2);
+                        if (opacity < 0.2)
                         {
-                            // Play sound Zap.wav
-                            var player = new MediaPlayer() { AutoPlay = true };
-                            player.MediaEnded += (s, a) => { player.Dispose(); };
-                            player.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/02/Zap.wav"));
-
-                            // Lightning.Hide()
-                            Lightning.Visibility = Visibility.Collapsed;
-
-                            // Change Opacity by -0.2
-                            if (me.Opacity >= 0.2)
-                                me.Opacity -= 0.2;
-                            if (me.Opacity < 0.2)
-                            {
-                                // Hide();
-                                me.Visibility = Visibility.Collapsed;
-
-                                // Say "You Lose"
-                                new MessageDialog("You lose!!!").ShowAsync();
-                            }
-                        });
+                            await me.Hide();
+                            await me.Say("You lose!!");
+                        }
                     }
                     else
-                        await Task.Delay(200);
+                        await Delay(200);
                 }
             });
         }
@@ -219,39 +188,6 @@ namespace Example
                 await me.Show();
                 await me.Say("Stargate Opened!!!");
             });
-        }
-
-
-
-        private async Task<bool> IsTouching(FrameworkElement fe1, FrameworkElement fe2)
-        {
-            try
-            {
-                Rect rect1;
-                Rect rect2;
-
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                {
-                    if (fe1.Visibility == Visibility.Visible)
-                        rect1 = new Rect((double)fe1.GetValue(Canvas.LeftProperty), (double)fe1.GetValue(Canvas.TopProperty), fe1.ActualWidth, fe1.ActualHeight);
-                    else
-                        rect1 = Rect.Empty;
-
-                    if (fe2.Visibility == Visibility.Visible)
-                        rect2 = new Rect((double)fe2.GetValue(Canvas.LeftProperty), (double)fe2.GetValue(Canvas.TopProperty), fe2.ActualWidth, fe2.ActualHeight);
-                    else
-                        rect2 = Rect.Empty;
-                });
-
-                rect1.Intersect(rect2);
-
-                return !rect1.IsEmpty;
-
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
         }
     }
 }

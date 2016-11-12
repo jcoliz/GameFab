@@ -70,6 +70,13 @@ namespace Example.Controls
                 SetValue(Canvas.TopProperty, (double)GetValue(Canvas.TopProperty) + y);
             });
         }
+        public async Task ChangeXby(double y)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                SetValue(Canvas.LeftProperty, (double)GetValue(Canvas.LeftProperty) + y);
+            });
+        }
 
         public async Task<bool>IsTouching(FrameworkElement fe2)
         {
@@ -116,6 +123,22 @@ namespace Example.Controls
             {
                 await new MessageDialog(text).ShowAsync();
             });
+        }
+
+        public async Task<double> ReduceOpacityBy(double value)
+        {
+            double opacity = 1.0;
+
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                opacity = this.Opacity;
+                opacity -= value;
+                if (opacity < 0)
+                    opacity = 0;
+                this.Opacity = opacity;
+            });
+
+            return opacity;
         }
     }
 }
