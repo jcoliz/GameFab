@@ -11,10 +11,10 @@
     <Grid Background="Black">
         <Image Source="Assets/02/8.png" Stretch="UniformToFill" />
         <Canvas>
-            <Image x:Name="Lightning" Source="Assets/02/5.png" Canvas.Left="540" Canvas.Top="10" Visibility="Collapsed" Loaded="Lightning_Loaded"/>
+            <c:Sprite x:Name="Lightning" Canvas.Left="540" Canvas.Top="10" Visibility="Collapsed" Loaded="Lightning_Loaded"/>
             <c:Sprite x:Name="String" Canvas.Left="96" Canvas.Top="51" Visibility="Collapsed" Loaded="String_Loaded"/>
             <Image x:Name="Astro_Cat" Source="Assets/02/6.png" Canvas.Top="176" Canvas.Left="307" Loaded="Astro_Cat_Loaded"/>
-            <Image x:Name="Banner" Source="Assets/02/4.png" Canvas.Left="147" Canvas.Top="51" Visibility="Collapsed" Loaded="Banner_Loaded"/>
+            <c:Sprite x:Name="Banner" Canvas.Left="147" Canvas.Top="51" Visibility="Collapsed" Loaded="Banner_Loaded"/>
         </Canvas>
     </Grid>
 </Page>

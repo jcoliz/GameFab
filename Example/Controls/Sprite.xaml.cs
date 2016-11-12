@@ -63,6 +63,14 @@ namespace Example.Controls
             });
         }
 
+        public async Task ChangeYby(double y)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                SetValue(Canvas.TopProperty, (double)GetValue(Canvas.TopProperty) + y);
+            });
+        }
+
         public async Task<bool>IsTouching(FrameworkElement fe2)
         {
             try

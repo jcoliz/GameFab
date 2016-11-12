@@ -135,65 +135,45 @@ namespace Example
 
         private void Banner_Loaded(object sender, RoutedEventArgs e)
         {
-            var me = sender as FrameworkElement;
+            var me = sender as Sprite;
 
             Task.Run(async () =>
             {
+                await me.SetCostume("02/4.png");
+
                 int i = 3;
                 while (i-- > 0)
                 {
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                    {
-                        me.Visibility = Visibility.Visible;
-                    });
-                    await Task.Delay(1000);
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                    {
-                        me.Visibility = Visibility.Collapsed;
-                    });
-                    await Task.Delay(500);
+                    await me.Show();
+                    await Delay(1000);
+                    await me.Hide();
+                    await Delay(500);
                 }
             });
-
         }
 
         private void Lightning_Loaded(object sender, RoutedEventArgs e)
         {
-            var me = sender as FrameworkElement;
+            var me = sender as Sprite;
 
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
-                var random = new Random();
-                await Task.Delay(1000);
-                while(true)
+                await me.SetCostume("02/5.png");
+                await Delay(1000);
+                while (true)
                 {
-                    await Task.Delay((int)(random.NextDouble() * 1500.0));
-
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                    {
-                        // Set Position X,Y
-                        me.SetValue(Canvas.LeftProperty, (int)(random.NextDouble() * 1000));
-                        me.SetValue(Canvas.TopProperty, 10);
-                        me.Visibility = Visibility.Visible;
-                    });
+                    await Delay(Random(0, 1500));
+                    await me.SetPosition(Random(0, 1000), 10);
+                    await me.Show();
 
                     var i = 8;
-                    while(i-- > 0)
+                    while (i-- > 0)
                     {
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                        {
-                            var top = (double)me.GetValue(Canvas.TopProperty);
-                            me.SetValue(Canvas.TopProperty, top + 40);
-                        });
-                        await Task.Delay(300);
+                        await me.ChangeYby(40);
+                        await Delay(300);
                     }
 
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                    {
-                        me.Visibility = Visibility.Collapsed;
-                    });
-
-
+                    await me.Hide();
                 }
             });
         }
@@ -241,56 +221,7 @@ namespace Example
             });
         }
 
-        private void String_Loaded_Old(object sender, RoutedEventArgs e)
-        {
-            var me = sender as Image;
 
-            Task.Run(async () =>
-            {
-                var random = new Random();
-                await Task.Delay(1000);
-
-                int i = 7;
-                while (i-- > 0)
-                {
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                    {
-                        me.SetValue(Canvas.LeftProperty, (int)(random.NextDouble() * 1000));
-                        me.SetValue(Canvas.TopProperty, (int)(random.NextDouble() * 500));
-                        me.Visibility = Visibility.Visible;
-                    });
-
-                    while (!await IsTouching(me, Astro_Cat))
-                    {
-                        await Task.Delay(200);
-                    }
-
-                    var player = new MediaPlayer() { AutoPlay = true };
-                    player.MediaEnded += (s, a) => { player.Dispose(); };
-                    player.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/02/Humming.wav"));
-
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
-                    {
-                        me.Visibility = Visibility.Collapsed;
-                        await new MessageDialog("Got it!").ShowAsync();
-                    });
-
-                    await Task.Delay(300);
-                }
-
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
-                {
-                    me.Source = new BitmapImage(new Uri("ms-appx:///Assets/02/2.png"));
-                    me.Visibility = Visibility.Visible;
-                    await new MessageDialog("Stargate Opened!!!").ShowAsync();
-                });
-            });
-        }
-
-        private void Player_MediaEnded(MediaPlayer sender, object args)
-        {
-            throw new NotImplementedException();
-        }
 
         private async Task<bool> IsTouching(FrameworkElement fe1, FrameworkElement fe2)
         {
