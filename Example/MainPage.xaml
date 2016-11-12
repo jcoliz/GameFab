@@ -10,7 +10,7 @@
     <Grid Background="Black">
         <Image Source="Assets/02/8.png" Stretch="UniformToFill" />
         <Canvas>
-            <Image x:Name="Astro_Cat" Source="Assets/02/6.png" Canvas.Top="176" Canvas.Left="307"/>
+            <Image x:Name="Astro_Cat" Source="Assets/02/6.png" Canvas.Top="176" Canvas.Left="307" Loaded="Astro_Cat_Loaded"/>
         </Canvas>
     </Grid>
 </Page>
