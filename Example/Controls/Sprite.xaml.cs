@@ -25,12 +25,25 @@ namespace Example.Controls
     public sealed partial class Sprite : UserControl
     {
         Random random = new Random();
+        MediaPlayer player = new MediaPlayer();
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <remarks>
+        /// You don't need to call this yourself. Simply including a sprite in XAML will
+        /// construct it.
+        /// </remarks>
         public Sprite()
         {
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Set the current costume of the sprite
+        /// </summary>
+        /// <param name="asset">File name of an image file in the Assets directory</param>
+        /// <returns>Awaitable task</returns>
         public async Task SetCostume(string asset)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
@@ -39,6 +52,10 @@ namespace Example.Controls
             });
         }
 
+        /// <summary>
+        /// Show the sprite on the screen
+        /// </summary>
+        /// <returns></returns>
         public async Task Show()
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
@@ -46,6 +63,11 @@ namespace Example.Controls
                 Visibility = Visibility.Visible;
             });
         }
+
+        /// <summary>
+        /// Hide the sprite so it doesn't show
+        /// </summary>
+        /// <returns></returns>
         public async Task Hide()
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
@@ -54,6 +76,12 @@ namespace Example.Controls
             });
         }
 
+        /// <summary>
+        /// Set the position of the sprite within the scene
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public async Task SetPosition(double x,double y)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
@@ -63,6 +91,11 @@ namespace Example.Controls
             });
         }
 
+        /// <summary>
+        /// Move the sprite down (or up) by this amount
+        /// </summary>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public async Task ChangeYby(double y)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
@@ -70,6 +103,12 @@ namespace Example.Controls
                 SetValue(Canvas.TopProperty, (double)GetValue(Canvas.TopProperty) + y);
             });
         }
+
+        /// <summary>
+        /// Move the sprite right (or left) by this amount
+        /// </summary>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public async Task ChangeXby(double y)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
@@ -78,6 +117,11 @@ namespace Example.Controls
             });
         }
 
+        /// <summary>
+        /// Test whether this sprite is touching another sprite
+        /// </summary>
+        /// <param name="fe2">Which sprite to test against</param>
+        /// <returns></returns>
         public async Task<bool>IsTouching(FrameworkElement fe2)
         {
             try
@@ -109,8 +153,11 @@ namespace Example.Controls
             }
         }
 
-        MediaPlayer player = new MediaPlayer();
-
+        /// <summary>
+        /// Play a particular soound
+        /// </summary>
+        /// <param name="asset">Name of a WAV file in the Assets directory</param>
+        /// <returns></returns>
         public async Task PlaySound(string asset)
         {
             player.Source = MediaSource.CreateFromUri(new Uri($"ms-appx:///Assets/{asset}"));
