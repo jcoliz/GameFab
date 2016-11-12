@@ -7,7 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    <Grid Background="Black">
+        <Image Source="Assets/02/8.png" Stretch="UniformToFill" />
+        <Canvas>
+            <Image x:Name="Astro_Cat" Source="Assets/02/6.png" Canvas.Top="176" Canvas.Left="307"/>
+        </Canvas>
     </Grid>
 </Page>

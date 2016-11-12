@@ -25,6 +25,38 @@ namespace Example
         public MainPage()
         {
             this.InitializeComponent();
+
+            this.Loaded += MainPage_Loaded;
         }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+        }
+
+        private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
+        {
+            if (args.VirtualKey == Windows.System.VirtualKey.Down)
+            {
+                var top = (double)Astro_Cat.GetValue(Canvas.TopProperty);
+                Astro_Cat.SetValue(Canvas.TopProperty, top + 15);
+            }
+            if (args.VirtualKey == Windows.System.VirtualKey.Up)
+            {
+                var top = (double)Astro_Cat.GetValue(Canvas.TopProperty);
+                Astro_Cat.SetValue(Canvas.TopProperty, top - 15);
+            }
+            if (args.VirtualKey == Windows.System.VirtualKey.Left)
+            {
+                var left = (double)Astro_Cat.GetValue(Canvas.LeftProperty);
+                Astro_Cat.SetValue(Canvas.LeftProperty, left - 15);
+            }
+            if (args.VirtualKey == Windows.System.VirtualKey.Right)
+            {
+                var left = (double)Astro_Cat.GetValue(Canvas.LeftProperty);
+                Astro_Cat.SetValue(Canvas.LeftProperty, left + 15);
+            }
+        }
+
     }
 }
