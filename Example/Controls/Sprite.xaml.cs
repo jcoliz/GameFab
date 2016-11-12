@@ -140,5 +140,20 @@ namespace Example.Controls
 
             return opacity;
         }
+
+        public enum Direction { None=0,Left,Right } ;
+
+        public async Task TurnBy(Direction direction, double degrees)
+        {
+            if (direction == Direction.Left)
+                degrees = - degrees;
+
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                Rotate.CenterX = ActualWidth / 2;
+                Rotate.CenterY = ActualHeight / 2;
+                Rotate.Angle += degrees;
+            });
+        }
     }
 }
