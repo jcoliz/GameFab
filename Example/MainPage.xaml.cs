@@ -192,7 +192,7 @@ namespace Example
                 var random = new Random();
                 await Task.Delay(1000);
 
-                int i = 1;
+                int i = 7;
                 while (i-- > 0)
                 {
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
