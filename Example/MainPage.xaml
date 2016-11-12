@@ -10,7 +10,7 @@
 
     <Grid Background="Black">
         <Image Source="Assets/02/8.png" Stretch="UniformToFill" />
-        <Canvas>
+        <Canvas x:Name="Screen">
             <c:Sprite x:Name="Lightning" Canvas.Left="540" Canvas.Top="10" Visibility="Collapsed" Loaded="Lightning_Loaded"/>
             <c:Sprite x:Name="String" Canvas.Left="96" Canvas.Top="51" Visibility="Collapsed" Loaded="String_Loaded"/>
             <c:Sprite x:Name="Astro_Cat" Canvas.Top="176" Canvas.Left="307" Loaded="Astro_Cat_Loaded"/>
