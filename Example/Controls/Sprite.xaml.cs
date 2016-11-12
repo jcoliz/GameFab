@@ -164,11 +164,20 @@ namespace Example.Controls
             player.Play();
         }
 
-        public async Task Say(string text)
+        public async Task Say(string text = null)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
             {
-                await new MessageDialog(text).ShowAsync();
+                if (text == null)
+                {
+                    SayTextContainer.Visibility = Visibility.Collapsed;
+                    SayText.Text = string.Empty;
+                }
+                else
+                {
+                    SayText.Text = text;
+                    SayTextContainer.Visibility = Visibility.Visible;
+                }
             });
         }
 
@@ -200,6 +209,15 @@ namespace Example.Controls
                 Rotate.CenterX = ActualWidth / 2;
                 Rotate.CenterY = ActualHeight / 2;
                 Rotate.Angle += degrees;
+            });
+        }
+        public async Task PointInDirection(double degrees)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                Rotate.CenterX = ActualWidth / 2;
+                Rotate.CenterY = ActualHeight / 2;
+                Rotate.Angle = degrees;
             });
         }
     }
