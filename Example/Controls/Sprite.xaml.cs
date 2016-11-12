@@ -65,14 +65,14 @@ namespace Example.Controls
 
         public async Task ChangeYby(double y)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 SetValue(Canvas.TopProperty, (double)GetValue(Canvas.TopProperty) + y);
             });
         }
         public async Task ChangeXby(double y)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 SetValue(Canvas.LeftProperty, (double)GetValue(Canvas.LeftProperty) + y);
             });

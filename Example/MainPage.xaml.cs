@@ -30,6 +30,30 @@ namespace Example
     {
         MediaPlayer bgplayer;
 
+        private async Task<int> Screen_Width()
+        {
+            int result = 500;
+
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                result = (int)Screen.ActualWidth;
+            });
+
+            return result;
+        }
+
+        Random random = new Random();
+
+        private int Random(int from, int to)
+        {
+            return random.Next(from, to);
+        }
+
+        private Task Delay(int ms)
+        {
+            return Task.Delay(ms);
+        }
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -121,18 +145,6 @@ namespace Example
             });
         }
 
-        private async Task<int> Screen_Width()
-        {
-            int result = 500;
-
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-            {
-                result = (int)Screen.ActualWidth;
-            });
-
-            return result;
-        }
-
         private void Lightning_Loaded(object sender, RoutedEventArgs e)
         {
             var me = sender as Sprite;
@@ -157,18 +169,6 @@ namespace Example
                     await me.Hide();
                 }
             });
-        }
-
-        Random random = new Random();
-
-        private int Random(int from, int to)
-        {
-            return random.Next(from, to);
-        }
-
-        private Task Delay(int ms)
-        {
-            return Task.Delay(ms);
         }
 
         private void String_Loaded(object sender,RoutedEventArgs e)
