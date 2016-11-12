@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Example"
+    xmlns:c="using:Example.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -11,7 +12,7 @@
         <Image Source="Assets/02/8.png" Stretch="UniformToFill" />
         <Canvas>
             <Image x:Name="Lightning" Source="Assets/02/5.png" Canvas.Left="540" Canvas.Top="10" Visibility="Collapsed" Loaded="Lightning_Loaded"/>
-            <Image x:Name="String" Source="Assets/02/1.png" Canvas.Left="96" Canvas.Top="51" Visibility="Collapsed" Loaded="String_Loaded"/>
+            <c:Sprite x:Name="String" Canvas.Left="96" Canvas.Top="51" Visibility="Collapsed" Loaded="String_Loaded"/>
             <Image x:Name="Astro_Cat" Source="Assets/02/6.png" Canvas.Top="176" Canvas.Left="307" Loaded="Astro_Cat_Loaded"/>
             <Image x:Name="Banner" Source="Assets/02/4.png" Canvas.Left="147" Canvas.Top="51" Visibility="Collapsed" Loaded="Banner_Loaded"/>
         </Canvas>

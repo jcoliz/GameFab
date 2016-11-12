@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Example.Controls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -48,21 +49,25 @@ namespace Example
         {
             if (args.VirtualKey == Windows.System.VirtualKey.Down)
             {
+                // Change Y by +15
                 var top = (double)Astro_Cat.GetValue(Canvas.TopProperty);
                 Astro_Cat.SetValue(Canvas.TopProperty, top + 15);
             }
             if (args.VirtualKey == Windows.System.VirtualKey.Up)
             {
+                // Change Y by -15
                 var top = (double)Astro_Cat.GetValue(Canvas.TopProperty);
                 Astro_Cat.SetValue(Canvas.TopProperty, top - 15);
             }
             if (args.VirtualKey == Windows.System.VirtualKey.Left)
             {
+                // Change X by -15
                 var left = (double)Astro_Cat.GetValue(Canvas.LeftProperty);
                 Astro_Cat.SetValue(Canvas.LeftProperty, left - 15);
             }
             if (args.VirtualKey == Windows.System.VirtualKey.Right)
             {
+                // Change X by +15
                 var left = (double)Astro_Cat.GetValue(Canvas.LeftProperty);
                 Astro_Cat.SetValue(Canvas.LeftProperty, left + 15);
             }
@@ -76,12 +81,14 @@ namespace Example
             {
                 while (true)
                 {
+                    // Change Y by +2
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
                     {
                         var top = (double)me.GetValue(Canvas.TopProperty);
                         me.SetValue(Canvas.TopProperty, top + 2);
                     });
                     await Task.Delay(300);
+                    // Change Y by -2
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
                     {
                         var top = (double)me.GetValue(Canvas.TopProperty);
@@ -99,16 +106,23 @@ namespace Example
                     {
                         await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
                         {
+                            // Play sound Zap.wav
                             var player = new MediaPlayer() { AutoPlay = true };
                             player.MediaEnded += (s, a) => { player.Dispose(); };
                             player.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/02/Zap.wav"));
 
+                            // Lightning.Hide()
                             Lightning.Visibility = Visibility.Collapsed;
+
+                            // Change Opacity by -0.2
                             if (me.Opacity >= 0.2)
                                 me.Opacity -= 0.2;
                             if (me.Opacity < 0.2)
                             {
+                                // Hide();
                                 me.Visibility = Visibility.Collapsed;
+
+                                // Say "You Lose"
                                 new MessageDialog("You lose!!!").ShowAsync();
                             }
                         });
@@ -157,6 +171,7 @@ namespace Example
 
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
                     {
+                        // Set Position X,Y
                         me.SetValue(Canvas.LeftProperty, (int)(random.NextDouble() * 1000));
                         me.SetValue(Canvas.TopProperty, 10);
                         me.Visibility = Visibility.Visible;
@@ -183,7 +198,50 @@ namespace Example
             });
         }
 
-        private void String_Loaded(object sender, RoutedEventArgs e)
+        Random random = new Random();
+
+        private int Random(int from, int to)
+        {
+            return random.Next(from, to);
+        }
+
+        private Task Delay(int ms)
+        {
+            return Task.Delay(ms);
+        }
+
+        private void String_Loaded(object sender,RoutedEventArgs e)
+        {
+            var me = sender as Sprite;
+            Task.Run(async () =>
+            {
+                await me.SetCostume("02/1.png");
+                await Delay(1000);
+
+                int i = 7;
+                while (i-- > 0)
+                {
+                    await me.SetPosition(Random(0, 1000), Random(0, 500));
+                    await me.Show();
+
+                    while (!await me.IsTouching(Astro_Cat))
+                    {
+                        await Delay(200);
+                    }
+
+                    await me.PlaySound("02/Humming.wav");
+                    await me.Hide();
+                    await me.Say("Got it!");
+                    await Delay(300);
+                }
+
+                await me.SetCostume("02/2.png");
+                await me.Show();
+                await me.Say("Stargate Opened!!!");
+            });
+        }
+
+        private void String_Loaded_Old(object sender, RoutedEventArgs e)
         {
             var me = sender as Image;
 
