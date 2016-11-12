@@ -11,7 +11,7 @@
     <AssemblyName>Example</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -107,9 +107,9 @@
     <None Include="Example_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\02\0.wav" />
+    <Content Include="Assets\02\Humming.wav" />
     <Content Include="Assets\02\1.png" />
-    <Content Include="Assets\02\1.wav" />
+    <Content Include="Assets\02\Zap.wav" />
     <Content Include="Assets\02\2.png" />
     <Content Include="Assets\02\Techno.wav" />
     <Content Include="Assets\02\4.png" />
