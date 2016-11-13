@@ -29,6 +29,9 @@ namespace Example
     public sealed partial class MainPage : Page
     {
         MediaPlayer bgplayer;
+        Random random = new Random();
+        Point mousepoint;
+        bool mousepressed = false;
 
         private async Task<int> Screen_Width()
         {
@@ -41,8 +44,6 @@ namespace Example
 
             return result;
         }
-
-        Random random = new Random();
 
         private int Random(int from, int to)
         {
@@ -64,9 +65,23 @@ namespace Example
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
-
+            Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
+            Window.Current.CoreWindow.PointerReleased += CoreWindow_PointerReleased;
             //bgplayer  = new MediaPlayer() { AutoPlay = true, IsLoopingEnabled = true };
             //bgplayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/02/Techno.wav"));
+        }
+
+        private void CoreWindow_PointerReleased(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
+        {
+            mousepressed = false;
+        }
+
+        private void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
+        {
+            var clicked = args.CurrentPoint.Position;
+            mousepoint = new Point(clicked.X, clicked.Y);
+            mousepressed = true;
+            var ignore = Astro_Cat.Say($"Mouse: {clicked.X},{clicked.Y}");
         }
 
         private async void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
