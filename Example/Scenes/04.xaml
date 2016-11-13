@@ -12,6 +12,7 @@
         <Image Source="/Assets/04/21.png" Stretch="UniformToFill" />
         <Canvas x:Name="Screen">
             <c:Sprite x:Name="Instructions" Loaded="Instructions_Loaded" MessageReceived="Instructions_MessageReceived"/>
+            <c:Sprite x:Name="Neo_Cat" Canvas.Top="176" Canvas.Left="307" Loaded="Neo_Cat_Loaded" Visibility="Collapsed" MessageReceived="Neo_Cat_MessageReceived"/>
         </Canvas>
     </Grid>
 </Page>

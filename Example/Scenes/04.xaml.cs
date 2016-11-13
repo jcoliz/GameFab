@@ -28,6 +28,16 @@ namespace Example.Scenes
         Point mousepoint;
         bool mousepressed = false;
 
+        private int Random(int from, int to)
+        {
+            return random.Next(from, to);
+        }
+
+        private Task Delay(int ms)
+        {
+            return Task.Delay(ms);
+        }
+
         public _04()
         {
             this.InitializeComponent();
@@ -44,6 +54,7 @@ namespace Example.Scenes
         private void CoreWindow_PointerReleased(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
         {
             mousepressed = false;
+            Sprite.Broadcast("mouseup");
         }
 
         private void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
@@ -51,6 +62,8 @@ namespace Example.Scenes
             var clicked = args.CurrentPoint.Position;
             mousepoint = new Point(clicked.X, clicked.Y);
             mousepressed = true;
+
+            Sprite.Broadcast("mousedown");
         }
 
         private async void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
@@ -92,6 +105,34 @@ namespace Example.Scenes
             if (e.message == "start")
             {
                 var ignore = me.Hide();
+            }
+
+        }
+
+        private void Neo_Cat_Loaded(object sender, RoutedEventArgs e)
+        {
+            var me = sender as Sprite;
+        }
+
+        private void Neo_Cat_MessageReceived(object sender, Sprite.MessageReceivedArgs e)
+        {
+            var me = sender as Sprite;
+
+            if (e.message == "start")
+            {
+                var ignore = me.Show();
+            }
+            else if (e.message == "mousedown")
+            {
+                Task.Run(async () => 
+                {
+                    await me.SetCostume("04/8.png");
+                    await me.Glide(1000, mousepoint);
+                });
+            }
+            else if (e.message == "mouseup")
+            {
+                var ignore = me.SetCostume("04/7.png");
             }
         }
     }

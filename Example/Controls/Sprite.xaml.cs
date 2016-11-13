@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -85,11 +86,29 @@ namespace Example.Controls
         /// <returns></returns>
         public async Task SetPosition(double x,double y)
         {
+            var sem = new SemaphoreSlim(1);
+            await sem.WaitAsync();
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
             {
                 SetValue(Canvas.LeftProperty, x);
                 SetValue(Canvas.TopProperty, y);
+                sem.Release();
             });
+            await sem.WaitAsync();
+        }
+
+        public async Task<Point> GetPosition()
+        {
+            var result = new Point();
+
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                result.X = (double)GetValue(Canvas.LeftProperty);
+                result.Y = (double)GetValue(Canvas.TopProperty);
+            });
+
+            return result;
+
         }
 
         /// <summary>
@@ -252,5 +271,52 @@ namespace Example.Controls
         }
 
         private static List<Sprite> All = new List<Sprite>();
+
+        public async Task Glide(double total_time,Point destination)
+        {
+            Point starting_position = await GetPosition();
+            const double update_frequency_ms = 50;
+            double elapsed_time = 0;
+            double total_distance = DistanceBetween(starting_position, destination);
+            double heading = HeadingBetween(starting_position, destination);
+            while(elapsed_time < total_time)
+            {
+                // distance we should be at THIS moment
+                double now_distance = elapsed_time * total_distance / total_time;
+
+                // new position is along the heading by that far
+                Point new_position = ProgressToward(starting_position,heading,now_distance);
+
+                await this.SetPosition(new_position.X, new_position.Y);
+                await Task.Delay((int)update_frequency_ms);
+
+                elapsed_time += update_frequency_ms;
+            }
+            await this.SetPosition(destination.X, destination.Y);
+        }
+
+        private static double DistanceBetween(Point first, Point second)
+        {
+            var x_distance = second.X - first.X;
+            var y_distance = second.Y - first.Y;
+
+            return Math.Sqrt(x_distance * x_distance + y_distance * y_distance);
+        }
+
+        private static double HeadingBetween(Point first,Point second)
+        {
+            var x_distance = second.X - first.X;
+            var y_distance = second.Y - first.Y;
+
+            return Math.Atan2(y_distance, x_distance);
+        }
+
+        private static Point ProgressToward(Point from,double heading,double distance)
+        {
+            var x_distance = Math.Cos(heading) * distance;
+            var y_distance = Math.Sin(heading) * distance;
+
+            return new Point( from.X + x_distance, from.Y + y_distance);
+        }
     }
 }
