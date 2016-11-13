@@ -37,6 +37,7 @@ namespace Example.Controls
         public Sprite()
         {
             this.InitializeComponent();
+            All.Add(this);
         }
 
         /// <summary>
@@ -220,5 +221,36 @@ namespace Example.Controls
                 Rotate.Angle = degrees;
             });
         }
+
+        /// <summary>
+        /// Arguments which are passed in for a MessageReceived event
+        /// </summary>
+        public struct MessageReceivedArgs
+        {
+            /// <summary>
+            /// The contents of the message
+            /// </summary>
+            public string message;
+        }
+
+        /// <summary>
+        /// Event fired when we received a message
+        /// </summary>
+        public event EventHandler<MessageReceivedArgs> MessageReceived;
+
+        /// <summary>
+        /// Broadcast this message to all sprites
+        /// </summary>
+        /// <remarks>
+        /// To handle this, create a MessageReceived event handler
+        /// </remarks>
+        /// <param name="message"></param>
+        public static void Broadcast(string message)
+        {
+            foreach (var sprite in All)
+                sprite.MessageReceived?.Invoke(sprite, new MessageReceivedArgs() { message = message });
+        }
+
+        private static List<Sprite> All = new List<Sprite>();
     }
 }

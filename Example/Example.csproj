@@ -90,6 +90,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="Assets\04\project.json" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +104,12 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scenes\03.xaml.cs">
+      <DependentUpon>03.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Scenes\04.xaml.cs">
+      <DependentUpon>04.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -121,6 +128,22 @@
     <Content Include="Assets\02\6.png" />
     <Content Include="Assets\02\7.png" />
     <Content Include="Assets\02\8.png" />
+    <Content Include="Assets\04\1.png" />
+    <Content Include="Assets\04\10.png" />
+    <Content Include="Assets\04\11.png" />
+    <Content Include="Assets\04\13.png" />
+    <Content Include="Assets\04\15.png" />
+    <Content Include="Assets\04\16.png" />
+    <Content Include="Assets\04\18.png" />
+    <Content Include="Assets\04\2.png" />
+    <Content Include="Assets\04\20.png" />
+    <Content Include="Assets\04\21.png" />
+    <Content Include="Assets\04\4.png" />
+    <Content Include="Assets\04\5.png" />
+    <Content Include="Assets\04\6.png" />
+    <Content Include="Assets\04\7.png" />
+    <Content Include="Assets\04\8.png" />
+    <Content Include="Assets\04\9.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -142,6 +165,14 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Scenes\03.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Scenes\04.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
