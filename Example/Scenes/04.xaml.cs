@@ -117,6 +117,22 @@ namespace Example.Scenes
         }
         private int _Chances = 5;
 
+        public int Timer
+        {
+            get
+            {
+                return _Timer;
+            }
+            set
+            {
+                _Timer = value;
+                Context?.Post(DoPropertyChanged, nameof(Timer));
+            }
+        }
+        private int _Timer = 0;
+
+        private bool Running { get; set; } = true;
+
         private SynchronizationContext Context = SynchronizationContext.Current;
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -124,6 +140,8 @@ namespace Example.Scenes
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property as string));
         }
+
+        //------------------------------------------------------------------------------------
 
         private void Instructions_Loaded(object sender, RoutedEventArgs e)
         {
@@ -134,7 +152,6 @@ namespace Example.Scenes
                 await me.SetPosition(100, 100);
                 await me.SetCostume("04/4.png");
             });
-
         }
 
         private void Instructions_MessageReceived(object sender, Sprite.MessageReceivedArgs e)
@@ -143,14 +160,16 @@ namespace Example.Scenes
 
             if (e.message == "start")
             {
-                var ignore = me.Hide();
+                Task.Run(async() => 
+                {
+                    await me.Hide();
+                    while (Running)
+                    {
+                        await Delay(1000);
+                        ++Timer;
+                    }
+                });
             }
-
-        }
-
-        private void Neo_Cat_Loaded(object sender, RoutedEventArgs e)
-        {
-            var me = sender as Sprite;
         }
 
         private void Neo_Cat_MessageReceived(object sender, Sprite.MessageReceivedArgs e)
@@ -195,16 +214,11 @@ namespace Example.Scenes
             {
                 var ignore = me.Say("WINNER!!");
             }
-            else if (e.message == "lose")
-            {
-                var ignore = me.Say("Try again...");
-            }
         }
 
         private void Virus_MessageReceived(object sender, Sprite.MessageReceivedArgs e)
         {
             var me = sender as Sprite;
-            var running = true;
 
             if (e.message == "start")
             {
@@ -212,7 +226,7 @@ namespace Example.Scenes
                 {
                     await me.SetCostumes("04/V.png","04/I.png", "04/R.png", "04/U.png", "04/S.png");
                     await me.Show();
-                    while (running)
+                    while (Running)
                     {
                         await Delay(300);
                         await me.NextCostume();
@@ -223,7 +237,7 @@ namespace Example.Scenes
                     var benign = false;
                     await me.SetPosition(500, 200);
                     await me.PointTowards(Neo_Cat);
-                    while (running)
+                    while (Running)
                     {
                         if (await me.IsTouching(Neo_Cat))
                         {
@@ -232,7 +246,7 @@ namespace Example.Scenes
 
                             if (Score >= 30)
                             {
-                                running = false;
+                                Running = false;
                                 Sprite.Broadcast("win");
                             }
 
@@ -246,7 +260,7 @@ namespace Example.Scenes
                             Chances--;
                             if (Chances <= 0)
                             {
-                                running = false;
+                                Running = false;
                                 Sprite.Broadcast("lose");
                             }
 
