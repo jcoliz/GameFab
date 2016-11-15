@@ -27,6 +27,8 @@ namespace Example.Controls
     {
         Random random = new Random();
         MediaPlayer player = new MediaPlayer();
+        List<BitmapImage> costumes;
+        int? nextcostumeindex = null;
 
         /// <summary>
         /// Constructor
@@ -48,10 +50,45 @@ namespace Example.Controls
         /// <returns>Awaitable task</returns>
         public async Task SetCostume(string asset)
         {
+            await SetCostume(new BitmapImage(new Uri($"ms-appx:///Assets/{asset}")));
+        }
+        public async Task SetCostume(ImageSource source)
+        {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
             {
-                Costume.Source = new BitmapImage(new Uri($"ms-appx:///Assets/{asset}"));
+                Costume.Source = source;
             });
+        }
+
+        public async Task SetCostumes(params string[] assets)
+        {
+            try
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                {
+                    var images = assets.Select(asset => new BitmapImage(new Uri($"ms-appx:///Assets/{asset}")));
+                    costumes = new List<BitmapImage>(images);
+                });
+                nextcostumeindex = 1;
+
+                await SetCostume(costumes.First());
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+        }
+
+        public async Task NextCostume()
+        {
+            var costume = nextcostumeindex.Value;
+            if (costume >= costumes.Count)
+                costume = 0;
+            nextcostumeindex = costume + 1;
+            await SetCostume(costumes[costume]);
         }
 
         /// <summary>
@@ -108,7 +145,6 @@ namespace Example.Controls
             });
 
             return result;
-
         }
 
         /// <summary>

@@ -131,12 +131,12 @@
     <Content Include="Assets\04\1.png" />
     <Content Include="Assets\04\10.png" />
     <Content Include="Assets\04\11.png" />
-    <Content Include="Assets\04\13.png" />
-    <Content Include="Assets\04\15.png" />
-    <Content Include="Assets\04\16.png" />
-    <Content Include="Assets\04\18.png" />
+    <Content Include="Assets\04\V.png" />
+    <Content Include="Assets\04\I.png" />
+    <Content Include="Assets\04\R.png" />
+    <Content Include="Assets\04\U.png" />
     <Content Include="Assets\04\2.png" />
-    <Content Include="Assets\04\20.png" />
+    <Content Include="Assets\04\S.png" />
     <Content Include="Assets\04\21.png" />
     <Content Include="Assets\04\4.png" />
     <Content Include="Assets\04\5.png" />

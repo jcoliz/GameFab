@@ -135,5 +135,24 @@ namespace Example.Scenes
                 var ignore = me.SetCostume("04/7.png");
             }
         }
+
+        private void Virus_MessageReceived(object sender, Sprite.MessageReceivedArgs e)
+        {
+            var me = sender as Sprite;
+
+            if (e.message == "start")
+            {
+                var ignore = Task.Run(async () => 
+                {
+                    await me.SetCostumes("04/V.png","04/I.png", "04/R.png", "04/U.png", "04/S.png");
+                    await me.Show();
+                    while (true)
+                    {
+                        await Delay(300);
+                        await me.NextCostume();
+                    }
+                });
+            }
+        }
     }
 }
