@@ -10,6 +10,8 @@
 
     <Grid Background="Black">
         <Image Source="/Assets/04/21.png" Stretch="UniformToFill" />
+        <TextBlock Text="{x:Bind Chances,Mode=OneWay}" FontSize="100" Foreground="White" Margin="20,0"/>
+        <TextBlock Text="{x:Bind Score,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Right" Margin="20,0"/>
         <Canvas x:Name="Screen">
             <Image x:Name="Server1" Source="ms-appx:///Assets/04/1.png" Canvas.Left="0" Canvas.Top="500"/>
             <Image x:Name="ServerText1" Source="ms-appx:///Assets/04/2.png" Canvas.Left="0" Canvas.Top="500"/>

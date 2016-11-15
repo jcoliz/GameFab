@@ -1,9 +1,11 @@
 ﻿using Example.Controls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -22,7 +24,7 @@ namespace Example.Scenes
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class _04 : Page
+    public sealed partial class _04 : Page, INotifyPropertyChanged
     {
         Random random = new Random();
         Point mousepoint;
@@ -86,6 +88,42 @@ namespace Example.Scenes
             }
         }
 
+        public int Score
+        {
+            get
+            {
+                return _Score;
+            }
+            set
+            {
+                _Score = value;
+                Context?.Post(DoPropertyChanged, nameof(Score));
+            }
+        }
+        private int _Score = 0;
+
+        public int Chances
+        {
+            get
+            {
+                return _Chances;
+            }
+            set
+            {
+                _Chances = value;
+                Context?.Post(DoPropertyChanged, nameof(Chances));
+            }
+        }
+        private int _Chances = 30;
+
+        private SynchronizationContext Context = SynchronizationContext.Current;
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        private void DoPropertyChanged(object property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property as string));
+        }
+
         private void Instructions_Loaded(object sender, RoutedEventArgs e)
         {
             var me = sender as Sprite;
@@ -145,6 +183,7 @@ namespace Example.Scenes
                     await me.Say("Oh no!!");
                     await Delay(500);
                     await me.Say();
+                    Chances--;
                 });
             }
         }
@@ -174,6 +213,8 @@ namespace Example.Scenes
                         if (await me.IsTouching(Neo_Cat))
                         {
                             await me.PointInDirection_Heading(Random(-45, 45));
+                            this.Score++;
+                            await me.Move(100);
                         }
                         await me.Move(30);
                         if (await me.IsTouching(Server1) || await me.IsTouching(Server2))
