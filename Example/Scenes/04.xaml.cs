@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -114,7 +115,7 @@ namespace Example.Scenes
                 Context?.Post(DoPropertyChanged, nameof(Chances));
             }
         }
-        private int _Chances = 30;
+        private int _Chances = 5;
 
         private SynchronizationContext Context = SynchronizationContext.Current;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -180,17 +181,30 @@ namespace Example.Scenes
             {
                 Task.Run(async () => 
                 {
-                    await me.Say("Oh no!!");
-                    await Delay(500);
-                    await me.Say();
-                    Chances--;
+                    if (Chances > 0)
+                    {
+                        await me.Say("Oh no!!");
+                        await Delay(500);
+                        await me.Say();
+                    }
+                    else
+                        await me.Say("Try again...");
                 });
+            }
+            else if (e.message == "win")
+            {
+                var ignore = me.Say("WINNER!!");
+            }
+            else if (e.message == "lose")
+            {
+                var ignore = me.Say("Try again...");
             }
         }
 
         private void Virus_MessageReceived(object sender, Sprite.MessageReceivedArgs e)
         {
             var me = sender as Sprite;
+            var running = true;
 
             if (e.message == "start")
             {
@@ -198,7 +212,7 @@ namespace Example.Scenes
                 {
                     await me.SetCostumes("04/V.png","04/I.png", "04/R.png", "04/U.png", "04/S.png");
                     await me.Show();
-                    while (true)
+                    while (running)
                     {
                         await Delay(300);
                         await me.NextCostume();
@@ -206,32 +220,48 @@ namespace Example.Scenes
                 });
                 ignore = Task.Run(async () =>
                 {
+                    var benign = false;
                     await me.SetPosition(500, 200);
                     await me.PointTowards(Neo_Cat);
-                    while(true)
+                    while (running)
                     {
                         if (await me.IsTouching(Neo_Cat))
                         {
                             await me.PointInDirection_Heading(Random(-45, 45));
                             this.Score++;
+
+                            if (Score >= 30)
+                            {
+                                running = false;
+                                Sprite.Broadcast("win");
+                            }
+
                             await me.Move(100);
                         }
                         await me.Move(30);
-                        if (await me.IsTouching(Server1) || await me.IsTouching(Server2))
+                        if ((await me.IsTouching(Server1) || await me.IsTouching(Server2)) && !benign)
                         {
+                            benign = true;
                             Sprite.Broadcast("oh");
-                        }
+                            Chances--;
+                            if (Chances <= 0)
+                            {
+                                running = false;
+                                Sprite.Broadcast("lose");
+                            }
+
+                            var ignxore = Task.Run(async () => 
+                            {
+                                await Delay(1000);
+                                benign = false;
+                            });
+                         }
                         await Delay(75);
                         await me.IfOnEdgeBounce();
                     }
+                    await me.Hide();
                 });
-                ignore = Task.Run(async () =>
-                {
-                    await Delay(500);
-                    while (true)
-                    {
-                    }
-                });
+
             }
         }
     }
