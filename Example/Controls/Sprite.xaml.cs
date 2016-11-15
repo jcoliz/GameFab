@@ -29,6 +29,7 @@ namespace Example.Controls
         MediaPlayer player = new MediaPlayer();
         List<BitmapImage> costumes;
         int? nextcostumeindex = null;
+        double? heading = null;
 
         /// <summary>
         /// Constructor
@@ -50,7 +51,10 @@ namespace Example.Controls
         /// <returns>Awaitable task</returns>
         public async Task SetCostume(string asset)
         {
-            await SetCostume(new BitmapImage(new Uri($"ms-appx:///Assets/{asset}")));
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+            {
+                Costume.Source = new BitmapImage(new Uri($"ms-appx:///Assets/{asset}"));
+            });
         }
         public async Task SetCostume(ImageSource source)
         {
@@ -133,6 +137,10 @@ namespace Example.Controls
             });
             await sem.WaitAsync();
         }
+        public async Task SetPosition(Point where)
+        {
+            await SetPosition(where.X, where.Y);
+        }
 
         public async Task<Point> GetPosition()
         {
@@ -171,6 +179,83 @@ namespace Example.Controls
             {
                 SetValue(Canvas.LeftProperty, (double)GetValue(Canvas.LeftProperty) + y);
             });
+        }
+
+        public async Task PointTowards(FrameworkElement fe)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                var target = new Point();
+                target.X = (double)fe.GetValue(Canvas.LeftProperty);
+                target.Y = (double)fe.GetValue(Canvas.TopProperty);
+
+                var current = new Point();
+                current.X = (double)GetValue(Canvas.LeftProperty);
+                current.Y = (double)GetValue(Canvas.TopProperty);
+
+                heading = HeadingBetween(current, target);
+            });
+        }
+
+        /// <summary>
+        /// Point the sprite in the direction indicated
+        /// </summary>
+        /// <remarks>
+        /// Note that all angles are in degrees where zero is up
+        /// </remarks>
+        /// <param name="angle">Angle to point, in degrees, where zero is up</param>
+        /// <returns></returns>
+        public async Task PointInDirection_Heading(double angle)
+        {
+            angle -= 90;
+            var radians = angle * Math.PI / 180.0;
+            heading = radians;
+        }
+
+        public async Task Move(double steps)
+        {
+            if (!heading.HasValue)
+                return;
+
+            var current = await GetPosition();
+            var moveto = ProgressToward(current, heading.Value, steps);
+            await SetPosition(moveto);
+        }
+
+        public async Task IfOnEdgeBounce()
+        {
+            if (!heading.HasValue)
+                return;
+
+            var position = await GetPosition();
+            var needstomove = false;
+
+            if (position.X < 10.0)
+            {
+                needstomove = true;
+                position.X = 10.0;
+                heading = Math.PI - heading;
+            }
+            if (position.X > 990.0)
+            {
+                needstomove = true;
+                position.X = 990.0;
+                heading = Math.PI - heading;
+            }
+            if (position.Y < 10.0)
+            {
+                needstomove = true;
+                position.Y = 10.0;
+                heading = - heading;
+            }
+            if (position.Y > 490.0)
+            {
+                needstomove = true;
+                position.Y = 490.0;
+                heading = - heading;
+            }
+            if (needstomove)
+                await SetPosition(position);
         }
 
         /// <summary>
@@ -267,7 +352,7 @@ namespace Example.Controls
                 Rotate.Angle += degrees;
             });
         }
-        public async Task PointInDirection(double degrees)
+        public async Task PointInDirection_Rotate(double degrees)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
             {
