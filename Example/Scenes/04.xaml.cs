@@ -120,19 +120,32 @@ namespace Example.Scenes
 
             if (e.message == "start")
             {
-                var ignore = me.Show();
+                Task.Run(async () => 
+                {
+                    await me.SetCostume("04/7.png");
+                    await me.Show();
+                });
             }
             else if (e.message == "mousedown")
             {
                 Task.Run(async () => 
                 {
                     await me.SetCostume("04/8.png");
-                    await me.Glide(1000, mousepoint);
+                    await me.Glide(100, mousepoint);
                 });
             }
             else if (e.message == "mouseup")
             {
                 var ignore = me.SetCostume("04/7.png");
+            }
+            else if (e.message == "oh")
+            {
+                Task.Run(async () => 
+                {
+                    await me.Say("Oh no!!");
+                    await Delay(500);
+                    await me.Say();
+                });
             }
         }
 
@@ -150,6 +163,32 @@ namespace Example.Scenes
                     {
                         await Delay(300);
                         await me.NextCostume();
+                    }
+                });
+                ignore = Task.Run(async () =>
+                {
+                    await me.SetPosition(500, 200);
+                    await me.PointTowards(Neo_Cat);
+                    while(true)
+                    {
+                        if (await me.IsTouching(Neo_Cat))
+                        {
+                            await me.PointInDirection_Heading(Random(-45, 45));
+                        }
+                        await me.Move(30);
+                        if (await me.IsTouching(Server1) || await me.IsTouching(Server2))
+                        {
+                            Sprite.Broadcast("oh");
+                        }
+                        await Delay(75);
+                        await me.IfOnEdgeBounce();
+                    }
+                });
+                ignore = Task.Run(async () =>
+                {
+                    await Delay(500);
+                    while (true)
+                    {
                     }
                 });
             }

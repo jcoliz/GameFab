@@ -218,7 +218,7 @@ namespace Example
                 }
 
                 await me.SetCostume("02/2.png");
-                await me.PointInDirection(0);
+                await me.PointInDirection_Rotate(0);
                 await me.Show();
                 await me.Say("Stargate Opened!!!");
             });
