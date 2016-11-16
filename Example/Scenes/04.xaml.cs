@@ -37,9 +37,14 @@ namespace Example.Scenes
             return random.Next(from, to);
         }
 
-        private Task Delay(int ms)
+        private Task Delay(double seconds)
         {
-            return Task.Delay(ms);
+            return Task.Delay((int)(seconds * 1000.0));
+        }
+
+        private void Broadcast(string message)
+        {
+            Sprite.Broadcast(message);
         }
 
         public _04()
@@ -220,7 +225,7 @@ namespace Example.Scenes
                     await me.Show();
                     while (Running)
                     {
-                        await Delay(300);
+                        await Delay(0.3);
                         await me.NextCostume();
                     }
                 });
@@ -258,11 +263,11 @@ namespace Example.Scenes
 
                             var ignxore = Task.Run(async () => 
                             {
-                                await Delay(1000);
+                                await Delay(1.0);
                                 benign = false;
                             });
                          }
-                        await Delay(75);
+                        await Delay(0.075);
                         await me.IfOnEdgeBounce();
                     }
                     await me.Hide();
