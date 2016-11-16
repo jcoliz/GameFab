@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -45,6 +46,27 @@ namespace Example.Scenes
         {
             this.InitializeComponent();
             this.Loaded += Scene_Loaded;
+            SystemNavigationManager.GetForCurrentView().BackRequested += SystemNavigationManager_BackRequested;
+
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                Frame.CanGoBack ?
+                AppViewBackButtonVisibility.Visible :
+                AppViewBackButtonVisibility.Collapsed;
+        }
+
+        private void SystemNavigationManager_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (!e.Handled && this.Frame.CanGoBack)
+            {
+                e.Handled = true;
+                this.Frame.GoBack();
+            }
         }
 
         private void Scene_Loaded(object sender, RoutedEventArgs e)

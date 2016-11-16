@@ -21,12 +21,12 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace Example
+namespace Example.Scenes
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class _02 : Page
     {
         MediaPlayer bgplayer;
         Random random = new Random();
@@ -55,7 +55,7 @@ namespace Example
             return Task.Delay(ms);
         }
 
-        public MainPage()
+        public _02()
         {
             this.InitializeComponent();
 
