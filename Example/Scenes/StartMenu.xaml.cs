@@ -36,5 +36,10 @@ namespace Example.Scenes
         {
             Frame.Navigate(typeof(Scenes._04));
         }
+
+        private void Scene_04_2_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Scenes.New_04));
+        }
     }
 }
