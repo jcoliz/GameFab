@@ -97,6 +97,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Scene.cs" />
     <Compile Include="Controls\Sprite.xaml.cs">
       <DependentUpon>Sprite.xaml</DependentUpon>
     </Compile>
@@ -109,6 +110,9 @@
     </Compile>
     <Compile Include="Scenes\04.xaml.cs">
       <DependentUpon>04.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Scenes\New04.xaml.cs">
+      <DependentUpon>New04.xaml</DependentUpon>
     </Compile>
     <Compile Include="Scenes\StartMenu.xaml.cs">
       <DependentUpon>StartMenu.xaml</DependentUpon>
@@ -174,6 +178,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Scenes\04.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Scenes\New04.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

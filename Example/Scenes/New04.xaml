@@ -1,0 +1,34 @@
+﻿<c:Scene
+    x:Class="Example.Scenes.New_04"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Example.Scenes"
+    xmlns:c="using:Example.Controls">
+
+    <Grid Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Image Source="/Assets/04/21.png" Stretch="UniformToFill" />
+        <StackPanel HorizontalAlignment="Left" Margin="20,0">
+            <TextBlock Text="Chances" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Chances.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" Margin="20,0">
+            <TextBlock Text="Timer" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Timer.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Right" Margin="20,0">
+            <TextBlock Text="Score" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Score.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
+        <Canvas x:Name="Screen">
+            <Image x:Name="Server1" Source="ms-appx:///Assets/04/1.png" Canvas.Left="0" Canvas.Top="500"/>
+            <Image x:Name="ServerText1" Source="ms-appx:///Assets/04/2.png" Canvas.Left="0" Canvas.Top="500"/>
+            <Image x:Name="Server2" Source="ms-appx:///Assets/04/1.png" Canvas.Left="500" Canvas.Top="500"/>
+            <Image x:Name="ServerText2" Source="ms-appx:///Assets/04/2.png" Canvas.Left="500" Canvas.Top="500"/>
+            <c:Sprite x:Name="Neo_Cat" Canvas.Top="176" Canvas.Left="307" Visibility="Collapsed" MessageReceived="Neo_Cat_MessageReceived" PointerPressed="Neo_Cat_PointerPressed" PointerReleased="Neo_Cat_PointerReleased" />
+            <c:Sprite x:Name="Virus" Visibility="Collapsed" MessageReceived="Virus_MessageReceived"/>
+        </Canvas>
+        <Button  HorizontalAlignment="Center" VerticalAlignment="Center" Click="StartButton_Click" BorderBrush="White">
+            <TextBlock Text="START" FontSize="75" Foreground="White" Margin="10,5"/>
+        </Button>
+    </Grid>
+</c:Scene>

@@ -373,10 +373,45 @@ namespace Example.Controls
             public string message;
         }
 
+        public struct PointerArgs
+        {
+            public Point mousepoint;
+        }
+
+        /// <summary>
+        /// Represents the method that will handle an event when the event provides data
+        /// </summary>
+        /// <typeparam name="TEventArgs"></typeparam>
+        /// <param name="me"></param>
+        /// <param name="what"></param>
+        public delegate void SpriteEventHandler<TEventArgs>(Sprite me, TEventArgs what);
+
+        /// <summary>
+        /// Represents the method that will handle an event that has no event data.
+        /// </summary>
+        public delegate void SpriteEventHandler(Sprite me);
+
         /// <summary>
         /// Event fired when we received a message
         /// </summary>
-        public event EventHandler<MessageReceivedArgs> MessageReceived;
+        public event SpriteEventHandler<MessageReceivedArgs> MessageReceived;
+
+        /// <summary>
+        /// Event fired when the pointer was pressed
+        /// </summary>
+        public new event SpriteEventHandler<PointerArgs> PointerPressed;
+
+        /// <summary>
+        /// Event fired when the pointer was released
+        /// </summary>
+        public new event SpriteEventHandler<PointerArgs> PointerReleased;
+
+        /// <summary>
+        /// Event fired when the scene is loaded
+        /// </summary>
+        public event SpriteEventHandler SceneLoaded;
+
+        public event SpriteEventHandler<Windows.UI.Core.KeyEventArgs> KeyPressed;
 
         /// <summary>
         /// Broadcast this message to all sprites
@@ -391,12 +426,37 @@ namespace Example.Controls
                 sprite.MessageReceived?.Invoke(sprite, new MessageReceivedArgs() { message = message });
         }
 
+        public static void SendPointerPressed(Point point)
+        {
+            foreach (var sprite in All)
+                sprite.PointerPressed?.Invoke(sprite,new PointerArgs() { mousepoint = point });
+        }
+
+        public static void SendPointerReleased(Point point)
+        {
+            foreach (var sprite in All)
+                sprite.PointerReleased?.Invoke(sprite, new PointerArgs() { mousepoint = point });
+        }
+
+        public static void SendSceneLoaded()
+        {
+            foreach (var sprite in All)
+                sprite.SceneLoaded?.Invoke(sprite);
+        }
+
+        public static void SendKeyPressed(Windows.UI.Core.KeyEventArgs keys)
+        {
+            foreach (var sprite in All)
+                sprite.KeyPressed?.Invoke(sprite,keys);
+        }
+
         private static List<Sprite> All = new List<Sprite>();
 
-        public async Task Glide(double total_time,Point destination)
+        public async Task Glide(double total_time_seconds,Point destination)
         {
+            double total_time = total_time_seconds * 1000;
             Point starting_position = await GetPosition();
-            const double update_frequency_ms = 50;
+            const double update_frequency_ms = 25;
             double elapsed_time = 0;
             double total_distance = DistanceBetween(starting_position, destination);
             double heading = HeadingBetween(starting_position, destination);

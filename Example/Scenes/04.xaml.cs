@@ -200,7 +200,7 @@ namespace Example.Scenes
                     if (Chances > 0)
                     {
                         await me.Say("Oh no!!");
-                        await Delay(500);
+                        await Delay(0.5);
                         await me.Say();
                     }
                     else
@@ -286,7 +286,7 @@ namespace Example.Scenes
                 while (Running)
                 {
                     ++Timer;
-                    await Delay(1000);
+                    await Delay(1.0);
                 }
             });
         }
