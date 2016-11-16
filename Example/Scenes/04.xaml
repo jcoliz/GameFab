@@ -8,19 +8,30 @@
     xmlns:c="using:Example.Controls"
     mc:Ignorable="d">
 
-    <Grid Background="Black" Width="1000" Height="550" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Image Source="/Assets/04/21.png" Stretch="UniformToFill" />
-        <TextBlock Text="{x:Bind Chances,Mode=OneWay}" FontSize="100" Foreground="White" Margin="20,0"/>
-        <TextBlock Text="{x:Bind Timer,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="20,0"/>
-        <TextBlock Text="{x:Bind Score,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Right" Margin="20,0"/>
+        <StackPanel HorizontalAlignment="Left" Margin="20,0">
+            <TextBlock Text="Chances" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Chances,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" Margin="20,0">
+            <TextBlock Text="Timer" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Timer,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Right" Margin="20,0">
+            <TextBlock Text="Score" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Score,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
         <Canvas x:Name="Screen">
             <Image x:Name="Server1" Source="ms-appx:///Assets/04/1.png" Canvas.Left="0" Canvas.Top="500"/>
             <Image x:Name="ServerText1" Source="ms-appx:///Assets/04/2.png" Canvas.Left="0" Canvas.Top="500"/>
             <Image x:Name="Server2" Source="ms-appx:///Assets/04/1.png" Canvas.Left="500" Canvas.Top="500"/>
             <Image x:Name="ServerText2" Source="ms-appx:///Assets/04/2.png" Canvas.Left="500" Canvas.Top="500"/>
-            <c:Sprite x:Name="Instructions" Loaded="Instructions_Loaded" MessageReceived="Instructions_MessageReceived"/>
             <c:Sprite x:Name="Neo_Cat" Canvas.Top="176" Canvas.Left="307" Visibility="Collapsed" MessageReceived="Neo_Cat_MessageReceived"/>
             <c:Sprite x:Name="Virus" Visibility="Collapsed" MessageReceived="Virus_MessageReceived"/>
         </Canvas>
+        <Button  HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click" BorderBrush="White">
+            <TextBlock Text="START" FontSize="75" Foreground="White" Margin="10,5"/>
+        </Button>
     </Grid>
 </Page>

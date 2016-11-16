@@ -85,7 +85,6 @@ namespace Example.Scenes
             }
             if (args.VirtualKey == Windows.System.VirtualKey.Space)
             {
-                Sprite.Broadcast("start");
             }
         }
 
@@ -142,35 +141,6 @@ namespace Example.Scenes
         }
 
         //------------------------------------------------------------------------------------
-
-        private void Instructions_Loaded(object sender, RoutedEventArgs e)
-        {
-            var me = sender as Sprite;
-
-            Task.Run(async () =>
-            {
-                await me.SetPosition(100, 100);
-                await me.SetCostume("04/4.png");
-            });
-        }
-
-        private void Instructions_MessageReceived(object sender, Sprite.MessageReceivedArgs e)
-        {
-            var me = sender as Sprite;
-
-            if (e.message == "start")
-            {
-                Task.Run(async() => 
-                {
-                    await me.Hide();
-                    while (Running)
-                    {
-                        await Delay(1000);
-                        ++Timer;
-                    }
-                });
-            }
-        }
 
         private void Neo_Cat_MessageReceived(object sender, Sprite.MessageReceivedArgs e)
         {
@@ -277,6 +247,21 @@ namespace Example.Scenes
                 });
 
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            (sender as FrameworkElement).Visibility = Visibility.Collapsed;
+            Sprite.Broadcast("start");
+
+            Task.Run(async () =>
+            {
+                while (Running)
+                {
+                    ++Timer;
+                    await Delay(1000);
+                }
+            });
         }
     }
 }
