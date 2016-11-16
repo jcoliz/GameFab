@@ -100,8 +100,8 @@
     <Compile Include="Controls\Sprite.xaml.cs">
       <DependentUpon>Sprite.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="Scenes\02.xaml.cs">
+      <DependentUpon>02.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\03.xaml.cs">
@@ -109,6 +109,9 @@
     </Compile>
     <Compile Include="Scenes\04.xaml.cs">
       <DependentUpon>04.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Scenes\StartMenu.xaml.cs">
+      <DependentUpon>StartMenu.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -162,7 +165,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainPage.xaml">
+    <Page Include="Scenes\02.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -171,6 +174,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Scenes\04.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Scenes\StartMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
