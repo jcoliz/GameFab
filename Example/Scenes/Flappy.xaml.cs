@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Example.Controls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,31 +21,11 @@ namespace Example.Scenes
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class StartMenu : Page
+    public sealed partial class Flappy : Scene
     {
-        public StartMenu()
+        public Flappy()
         {
             this.InitializeComponent();
-        }
-
-        private void Scene_02_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes._02));
-        }
-
-        private void Scene_04_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes._04));
-        }
-
-        private void Scene_04_2_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes.New_04));
-        }
-
-        private void Scene_Flappy_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes.Flappy));
         }
     }
 }
