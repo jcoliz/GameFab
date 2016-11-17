@@ -33,6 +33,43 @@ namespace Example.Scenes
 
         private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
+            // Spawn the needed number of pillars over the correct time.
+            Task.Run(async () => 
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    var s = new Sprite();
+                    Screen.Children.Add(s);
+                    Task.Run(() => { Pillar_SceneLoaded(s); });
+                });
+                await Delay(3.0);
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    var s = new Sprite();
+                    Screen.Children.Add(s);
+                    Task.Run(() => { Pillar_SceneLoaded(s); });
+                });
+                await Delay(3.0);
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    var s = new Sprite();
+                    Screen.Children.Add(s);
+                    Task.Run(() => { Pillar_SceneLoaded(s); });
+                });
+                await Delay(3.0);
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    var s = new Sprite();
+                    Screen.Children.Add(s);
+                    Task.Run(() => { Pillar_SceneLoaded(s); });
+                });
+                /*
+                await Delay(1.0);
+                Spawn();
+                await Delay(1.0);
+                Spawn();
+                */
+            });
         }
 
         private void Player_PointerPressed(Sprite me, Sprite.PointerArgs what)
@@ -45,16 +82,33 @@ namespace Example.Scenes
 
         }
 
+        double yspeed = 0;
+        double gravity = 2; // in pixels per tick squared
+
         private void Player_SceneLoaded(Sprite me)
         {
+            Task.Run(async () => 
+            {
+                await me.SetCostume("Flappy/Player.png");
+                await me.SetPosition(250.0, 250.0);
 
+                // Apply gravity
+                while(true)
+                {
+                    yspeed += gravity;
+                    var position = await me.GetPosition();
+                    position.Y += yspeed;
+                    await me.SetPosition(position);
+                    await Delay(0.1);
+                }
+            });
         }
 
         private void Pillar_SceneLoaded(Sprite me)
         {
             Task.Run(async () => 
             {
-                double y = Random(200,400);
+                double y = Random(200,500);
                 await me.SetCostume("Flappy/Pillar.png");
                 await me.SetPosition(1000.0, y);
 
@@ -70,19 +124,31 @@ namespace Example.Scenes
                 while (true)
                 {
                     await Delay(0.2);
-                    await me.ChangeXby(-10);
-                    await top.ChangeXby(-10);
+                    await me.ChangeXby(-20);
+                    await top.ChangeXby(-20);
                     var position = await me.GetPosition();
-                    if (position.X < 0.0)
+                    if (position.X < -100.0)
                     {
                         position.X = 1000.0;
-                        position.Y = Random(200,400);
+                        position.Y = Random(200,500);
                         await me.SetPosition(position);
                         position.Y -= 500;
                         await top.SetPosition(position);
                     }
                 }
             });
+        }
+
+        private async void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
+        {
+            // Apply upward force
+            if (what.VirtualKey == Windows.System.VirtualKey.Space)
+            {
+                yspeed = -20;
+                var position = await me.GetPosition();
+                position.Y += yspeed;
+                await me.SetPosition(position);
+            }
         }
     }
 }
