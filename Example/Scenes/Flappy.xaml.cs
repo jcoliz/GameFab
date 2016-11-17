@@ -56,16 +56,6 @@ namespace Example.Scenes
             });
         }
 
-        private void Player_PointerPressed(Sprite me, Sprite.PointerArgs what)
-        {
-
-        }
-
-        private void Player_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         double yspeed = 0;
         double gravity = 2; // in pixels per tick squared
 
@@ -121,10 +111,9 @@ namespace Example.Scenes
                 var x = await me.ChangeXby(-20);
                 if (x < -100.0)
                 {
-                    var position = new Point() { X = 1000.0, Y = Random(200, 500) };
-                    await me.SetPosition(position);
-                    position.Y -= 500;
-                    await top.SetPosition(position);
+                    var y = Random(200, 500);
+                    await me.SetPosition(1000,y);
+                    await top.SetPosition(1000,y-500);
                 }
             }
         }

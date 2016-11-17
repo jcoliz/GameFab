@@ -9,7 +9,7 @@
 
     <Grid Background="Black">
         <Canvas x:Name="Screen">
-            <c:Sprite x:Name="Player" Canvas.Top="176" Canvas.Left="307" SceneLoaded="Player_SceneLoaded" PointerPressed="Player_PointerPressed" KeyPressed="Player_KeyPressed" />
+            <c:Sprite x:Name="Player" Canvas.Top="176" Canvas.Left="307" SceneLoaded="Player_SceneLoaded" KeyPressed="Player_KeyPressed" />
         </Canvas>
 
     </Grid>
