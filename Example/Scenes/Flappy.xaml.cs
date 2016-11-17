@@ -70,6 +70,16 @@ namespace Example.Scenes
                 Spawn();
                 */
             });
+
+            // Syncrhonize the visual updates by sending out a message on a regular time
+            Task.Run(async () => 
+            {
+                while(true)
+                {
+                    await Delay(0.2);
+                    Broadcast("update");
+                }
+            });
         }
 
         private void Player_PointerPressed(Sprite me, Sprite.PointerArgs what)
@@ -117,26 +127,32 @@ namespace Example.Scenes
                 {
                     top = new Sprite();
                     Screen.Children.Add(top);
+                    me.Variable["top"] = top;
                 });
                 await top.SetCostume("Flappy/Pillar.png");
                 await top.SetPosition(1000.0, y - 500);
 
-                while (true)
-                {
-                    await Delay(0.2);
-                    await me.ChangeXby(-20);
-                    await top.ChangeXby(-20);
-                    var position = await me.GetPosition();
-                    if (position.X < -100.0)
-                    {
-                        position.X = 1000.0;
-                        position.Y = Random(200,500);
-                        await me.SetPosition(position);
-                        position.Y -= 500;
-                        await top.SetPosition(position);
-                    }
-                }
+                me.MessageReceived += Pillar_MessageReceived;
             });
+        }
+
+        private async void Pillar_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "update")
+            {
+                var top = me.Variable["top"] as Sprite;
+                await me.ChangeXby(-20);
+                await top.ChangeXby(-20);
+                var position = await me.GetPosition();
+                if (position.X < -100.0)
+                {
+                    position.X = 1000.0;
+                    position.Y = Random(200, 500);
+                    await me.SetPosition(position);
+                    position.Y -= 500;
+                    await top.SetPosition(position);
+                }
+            }
         }
 
         private async void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)

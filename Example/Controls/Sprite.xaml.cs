@@ -32,6 +32,11 @@ namespace Example.Controls
         double? heading = null;
 
         /// <summary>
+        /// Stash sprite-specific varaiables here
+        /// </summary>
+        public Dictionary<string, object> Variable { get; } = new Dictionary<string, object>();
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <remarks>
