@@ -177,13 +177,16 @@ namespace Example.Controls
         /// Move the sprite right (or left) by this amount
         /// </summary>
         /// <param name="y"></param>
-        /// <returns></returns>
-        public async Task ChangeXby(double y)
+        /// <returns>Resulting X position</returns>
+        public async Task<double> ChangeXby(double x)
         {
+            double result = 0.0;
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                SetValue(Canvas.LeftProperty, (double)GetValue(Canvas.LeftProperty) + y);
+                result = (double)GetValue(Canvas.LeftProperty) + x;
+                SetValue(Canvas.LeftProperty, result);
             });
+            return result;
         }
 
         public async Task PointTowards(FrameworkElement fe)

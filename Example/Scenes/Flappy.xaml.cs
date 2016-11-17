@@ -36,39 +36,13 @@ namespace Example.Scenes
             // Spawn the needed number of pillars over the correct time.
             Task.Run(async () => 
             {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    var s = new Sprite();
-                    Screen.Children.Add(s);
-                    Task.Run(() => { Pillar_SceneLoaded(s); });
-                });
+                await CreateSprite(Screen, this.Pillar_SceneLoaded);
                 await Delay(3.0);
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    var s = new Sprite();
-                    Screen.Children.Add(s);
-                    Task.Run(() => { Pillar_SceneLoaded(s); });
-                });
+                await CreateSprite(Screen, this.Pillar_SceneLoaded);
                 await Delay(3.0);
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    var s = new Sprite();
-                    Screen.Children.Add(s);
-                    Task.Run(() => { Pillar_SceneLoaded(s); });
-                });
+                await CreateSprite(Screen, this.Pillar_SceneLoaded);
                 await Delay(3.0);
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    var s = new Sprite();
-                    Screen.Children.Add(s);
-                    Task.Run(() => { Pillar_SceneLoaded(s); });
-                });
-                /*
-                await Delay(1.0);
-                Spawn();
-                await Delay(1.0);
-                Spawn();
-                */
+                await CreateSprite(Screen, this.Pillar_SceneLoaded);
             });
 
             // Syncrhonize the visual updates by sending out a message on a regular time
@@ -106,12 +80,19 @@ namespace Example.Scenes
                 while(true)
                 {
                     yspeed += gravity;
-                    var position = await me.GetPosition();
-                    position.Y += yspeed;
-                    await me.SetPosition(position);
+                    await me.ChangeYby(yspeed);
                     await Delay(0.1);
                 }
             });
+        }
+        private async void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
+        {
+            // Apply upward force
+            if (what.VirtualKey == Windows.System.VirtualKey.Space)
+            {
+                yspeed = -20;
+                await me.ChangeYby(yspeed);
+            }
         }
 
         private void Pillar_SceneLoaded(Sprite me)
@@ -122,13 +103,8 @@ namespace Example.Scenes
                 await me.SetCostume("Flappy/Pillar.png");
                 await me.SetPosition(1000.0, y);
 
-                Sprite top = null;
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => 
-                {
-                    top = new Sprite();
-                    Screen.Children.Add(top);
-                    me.Variable["top"] = top;
-                });
+                var top = await CreateSprite(Screen);
+                me.Variable["top"] = top;
                 await top.SetCostume("Flappy/Pillar.png");
                 await top.SetPosition(1000.0, y - 500);
 
@@ -141,29 +117,15 @@ namespace Example.Scenes
             if (what.message == "update")
             {
                 var top = me.Variable["top"] as Sprite;
-                await me.ChangeXby(-20);
                 await top.ChangeXby(-20);
-                var position = await me.GetPosition();
-                if (position.X < -100.0)
+                var x = await me.ChangeXby(-20);
+                if (x < -100.0)
                 {
-                    position.X = 1000.0;
-                    position.Y = Random(200, 500);
+                    var position = new Point() { X = 1000.0, Y = Random(200, 500) };
                     await me.SetPosition(position);
                     position.Y -= 500;
                     await top.SetPosition(position);
                 }
-            }
-        }
-
-        private async void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
-        {
-            // Apply upward force
-            if (what.VirtualKey == Windows.System.VirtualKey.Space)
-            {
-                yspeed = -20;
-                var position = await me.GetPosition();
-                position.Y += yspeed;
-                await me.SetPosition(position);
             }
         }
     }

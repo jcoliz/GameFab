@@ -55,6 +55,24 @@ namespace Example.Controls
 
         protected Point MousePoint { get; private set; }
 
+        protected async Task<Sprite> CreateSprite(Canvas parent, Sprite.SpriteEventHandler loaded = null)
+        {
+            Sprite s = null;
+            var sem = new SemaphoreSlim(1);
+            await sem.WaitAsync();
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                s = new Sprite();
+                parent.Children.Add(s);
+                if (loaded != null)
+                    Task.Run(() => { loaded(s); });
+
+                sem.Release();
+            });
+            await sem.WaitAsync();
+            return s;
+        }
+
         public Scene()
         {
             base.Loaded += Scene_Loaded;
