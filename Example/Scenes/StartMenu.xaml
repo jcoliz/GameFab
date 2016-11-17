@@ -12,11 +12,11 @@
             <Button Margin="25" Background="#222222" Click="Scene_02_Click" HorizontalAlignment="Center">
                 <TextBlock Foreground="White" Text="Play Space Portal" FontSize="40" Margin="10"/>
             </Button>
-            <Button Margin="25" Background="#222222" Click="Scene_04_Click" HorizontalAlignment="Center">
-                <TextBlock Foreground="White" Text="Play Virus Attack" FontSize="40" Margin="10"/>
-            </Button>
             <Button Margin="25" Background="#222222" Click="Scene_04_2_Click" HorizontalAlignment="Center">
-                <TextBlock Foreground="White" Text="Play Virus Attack 2" FontSize="40" Margin="10"/>
+                <TextBlock Foreground="White" Text="Play Virus Attack New" FontSize="40" Margin="10"/>
+            </Button>
+            <Button Margin="25" Background="#222222" Click="Scene_Flappy_Click" HorizontalAlignment="Center">
+                <TextBlock Foreground="White" Text="Play Flappy" FontSize="40" Margin="10"/>
             </Button>
         </StackPanel>
 
