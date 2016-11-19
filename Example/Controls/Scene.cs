@@ -159,6 +159,7 @@ namespace Example.Controls
 
 
         CanvasBitmap background = null;
+        CanvasBitmap player = null;
 
         public void Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender,CanvasAnimatedDrawEventArgs args)
         {
@@ -166,6 +167,7 @@ namespace Example.Controls
             var destsize = sender.Size;
             var destrect = new Rect(origin,destsize);
             args.DrawingSession.DrawImage(background, destrect);
+            args.DrawingSession.DrawImage(player, 200, 200);
         }
 
         internal void CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
@@ -178,6 +180,7 @@ namespace Example.Controls
             try
             {
                 background = await CanvasBitmap.LoadAsync(sender, new Uri( "ms-appx:///Assets/04/21.png"));
+                player = await CanvasBitmap.LoadAsync(sender, new Uri("ms-appx:///Assets/04/7.png"));
             }
             catch (Exception ex)
             {
