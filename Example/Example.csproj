@@ -97,10 +97,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Scene.cs" />
+    <Compile Include="Models\Scene.cs" />
     <Compile Include="Controls\Sprite.xaml.cs">
       <DependentUpon>Sprite.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Sprite.cs" />
     <Compile Include="Scenes\02.xaml.cs">
       <DependentUpon>02.xaml</DependentUpon>
     </Compile>
@@ -199,9 +200,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

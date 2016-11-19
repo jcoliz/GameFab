@@ -1,4 +1,4 @@
-﻿using Example.Controls;
+﻿using Example.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,13 +36,13 @@ namespace Example.Scenes
             // Spawn the needed number of pillars over the correct time.
             Task.Run(async () => 
             {
-                await CreateSprite(Screen, this.Pillar_SceneLoaded);
+                await CreateSprite(this.Pillar_SceneLoaded);
                 await Delay(3.0);
-                await CreateSprite(Screen, this.Pillar_SceneLoaded);
+                await CreateSprite(this.Pillar_SceneLoaded);
                 await Delay(3.0);
-                await CreateSprite(Screen, this.Pillar_SceneLoaded);
+                await CreateSprite(this.Pillar_SceneLoaded);
                 await Delay(3.0);
-                await CreateSprite(Screen, this.Pillar_SceneLoaded);
+                await CreateSprite(this.Pillar_SceneLoaded);
             });
 
             // Syncrhonize the visual updates by sending out a message on a regular time
@@ -93,7 +93,7 @@ namespace Example.Scenes
                 await me.SetCostume("Flappy/Pillar.png");
                 await me.SetPosition(1000.0, y);
 
-                var top = await CreateSprite(Screen);
+                var top = await CreateSprite();
                 me.Variable["top"] = top;
                 await top.SetCostume("Flappy/Pillar.png");
                 await top.SetPosition(1000.0, y - 500);

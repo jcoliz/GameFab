@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.Graphics.Canvas.Brushes;
 
-namespace Example.Controls
+namespace Example.Models
 {
     public class Scene: Page
     {
@@ -49,7 +49,7 @@ namespace Example.Controls
         /// <param name="message"></param>
         protected void Broadcast(string message)
         {
-            Sprite.Broadcast(message);
+            Models.Sprite.Broadcast(message);
         }
 
         /// <summary>
@@ -59,21 +59,13 @@ namespace Example.Controls
 
         protected Point MousePoint { get; private set; }
 
-        protected async Task<Sprite> CreateSprite(Canvas parent, Sprite.SpriteEventHandler loaded = null)
-        {
-            Sprite s = null;
-            var sem = new SemaphoreSlim(1);
-            await sem.WaitAsync();
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                s = new Sprite();
-                parent.Children.Add(s);
-                if (loaded != null)
-                    Task.Run(() => { loaded(s); });
+        private List<Models.Sprite> Sprites = new List<Models.Sprite>();
 
-                sem.Release();
-            });
-            await sem.WaitAsync();
+        protected async Task<Models.Sprite> CreateSprite(Models.Sprite.SpriteEventHandler loaded = null)
+        {
+            var s = new Models.Sprite();
+            Sprites.Add(s);
+            loaded?.Invoke(s);
             return s;
         }
 
@@ -108,26 +100,26 @@ namespace Example.Controls
             Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
             Window.Current.CoreWindow.PointerReleased += CoreWindow_PointerReleased;
 
-            Sprite.SendSceneLoaded();
+            Models.Sprite.SendSceneLoaded();
         }
 
         private void CoreWindow_PointerReleased(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
         {
             IsMousePressed = false;
             MousePoint = args.CurrentPoint.Position;
-            Sprite.SendPointerReleased(MousePoint);
+            Models.Sprite.SendPointerReleased(MousePoint);
         }
 
         private void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
         {
             IsMousePressed = true;
             MousePoint = args.CurrentPoint.Position;
-            Sprite.SendPointerPressed(MousePoint);
+            Models.Sprite.SendPointerPressed(MousePoint);
         }
 
         private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            Sprite.SendKeyPressed(args);
+            Models.Sprite.SendKeyPressed(args);
         }
 
         public class Variable<T>: INotifyPropertyChanged
@@ -157,35 +149,51 @@ namespace Example.Controls
             public event PropertyChangedEventHandler PropertyChanged;
         }
 
-
-        CanvasBitmap background = null;
-        CanvasBitmap player = null;
+        string background;
+        Dictionary<string, CanvasBitmap> bitmaps = new Dictionary<string, CanvasBitmap>();
 
         public void Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender,CanvasAnimatedDrawEventArgs args)
         {
-            var origin = new Point() { X = 0, Y = 0 };
-            var destsize = sender.Size;
-            var destrect = new Rect(origin,destsize);
-            args.DrawingSession.DrawImage(background, destrect);
-            args.DrawingSession.DrawImage(player, 200, 200);
+            if (background != null && bitmaps.ContainsKey(background))
+            {
+                var origin = new Point() { X = 0, Y = 0 };
+                var destsize = sender.Size;
+                var destrect = new Rect(origin, destsize);
+                args.DrawingSession.DrawImage(bitmaps[background], destrect);
+
+            }
+            foreach(var sprite in Sprites)
+            {
+                if (sprite.Costume != null && sprite.Visible && bitmaps.ContainsKey(sprite.Costume))
+                {
+                    var bitmap = bitmaps[sprite.Costume];
+                    sprite.CostumeSize = bitmap.Size;
+                    args.DrawingSession.DrawImage(bitmap, (float)sprite.Position.X, (float)sprite.Position.Y);
+                }
+            }
         }
 
-        internal void CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
+        internal void CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args, params string[] images)
         {
-            args.TrackAsyncAction(LoadResources(sender).AsAsyncAction());
+            args.TrackAsyncAction(LoadResources(sender,images).AsAsyncAction());
         }
 
-        private async Task LoadResources(CanvasAnimatedControl sender)
+        private async Task LoadResources(CanvasAnimatedControl sender, string[] images)
         {
             try
             {
-                background = await CanvasBitmap.LoadAsync(sender, new Uri( "ms-appx:///Assets/04/21.png"));
-                player = await CanvasBitmap.LoadAsync(sender, new Uri("ms-appx:///Assets/04/7.png"));
+                foreach(var i in images)
+                    bitmaps[i] = await CanvasBitmap.LoadAsync(sender, new Uri($"ms-appx:///Assets/{i}"));
             }
             catch (Exception ex)
             {
 
             }
+        }
+
+        internal void SetBackground(string v)
+        {
+            background = v;
         }
     }
 }

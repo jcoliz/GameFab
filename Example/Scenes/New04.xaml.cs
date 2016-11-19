@@ -1,4 +1,4 @@
-﻿using Example.Controls;
+﻿using Example.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,7 +45,7 @@ namespace Example.Scenes
             });
         }
 
-        private void Virus_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        private void Virus_MessageReceived(Models.Sprite me, Models.Sprite.MessageReceivedArgs what)
         {
             if (what.message == "start")
             {
@@ -63,7 +63,7 @@ namespace Example.Scenes
                 {
                     var deadly = true;
                     await me.SetPosition(500, 200);
-                    await me.PointTowards(Neo_Cat);
+                    await me.PointTowards(Neo_Cat.Position);
                     while (Running)
                     {
                         if (await me.IsTouching(Neo_Cat))
@@ -105,7 +105,7 @@ namespace Example.Scenes
             }
         }
 
-        private void Neo_Cat_MessageReceived (Sprite me, Sprite.MessageReceivedArgs what)
+        private void Neo_Cat_MessageReceived (Models.Sprite me, Models.Sprite.MessageReceivedArgs what)
         {
             if (what.message == "start")
             {
@@ -138,7 +138,7 @@ namespace Example.Scenes
             }
         }
 
-        private void Neo_Cat_PointerPressed(Sprite me, Sprite.PointerArgs what)
+        private void Neo_Cat_PointerPressed(Models.Sprite me, Models.Sprite.PointerArgs what)
         {
             Task.Run(async () =>
             {
@@ -147,7 +147,7 @@ namespace Example.Scenes
             });
         }
 
-        private void Neo_Cat_PointerReleased(Sprite me, Sprite.PointerArgs what)
+        private void Neo_Cat_PointerReleased(Models.Sprite me, Models.Sprite.PointerArgs what)
         {
             Task.Run(async () =>
             {
@@ -155,7 +155,7 @@ namespace Example.Scenes
             });
         }
 
-        private void Neo_Cat_Loaded(Sprite me)
+        private void Neo_Cat_Loaded(Models.Sprite me)
         {
             Task.Run(async () =>
             {
@@ -172,20 +172,22 @@ namespace Example.Scenes
 
         private void CanvasAnimatedControl_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
-            base.CreateResources(sender,args);
+            base.CreateResources(sender,args, "04/21.png","04/7.png","04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
         }
 
-        private Sprite Neo_Cat = null;
-        private Sprite Virus = null;
+        private Models.Sprite Neo_Cat = null;
+        private Models.Sprite Virus = null;
 
         private async void Scene_Loaded(object sender, RoutedEventArgs e)
         {
-            Neo_Cat = await CreateSprite(Screen, this.Neo_Cat_Loaded);
+            base.SetBackground("04/21.png");
+
+            Neo_Cat = await CreateSprite(this.Neo_Cat_Loaded);
             Neo_Cat.MessageReceived += Neo_Cat_MessageReceived;
             Neo_Cat.PointerPressed += Neo_Cat_PointerPressed;
             Neo_Cat.PointerReleased += Neo_Cat_PointerReleased;
 
-            Virus = await CreateSprite(Screen);
+            Virus = await CreateSprite();
             Virus.MessageReceived += Virus_MessageReceived;
         }
     }
