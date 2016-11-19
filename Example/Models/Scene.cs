@@ -17,10 +17,12 @@ using Microsoft.Graphics.Canvas.Brushes;
 
 namespace Example.Models
 {
-    public class Scene: Page
+    public abstract class Scene: Page
     {
         Random random = new Random();
         Point mousepoint;
+
+        abstract protected IEnumerable<string> Assets { get; }
 
         /// <summary>
         /// Generate a random number between these parameters (inclusive)
@@ -152,7 +154,7 @@ namespace Example.Models
         string background;
         Dictionary<string, CanvasBitmap> bitmaps = new Dictionary<string, CanvasBitmap>();
 
-        public void Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender,CanvasAnimatedDrawEventArgs args)
+        protected void CanvasAnimatedControl_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
         {
             if (background != null && bitmaps.ContainsKey(background))
             {
@@ -162,7 +164,7 @@ namespace Example.Models
                 args.DrawingSession.DrawImage(bitmaps[background], destrect);
 
             }
-            foreach(var sprite in Sprites)
+            foreach (var sprite in Sprites)
             {
                 if (sprite.Costume != null && sprite.Visible && bitmaps.ContainsKey(sprite.Costume))
                 {
@@ -173,16 +175,16 @@ namespace Example.Models
             }
         }
 
-        internal void CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args, params string[] images)
+        protected void CanvasAnimatedControl_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
-            args.TrackAsyncAction(LoadResources(sender,images).AsAsyncAction());
+            args.TrackAsyncAction(LoadResources(sender).AsAsyncAction());
         }
 
-        private async Task LoadResources(CanvasAnimatedControl sender, string[] images)
+        private async Task LoadResources(CanvasAnimatedControl sender)
         {
             try
             {
-                foreach(var i in images)
+                foreach(var i in Assets)
                     bitmaps[i] = await CanvasBitmap.LoadAsync(sender, new Uri($"ms-appx:///Assets/{i}"));
             }
             catch (Exception ex)

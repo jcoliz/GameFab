@@ -30,6 +30,8 @@ namespace Example.Scenes
 
         private bool Running { get; set; } = true;
 
+        protected override IEnumerable<string> Assets => new[] { "04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png" };
+
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             (sender as FrameworkElement).Visibility = Visibility.Collapsed;
@@ -51,24 +53,24 @@ namespace Example.Scenes
             {
                 Task.Run(async () =>
                 {
-                    await me.SetCostumes("04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
-                    await me.Show();
+                    me.SetCostumes("04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
+                    me.Show();
                     while (Running)
                     {
                         await Delay(0.3);
-                        await me.NextCostume();
+                        me.NextCostume();
                     }
                 });
                 Task.Run(async () =>
                 {
                     var deadly = true;
-                    await me.SetPosition(500, 200);
-                    await me.PointTowards(Neo_Cat.Position);
+                    me.SetPosition(500, 200);
+                    me.PointTowards(Neo_Cat.Position);
                     while (Running)
                     {
                         if (await me.IsTouching(Neo_Cat))
                         {
-                            await me.PointInDirection_Heading(Random(-45, 45));
+                            me.PointInDirection_Heading(Random(-45, 45));
                             Score.Value++;
 
                             if (Score.Value >= 30)
@@ -77,7 +79,7 @@ namespace Example.Scenes
                                 Running = false;
                             }
 
-                            await me.Move(100);
+                            me.Move(100);
                         }
                         else if ((await me.IsTouching(Server1) || await me.IsTouching(Server2)) && deadly)
                         {
@@ -96,11 +98,11 @@ namespace Example.Scenes
                                 deadly = true;
                             });
                         }
-                        await me.Move(30);
+                        me.Move(30);
                         await Delay(0.075);
-                        await me.IfOnEdgeBounce();
+                        me.IfOnEdgeBounce();
                     }
-                    await me.Hide();
+                    me.Hide();
                 });
             }
         }
@@ -109,10 +111,10 @@ namespace Example.Scenes
         {
             if (what.message == "start")
             {
-                Task.Run(async () =>
+                Task.Run(() =>
                 {
-                    await me.SetCostume("04/7.png");
-                    await me.Show();
+                    me.SetCostume("04/7.png");
+                    me.Show();
                 });
             }
             else if (what.message == "oh")
@@ -121,19 +123,19 @@ namespace Example.Scenes
                 {
                     if (Chances.Value > 0)
                     {
-                        await me.Say("Oh no!!");
+                        me.Say("Oh no!!");
                         await Delay(0.5);
-                        await me.Say();
+                        me.Say();
                     }
                     else
-                        await me.Say("Try again...");
+                        me.Say("Try again...");
                 });
             }
             else if (what.message == "win")
             {
-                Task.Run(async () =>
+                Task.Run(() =>
                 {
-                    await me.Say("WINNER!!");
+                    me.Say("WINNER!!");
                 });
             }
         }
@@ -142,37 +144,26 @@ namespace Example.Scenes
         {
             Task.Run(async () =>
             {
-                await me.SetCostume("04/8.png");
+                me.SetCostume("04/8.png");
                 await me.Glide(0.1, what.mousepoint);
             });
         }
 
         private void Neo_Cat_PointerReleased(Models.Sprite me, Models.Sprite.PointerArgs what)
         {
-            Task.Run(async () =>
+            Task.Run(() =>
             {
-                await me.SetCostume("04/7.png");
+                me.SetCostume("04/7.png");
             });
         }
 
         private void Neo_Cat_Loaded(Models.Sprite me)
         {
-            Task.Run(async () =>
+            Task.Run(() =>
             {
-                await me.SetCostume("04/7.png");
-                await me.SetPosition(176, 307);
+                me.SetCostume("04/7.png");
+                me.SetPosition(176, 307);
             });
-        }
-
-
-        private void CanvasAnimatedControl_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
-        {
-            base.Draw(sender,args);
-        }
-
-        private void CanvasAnimatedControl_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
-        {
-            base.CreateResources(sender,args, "04/21.png","04/7.png","04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png");
         }
 
         private Models.Sprite Neo_Cat = null;
@@ -192,17 +183,17 @@ namespace Example.Scenes
             Virus = await CreateSprite();
             Virus.MessageReceived += Virus_MessageReceived;
 
-            Server1 = await CreateSprite(async (me) => 
+            Server1 = await CreateSprite((me) => 
             {
-                await me.SetCostume("04/1.png");
-                await me.SetPosition(10, 500);
-                await me.Show();
+                me.SetCostume("04/1.png");
+                me.SetPosition(10, 500);
+                me.Show();
             });
-            Server2 = await CreateSprite(async (me) =>
+            Server2 = await CreateSprite((me) =>
             {
-                await me.SetCostume("04/1.png");
-                await me.SetPosition(510, 500);
-                await me.Show();
+                me.SetCostume("04/1.png");
+                me.SetPosition(510, 500);
+                me.Show();
             });
         }
     }
