@@ -5,11 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.UI;
+using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.Graphics.Canvas.Brushes;
 
 namespace Example.Controls
 {
@@ -151,6 +155,34 @@ namespace Example.Controls
             private SynchronizationContext Context = SynchronizationContext.Current;
 
             public event PropertyChangedEventHandler PropertyChanged;
+        }
+
+
+        CanvasBitmap background = null;
+
+        public void Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender,CanvasAnimatedDrawEventArgs args)
+        {
+            var origin = new Point() { X = 0, Y = 0 };
+            var destsize = sender.Size;
+            var destrect = new Rect(origin,destsize);
+            args.DrawingSession.DrawImage(background, destrect);
+        }
+
+        internal void CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
+        {
+            args.TrackAsyncAction(LoadResources(sender).AsAsyncAction());
+        }
+
+        private async Task LoadResources(CanvasAnimatedControl sender)
+        {
+            try
+            {
+                background = await CanvasBitmap.LoadAsync(sender, new Uri( "ms-appx:///Assets/04/21.png"));
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }
