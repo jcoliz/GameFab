@@ -154,5 +154,15 @@ namespace Example.Scenes
                 await me.SetCostume("04/7.png");
             });
         }
+
+        private void CanvasAnimatedControl_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
+        {
+            base.Draw(sender,args);
+        }
+
+        private void CanvasAnimatedControl_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
+        {
+            base.CreateResources(sender,args);
+        }
     }
 }
