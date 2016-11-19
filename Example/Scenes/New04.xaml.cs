@@ -79,7 +79,7 @@ namespace Example.Scenes
 
                             await me.Move(100);
                         }
-                        /*else if ((await me.IsTouching(Server1) || await me.IsTouching(Server2)) && deadly)
+                        else if ((await me.IsTouching(Server1) || await me.IsTouching(Server2)) && deadly)
                         {
                             deadly = false;
                             Sprite.Broadcast("oh");
@@ -95,7 +95,7 @@ namespace Example.Scenes
                                 await Delay(1.0);
                                 deadly = true;
                             });
-                        }*/
+                        }
                         await me.Move(30);
                         await Delay(0.075);
                         await me.IfOnEdgeBounce();
@@ -172,11 +172,13 @@ namespace Example.Scenes
 
         private void CanvasAnimatedControl_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
-            base.CreateResources(sender,args, "04/21.png","04/7.png","04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
+            base.CreateResources(sender,args, "04/21.png","04/7.png","04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png");
         }
 
         private Models.Sprite Neo_Cat = null;
         private Models.Sprite Virus = null;
+        private Models.Sprite Server1 = null;
+        private Models.Sprite Server2 = null;
 
         private async void Scene_Loaded(object sender, RoutedEventArgs e)
         {
@@ -189,6 +191,19 @@ namespace Example.Scenes
 
             Virus = await CreateSprite();
             Virus.MessageReceived += Virus_MessageReceived;
+
+            Server1 = await CreateSprite(async (me) => 
+            {
+                await me.SetCostume("04/1.png");
+                await me.SetPosition(10, 500);
+                await me.Show();
+            });
+            Server2 = await CreateSprite(async (me) =>
+            {
+                await me.SetCostume("04/1.png");
+                await me.SetPosition(510, 500);
+                await me.Show();
+            });
         }
     }
 }
