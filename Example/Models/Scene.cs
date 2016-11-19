@@ -14,6 +14,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.Graphics.Canvas.Brushes;
+using Microsoft.Graphics.Canvas.Text;
+using Windows.UI;
 
 namespace Example.Models
 {
@@ -61,18 +63,16 @@ namespace Example.Models
 
         protected Point MousePoint { get; private set; }
 
-        private List<Models.Sprite> Sprites = new List<Models.Sprite>();
-
         protected async Task<Models.Sprite> CreateSprite(Models.Sprite.SpriteEventHandler loaded = null)
         {
             var s = new Models.Sprite();
-            Sprites.Add(s);
             loaded?.Invoke(s);
             return s;
         }
 
         public Scene()
         {
+            Sprite.ClearAll();
             base.Loaded += Scene_Loaded;
             SystemNavigationManager.GetForCurrentView().BackRequested += SystemNavigationManager_BackRequested;
         }
@@ -156,21 +156,45 @@ namespace Example.Models
 
         protected void CanvasAnimatedControl_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
         {
-            if (background != null && bitmaps.ContainsKey(background))
+            if (Monitor.TryEnter(Sprite.Sprites))
             {
-                var origin = new Point() { X = 0, Y = 0 };
-                var destsize = sender.Size;
-                var destrect = new Rect(origin, destsize);
-                args.DrawingSession.DrawImage(bitmaps[background], destrect);
-
-            }
-            foreach (var sprite in Sprites)
-            {
-                if (sprite.Costume != null && sprite.Visible && bitmaps.ContainsKey(sprite.Costume))
+                try
                 {
-                    var bitmap = bitmaps[sprite.Costume];
-                    sprite.CostumeSize = bitmap.Size;
-                    args.DrawingSession.DrawImage(bitmap, (float)sprite.Position.X, (float)sprite.Position.Y);
+                    if (background != null && bitmaps.ContainsKey(background))
+                    {
+                        var origin = new Point() { X = 0, Y = 0 };
+                        var destsize = sender.Size;
+                        var destrect = new Rect(origin, destsize);
+                        args.DrawingSession.DrawImage(bitmaps[background], destrect);
+
+                    }
+                    foreach (var sprite in Sprite.Sprites)
+                    {
+                        if (sprite.Costume != null && sprite.Visible && bitmaps.ContainsKey(sprite.Costume))
+                        {
+                            var bitmap = bitmaps[sprite.Costume];
+                            sprite.CostumeSize = bitmap.Size;
+                            args.DrawingSession.DrawImage(bitmap, (float)sprite.Position.X, (float)sprite.Position.Y);
+
+                            if (sprite.Saying?.Length > 0)
+                            {
+                                var drawingSession = args.DrawingSession;
+                                var format = new CanvasTextFormat { FontSize = 30.0f, WordWrapping = CanvasWordWrapping.NoWrap };
+                                var textLayout = new CanvasTextLayout(drawingSession, sprite.Saying, format, 0.0f, 0.0f);
+
+                                float xcenter = (float)(sprite.Position.X + bitmap.Size.Width / 2.0);
+                                float ytop = (float)(sprite.Position.Y + bitmap.Size.Height + 10.0);
+
+                                var theRectYouAreLookingFor = new Rect(xcenter - textLayout.LayoutBounds.Width / 2 - 5, ytop, textLayout.LayoutBounds.Width + 10, textLayout.LayoutBounds.Height);
+                                drawingSession.FillRectangle(theRectYouAreLookingFor, Colors.White);
+                                drawingSession.DrawTextLayout(textLayout, xcenter - (float)textLayout.LayoutBounds.Width / 2, ytop, Colors.Black);
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(Sprite.Sprites);
                 }
             }
         }

@@ -31,6 +31,7 @@ namespace Example.Models
         List<string> costumes;
         int? nextcostumeindex = null;
         double? heading = null;
+        bool Removed = false; // If this has been removed from consideration, we will want to clean these up at some point
 
         /// <summary>
         /// Stash sprite-specific varaiables here
@@ -46,7 +47,23 @@ namespace Example.Models
         /// </remarks>
         public Sprite()
         {
-            All.Add(this);
+            lock(Sprites)
+            {
+                All.Add(this);
+            }
+        }
+
+        public void Destroy()
+        {
+            this.Hide();
+            this.Removed = true;
+
+            // Argh, there's no safe time to do this!
+            lock (Sprites)
+            {
+                All.Remove(this);
+            }
+
         }
 
         /// <summary>
@@ -341,35 +358,58 @@ namespace Example.Models
         /// <param name="message"></param>
         public static void Broadcast(string message)
         {
-            foreach (var sprite in All)
+            foreach (var sprite in AllActive)
                 sprite.MessageReceived?.Invoke(sprite, new MessageReceivedArgs() { message = message });
         }
 
         public static void SendPointerPressed(Point point)
         {
-            foreach (var sprite in All)
+            foreach (var sprite in AllActive)
                 sprite.PointerPressed?.Invoke(sprite, new PointerArgs() { mousepoint = point });
         }
 
         public static void SendPointerReleased(Point point)
         {
-            foreach (var sprite in All)
+            foreach (var sprite in AllActive)
                 sprite.PointerReleased?.Invoke(sprite, new PointerArgs() { mousepoint = point });
         }
 
         public static void SendSceneLoaded()
         {
-            foreach (var sprite in All)
+            foreach (var sprite in AllActive)
                 sprite.SceneLoaded?.Invoke(sprite);
         }
 
         public static void SendKeyPressed(Windows.UI.Core.KeyEventArgs keys)
         {
-            foreach (var sprite in All)
+            foreach (var sprite in AllActive)
                 sprite.KeyPressed?.Invoke(sprite, keys);
         }
 
+        public static IReadOnlyList<Sprite> Sprites => All;
+
         private static List<Sprite> All = new List<Sprite>();
+
+        private static IEnumerable<Sprite> AllActive
+        {
+            get
+            {
+                IEnumerable<Sprite> result = null;
+                lock(Sprites)
+                {
+                    result = All.Where(x => !x.Removed);
+                }
+                return result.ToList();
+            }
+        }
+
+        public static void ClearAll()
+        {
+            lock(Sprites)
+            {
+                All.Clear();
+            }
+        }
 
         public async Task Glide(double total_time_seconds, Point destination)
         {
