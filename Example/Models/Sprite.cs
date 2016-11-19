@@ -54,19 +54,19 @@ namespace Example.Models
         /// </summary>
         /// <param name="asset">File name of an image file in the Assets directory</param>
         /// <returns>Awaitable task</returns>
-        public async Task SetCostume(string asset)
+        public void SetCostume(string asset)
         {
             Costume = asset;
         }
 
-        public async Task SetCostumes(params string[] assets)
+        public void SetCostumes(params string[] assets)
         {
             try
             {
                 costumes = new List<string>(assets);
                 nextcostumeindex = 1;
 
-                await SetCostume(costumes.First());
+                SetCostume(costumes.First());
             }
             catch (Exception ex)
             {
@@ -74,20 +74,20 @@ namespace Example.Models
             }
         }
 
-        public async Task NextCostume()
+        public void NextCostume()
         {
             var costume = nextcostumeindex.Value;
             if (costume >= costumes.Count)
                 costume = 0;
             nextcostumeindex = costume + 1;
-            await SetCostume(costumes[costume]);
+            SetCostume(costumes[costume]);
         }
 
         /// <summary>
         /// Show the sprite on the screen
         /// </summary>
         /// <returns></returns>
-        public async Task Show()
+        public void Show()
         {
             Visible = true;
         }
@@ -96,7 +96,7 @@ namespace Example.Models
         /// Hide the sprite so it doesn't show
         /// </summary>
         /// <returns></returns>
-        public async Task Hide()
+        public void Hide()
         {
             Visible = false;
         }
@@ -107,16 +107,16 @@ namespace Example.Models
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task SetPosition(double x, double y)
+        public void SetPosition(double x, double y)
         {
             Position = new Point(x, y);
         }
-        public async Task SetPosition(Point where)
+        public void SetPosition(Point where)
         {
             Position = where;
         }
 
-        public async Task<Point> GetPosition()
+        public Point GetPosition()
         {
             return Position;
         }
@@ -126,7 +126,7 @@ namespace Example.Models
         /// </summary>
         /// <param name="y"></param>
         /// <returns></returns>
-        public async Task ChangeYby(double y)
+        public void ChangeYby(double y)
         {
             Position = new Point(Position.X, Position.Y + y);
         }
@@ -136,14 +136,14 @@ namespace Example.Models
         /// </summary>
         /// <param name="y"></param>
         /// <returns>Resulting X position</returns>
-        public async Task<double> ChangeXby(double x)
+        public double ChangeXby(double x)
         {
             Position = new Point(Position.X + x, Position.Y);
 
             return Position.X;
         }
 
-        public async Task PointTowards(Point target)
+        public void PointTowards(Point target)
         {
             heading = HeadingBetween(Position, target);
         }
@@ -156,29 +156,27 @@ namespace Example.Models
         /// </remarks>
         /// <param name="angle">Angle to point, in degrees, where zero is up</param>
         /// <returns></returns>
-        public async Task PointInDirection_Heading(double angle)
+        public void PointInDirection_Heading(double angle)
         {
             angle -= 90;
             var radians = angle * Math.PI / 180.0;
             heading = radians;
         }
 
-        public async Task Move(double steps)
+        public void Move(double steps)
         {
             if (!heading.HasValue)
                 return;
 
-            var current = await GetPosition();
-            var moveto = ProgressToward(current, heading.Value, steps);
-            await SetPosition(moveto);
+            Position = ProgressToward(Position, heading.Value, steps);
         }
 
-        public async Task IfOnEdgeBounce()
+        public void IfOnEdgeBounce()
         {
             if (!heading.HasValue)
                 return;
 
-            var position = await GetPosition();
+            var position = GetPosition();
             var needstomove = false;
 
             if (position.X < 10.0)
@@ -206,7 +204,7 @@ namespace Example.Models
                 heading = -heading;
             }
             if (needstomove)
-                await SetPosition(position);
+                SetPosition(position);
         }
 
         public Size CostumeSize { get; set; }
@@ -249,13 +247,13 @@ namespace Example.Models
         /// </summary>
         /// <param name="asset">Name of a WAV file in the Assets directory</param>
         /// <returns></returns>
-        public async Task PlaySound(string asset)
+        public void PlaySound(string asset)
         {
             player.Source = MediaSource.CreateFromUri(new Uri($"ms-appx:///Assets/{asset}"));
             player.Play();
         }
 
-        public async Task Say(string text = null)
+        public void Say(string text = null)
         {
             Saying = text;
         }
@@ -271,14 +269,14 @@ namespace Example.Models
 
         public enum Direction { None = 0, Left, Right };
 
-        public async Task TurnBy(Direction direction, double degrees)
+        public void TurnBy(Direction direction, double degrees)
         {
             if (direction == Direction.Left)
                 degrees = -degrees;
 
             RotationAngle += degrees;
         }
-        public async Task PointInDirection_Rotate(double degrees)
+        public void PointInDirection_Rotate(double degrees)
         {
             RotationAngle = degrees;
         }
@@ -320,12 +318,12 @@ namespace Example.Models
         /// <summary>
         /// Event fired when the pointer was pressed
         /// </summary>
-        public new event SpriteEventHandler<PointerArgs> PointerPressed;
+        public event SpriteEventHandler<PointerArgs> PointerPressed;
 
         /// <summary>
         /// Event fired when the pointer was released
         /// </summary>
-        public new event SpriteEventHandler<PointerArgs> PointerReleased;
+        public event SpriteEventHandler<PointerArgs> PointerReleased;
 
         /// <summary>
         /// Event fired when the scene is loaded
@@ -376,7 +374,7 @@ namespace Example.Models
         public async Task Glide(double total_time_seconds, Point destination)
         {
             double total_time = total_time_seconds * 1000;
-            Point starting_position = await GetPosition();
+            Point starting_position = GetPosition();
             const double update_frequency_ms = 25;
             double elapsed_time = 0;
             double total_distance = DistanceBetween(starting_position, destination);
@@ -389,12 +387,12 @@ namespace Example.Models
                 // new position is along the heading by that far
                 Point new_position = ProgressToward(starting_position, heading, now_distance);
 
-                await this.SetPosition(new_position.X, new_position.Y);
+                this.SetPosition(new_position.X, new_position.Y);
                 await Task.Delay((int)update_frequency_ms);
 
                 elapsed_time += update_frequency_ms;
             }
-            await this.SetPosition(destination.X, destination.Y);
+            this.SetPosition(destination.X, destination.Y);
         }
 
         private static double DistanceBetween(Point first, Point second)

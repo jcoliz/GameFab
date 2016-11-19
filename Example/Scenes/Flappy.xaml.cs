@@ -27,8 +27,6 @@ namespace Example.Scenes
         public Flappy()
         {
             this.InitializeComponent();
-
-            this.Loaded += Scene_Loaded;
         }
 
         private void Scene_Loaded(object sender, RoutedEventArgs e)
@@ -36,6 +34,8 @@ namespace Example.Scenes
             // Spawn the needed number of pillars over the correct time.
             Task.Run(async () => 
             {
+                var player = await CreateSprite(Player_SceneLoaded);
+                player.KeyPressed += Player_KeyPressed;
                 await CreateSprite(this.Pillar_SceneLoaded);
                 await Delay(3.0);
                 await CreateSprite(this.Pillar_SceneLoaded);
@@ -59,18 +59,21 @@ namespace Example.Scenes
         double yspeed = 0;
         double gravity = 2; // in pixels per tick squared
 
+        protected override IEnumerable<string> Assets => new[] { "Flappy/Pillar.png", "Flappy/Player.png" };
+
         private void Player_SceneLoaded(Sprite me)
         {
             Task.Run(async () => 
             {
-                await me.SetCostume("Flappy/Player.png");
-                await me.SetPosition(250.0, 250.0);
+                me.SetCostume("Flappy/Player.png");
+                me.SetPosition(250.0, 250.0);
+                me.Show();
 
                 // Apply gravity
                 while(true)
                 {
                     yspeed += gravity;
-                    await me.ChangeYby(yspeed);
+                    me.ChangeYby(yspeed);
                     await Delay(0.1);
                 }
             });
@@ -81,7 +84,7 @@ namespace Example.Scenes
             if (what.VirtualKey == Windows.System.VirtualKey.Space)
             {
                 yspeed = -20;
-                await me.ChangeYby(yspeed);
+                me.ChangeYby(yspeed);
             }
         }
 
@@ -90,13 +93,15 @@ namespace Example.Scenes
             Task.Run(async () => 
             {
                 double y = Random(200,500);
-                await me.SetCostume("Flappy/Pillar.png");
-                await me.SetPosition(1000.0, y);
+                me.SetCostume("Flappy/Pillar.png");
+                me.SetPosition(1000.0, y);
 
                 var top = await CreateSprite();
                 me.Variable["top"] = top;
-                await top.SetCostume("Flappy/Pillar.png");
-                await top.SetPosition(1000.0, y - 500);
+                top.SetCostume("Flappy/Pillar.png");
+                top.SetPosition(1000.0, y - 500);
+                me.Show();
+                top.Show();
 
                 me.MessageReceived += Pillar_MessageReceived;
             });
@@ -107,13 +112,13 @@ namespace Example.Scenes
             if (what.message == "update")
             {
                 var top = me.Variable["top"] as Sprite;
-                await top.ChangeXby(-20);
-                var x = await me.ChangeXby(-20);
+                top.ChangeXby(-20);
+                var x = me.ChangeXby(-20);
                 if (x < -100.0)
                 {
                     var y = Random(200, 500);
-                    await me.SetPosition(1000,y);
-                    await top.SetPosition(1000,y-500);
+                    me.SetPosition(1000,y);
+                    top.SetPosition(1000,y-500);
                 }
             }
         }
