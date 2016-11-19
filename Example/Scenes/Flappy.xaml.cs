@@ -36,13 +36,11 @@ namespace Example.Scenes
             {
                 var player = await CreateSprite(Player_SceneLoaded);
                 player.KeyPressed += Player_KeyPressed;
-                await CreateSprite(this.Pillar_SceneLoaded);
-                await Delay(3.0);
-                await CreateSprite(this.Pillar_SceneLoaded);
-                await Delay(3.0);
-                await CreateSprite(this.Pillar_SceneLoaded);
-                await Delay(3.0);
-                await CreateSprite(this.Pillar_SceneLoaded);
+                while (true)
+                {
+                    await CreateSprite(this.Pillar_SceneLoaded);
+                    await Delay(3.0);
+                }
             });
 
             // Syncrhonize the visual updates by sending out a message on a regular time
@@ -50,7 +48,7 @@ namespace Example.Scenes
             {
                 while(true)
                 {
-                    await Delay(0.2);
+                    await Delay(0.05);
                     Broadcast("update");
                 }
             });
@@ -78,7 +76,7 @@ namespace Example.Scenes
                 }
             });
         }
-        private async void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
+        private void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
         {
             // Apply upward force
             if (what.VirtualKey == Windows.System.VirtualKey.Space)
@@ -107,18 +105,17 @@ namespace Example.Scenes
             });
         }
 
-        private async void Pillar_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        private void Pillar_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
         {
             if (what.message == "update")
             {
                 var top = me.Variable["top"] as Sprite;
-                top.ChangeXby(-20);
-                var x = me.ChangeXby(-20);
+                top.ChangeXby(-5);
+                var x = me.ChangeXby(-5);
                 if (x < -100.0)
                 {
-                    var y = Random(200, 500);
-                    me.SetPosition(1000,y);
-                    top.SetPosition(1000,y-500);
+                    me.Destroy();
+                    top.Destroy();
                 }
             }
         }
