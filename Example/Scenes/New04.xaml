@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Example.Scenes"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
-    xmlns:c="using:Example.Controls">
+    xmlns:c="using:Example.Controls" Loaded="Scene_Loaded">
 
     <Grid Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Image Source="/Assets/04/21.png" Stretch="UniformToFill" />
@@ -21,14 +21,8 @@
             <TextBlock Text="{x:Bind Score.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
         </StackPanel>
         <Canvas x:Name="Screen">
-            <Image x:Name="Server1" Source="ms-appx:///Assets/04/1.png" Canvas.Left="0" Canvas.Top="500"/>
-            <Image x:Name="ServerText1" Source="ms-appx:///Assets/04/2.png" Canvas.Left="0" Canvas.Top="500"/>
-            <Image x:Name="Server2" Source="ms-appx:///Assets/04/1.png" Canvas.Left="500" Canvas.Top="500"/>
-            <Image x:Name="ServerText2" Source="ms-appx:///Assets/04/2.png" Canvas.Left="500" Canvas.Top="500"/>
-            <c:Sprite x:Name="Neo_Cat" Canvas.Top="176" Canvas.Left="307" Visibility="Collapsed" MessageReceived="Neo_Cat_MessageReceived" PointerPressed="Neo_Cat_PointerPressed" PointerReleased="Neo_Cat_PointerReleased" />
-            <c:Sprite x:Name="Virus" Visibility="Collapsed" MessageReceived="Virus_MessageReceived"/>
         </Canvas>
-        <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
+        <!--win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" / -->
         <Button  HorizontalAlignment="Center" VerticalAlignment="Center" Click="StartButton_Click" BorderBrush="White">
             <TextBlock Text="START" FontSize="75" Foreground="White" Margin="10,5"/>
         </Button>

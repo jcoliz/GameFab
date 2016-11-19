@@ -79,7 +79,7 @@ namespace Example.Scenes
 
                             await me.Move(100);
                         }
-                        else if ((await me.IsTouching(Server1) || await me.IsTouching(Server2)) && deadly)
+                        /*else if ((await me.IsTouching(Server1) || await me.IsTouching(Server2)) && deadly)
                         {
                             deadly = false;
                             Sprite.Broadcast("oh");
@@ -95,7 +95,7 @@ namespace Example.Scenes
                                 await Delay(1.0);
                                 deadly = true;
                             });
-                        }
+                        }*/
                         await me.Move(30);
                         await Delay(0.075);
                         await me.IfOnEdgeBounce();
@@ -155,6 +155,16 @@ namespace Example.Scenes
             });
         }
 
+        private void Neo_Cat_Loaded(Sprite me)
+        {
+            Task.Run(async () =>
+            {
+                await me.SetCostume("04/7.png");
+                await me.SetPosition(176, 307);
+            });
+        }
+
+
         private void CanvasAnimatedControl_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
         {
             base.Draw(sender,args);
@@ -163,6 +173,20 @@ namespace Example.Scenes
         private void CanvasAnimatedControl_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
             base.CreateResources(sender,args);
+        }
+
+        private Sprite Neo_Cat = null;
+        private Sprite Virus = null;
+
+        private async void Scene_Loaded(object sender, RoutedEventArgs e)
+        {
+            Neo_Cat = await CreateSprite(Screen, this.Neo_Cat_Loaded);
+            Neo_Cat.MessageReceived += Neo_Cat_MessageReceived;
+            Neo_Cat.PointerPressed += Neo_Cat_PointerPressed;
+            Neo_Cat.PointerReleased += Neo_Cat_PointerReleased;
+
+            Virus = await CreateSprite(Screen);
+            Virus.MessageReceived += Virus_MessageReceived;
         }
     }
 }
