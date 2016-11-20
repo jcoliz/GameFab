@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.Text;
 using Windows.UI;
+using Microsoft.Graphics.Canvas.Effects;
 
 namespace Example.Models
 {
@@ -174,7 +175,22 @@ namespace Example.Models
                         {
                             var bitmap = bitmaps[sprite.Costume];
                             sprite.CostumeSize = bitmap.Size;
-                            args.DrawingSession.DrawImage(bitmap, (float)sprite.Position.X, (float)sprite.Position.Y);
+
+                            if (sprite.Opacity < 1.0)
+                            {
+                                var o = new OpacityEffect()
+                                {
+                                    Source = bitmap,
+                                    Opacity = (float)sprite.Opacity
+                                };
+                                args.DrawingSession.DrawImage(o, (float)sprite.Position.X, (float)sprite.Position.Y);
+
+                            }
+                            else
+                            {
+                                args.DrawingSession.DrawImage(bitmap, (float)sprite.Position.X, (float)sprite.Position.Y);
+                            }
+
 
                             if (sprite.Saying?.Length > 0)
                             {
