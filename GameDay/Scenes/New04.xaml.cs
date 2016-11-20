@@ -1,4 +1,4 @@
-﻿using Example.Models;
+﻿using GameFab;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace Example.Scenes
+namespace GameDay.Scenes
 {
     public sealed partial class New_04 : Scene
     {
@@ -32,30 +32,30 @@ namespace Example.Scenes
 
         protected override IEnumerable<string> Assets => new[] { "04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png" };
 
-        private Models.Sprite Neo_Cat = null;
-        private Models.Sprite Virus = null;
-        private Models.Sprite Server1 = null;
-        private Models.Sprite Server2 = null;
+        private Sprite Neo_Cat = null;
+        private Sprite Virus = null;
+        private Sprite Server1 = null;
+        private Sprite Server2 = null;
 
-        private async void Scene_Loaded(object sender, RoutedEventArgs e)
+        private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
-            base.SetBackground("04/21.png");
+            SetBackground("04/21.png");
 
-            Neo_Cat = await CreateSprite(this.Neo_Cat_Loaded);
+            Neo_Cat = CreateSprite(this.Neo_Cat_Loaded);
             Neo_Cat.MessageReceived += Neo_Cat_MessageReceived;
             Neo_Cat.PointerPressed += Neo_Cat_PointerPressed;
             Neo_Cat.PointerReleased += Neo_Cat_PointerReleased;
 
-            Virus = await CreateSprite();
+            Virus = CreateSprite();
             Virus.MessageReceived += Virus_MessageReceived;
 
-            Server1 = await CreateSprite((me) =>
+            Server1 = CreateSprite((me) =>
             {
                 me.SetCostume("04/1.png");
                 me.SetPosition(10, 500);
                 me.Show();
             });
-            Server2 = await CreateSprite((me) =>
+            Server2 = CreateSprite((me) =>
             {
                 me.SetCostume("04/1.png");
                 me.SetPosition(510, 500);
@@ -78,7 +78,7 @@ namespace Example.Scenes
             });
         }
 
-        private void Virus_MessageReceived(Models.Sprite me, Models.Sprite.MessageReceivedArgs what)
+        private void Virus_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
         {
             if (what.message == "start")
             {
@@ -99,7 +99,7 @@ namespace Example.Scenes
                     me.PointTowards(Neo_Cat.Position);
                     while (Running)
                     {
-                        if (await me.IsTouching(Neo_Cat))
+                        if (me.IsTouching(Neo_Cat))
                         {
                             me.PointInDirection_Heading(Random(-45, 45));
                             Score.Value++;
@@ -112,7 +112,7 @@ namespace Example.Scenes
 
                             me.Move(100);
                         }
-                        else if ((await me.IsTouching(Server1) || await me.IsTouching(Server2)) && deadly)
+                        else if ((me.IsTouching(Server1) || me.IsTouching(Server2)) && deadly)
                         {
                             deadly = false;
                             Sprite.Broadcast("oh");
@@ -138,7 +138,7 @@ namespace Example.Scenes
             }
         }
 
-        private void Neo_Cat_MessageReceived (Models.Sprite me, Models.Sprite.MessageReceivedArgs what)
+        private void Neo_Cat_MessageReceived (Sprite me, Sprite.MessageReceivedArgs what)
         {
             if (what.message == "start")
             {
@@ -171,13 +171,13 @@ namespace Example.Scenes
             }
         }
 
-        private async void Neo_Cat_PointerPressed(Models.Sprite me, Sprite.PointerArgs what)
+        private async void Neo_Cat_PointerPressed(Sprite me, Sprite.PointerArgs what)
         {
             me.SetCostume("04/8.png");
             await me.Glide(0.1, what.mousepoint);
         }
 
-        private void Neo_Cat_PointerReleased(Models.Sprite me, Models.Sprite.PointerArgs what)
+        private void Neo_Cat_PointerReleased(Sprite me, Sprite.PointerArgs what)
         {
             Task.Run(() =>
             {
@@ -185,7 +185,7 @@ namespace Example.Scenes
             });
         }
 
-        private void Neo_Cat_Loaded(Models.Sprite me)
+        private void Neo_Cat_Loaded(Sprite me)
         {
             Task.Run(() =>
             {

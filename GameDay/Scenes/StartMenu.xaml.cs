@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Example.Scenes
+namespace GameDay.Scenes
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -30,11 +30,6 @@ namespace Example.Scenes
         private void Scene_02_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(Scenes._02));
-        }
-
-        private void Scene_04_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes._04));
         }
 
         private void Scene_04_2_Click(object sender, RoutedEventArgs e)

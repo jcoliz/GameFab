@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 
-namespace Example.Models
+namespace GameFab
 {
     public class Sprite
     {
@@ -109,7 +109,7 @@ namespace Example.Models
 
                 SetCostume(costumes.First());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -255,7 +255,7 @@ namespace Example.Models
         /// </summary>
         /// <param name="fe2">Which sprite to test against</param>
         /// <returns></returns>
-        public async Task<bool> IsTouching(Sprite fe2)
+        public bool IsTouching(Sprite fe2)
         {
             try
             {
@@ -277,7 +277,7 @@ namespace Example.Models
                 return !rect1.IsEmpty;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

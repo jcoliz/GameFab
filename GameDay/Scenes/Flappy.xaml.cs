@@ -1,4 +1,4 @@
-﻿using Example.Models;
+﻿using GameFab;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Example.Scenes
+namespace GameDay.Scenes
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -34,11 +34,11 @@ namespace Example.Scenes
             // Spawn the needed number of pillars over the correct time.
             Task.Run(async () => 
             {
-                var player = await CreateSprite(Player_SceneLoaded);
+                var player = CreateSprite(Player_SceneLoaded);
                 player.KeyPressed += Player_KeyPressed;
                 while (true)
                 {
-                    await CreateSprite(this.Pillar_SceneLoaded);
+                    CreateSprite(this.Pillar_SceneLoaded);
                     await Delay(3.0);
                 }
             });
@@ -88,13 +88,13 @@ namespace Example.Scenes
 
         private void Pillar_SceneLoaded(Sprite me)
         {
-            Task.Run(async () => 
+            Task.Run(() => 
             {
                 double y = Random(200,500);
                 me.SetCostume("Flappy/Pillar.png");
                 me.SetPosition(1000.0, y);
 
-                var top = await CreateSprite();
+                var top = CreateSprite();
                 me.Variable["top"] = top;
                 top.SetCostume("Flappy/Pillar.png");
                 top.SetPosition(1000.0, y - 500);
