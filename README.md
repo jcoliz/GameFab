@@ -165,7 +165,7 @@ private void Player_MessageReceived(Sprite me, String message)
 	switch(message)
 	{
 	case "lose":
-		Task.Run()=>
+		Task.Run(async ()=>
 		{
 			me.Say("I lost!");
 			await Delay(0.5);
@@ -175,7 +175,7 @@ private void Player_MessageReceived(Sprite me, String message)
 		});
 	break;
 	case "ouch":
-		Task.Run()=>
+		Task.Run(async ()=>
 		{
 			// Manage taking a hit
 			--Health;
@@ -183,7 +183,7 @@ private void Player_MessageReceived(Sprite me, String message)
 				Broadcast("lose");
 			await me.SayFor("Ouch!",0.5);
 		});
-		Task.Run()=>
+		Task.Run(async ()=>
 		{
 			// Turn player to a ghost for a short while
 			me.SetOpacity(0.5);
@@ -214,7 +214,7 @@ To refer to these assets within blocks, refer to their name and/or subfolder wit
 
 # Major Known Issues
 
-The biggest problems in the code that's already implemented are the coordinate system and the window extents.
+The biggest problems right now are the coordinate system and the window extents.
 
 The coordinate system uses the upper-left corner for positioning, which means the upper-left of all sprites is their "position". And the center of the screen could be anywhere, depending on how big the window is. I really need to move to a center-based coordinate system where a sprite's position is its center, and (0,0) is always the center of the screen despite how big the window is.
 
