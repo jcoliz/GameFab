@@ -20,7 +20,10 @@ namespace Example.Models
 
         public double Opacity { get; private set; } = 1.0;
 
-        public double RotationAngle { get; private set; } = 0;
+        /// <summary>
+        /// Angle of rotation in radians
+        /// </summary>
+        public double RotationAngle { get; private set; } = 0.0;
 
         public string Saying { get; private set; } = null;
         #endregion
@@ -312,11 +315,22 @@ namespace Example.Models
             if (direction == Direction.Left)
                 degrees = -degrees;
 
-            RotationAngle += degrees;
+            RotationAngle += degrees / 180 * Math.PI;
+
+            if (RotationAngle < 2 * Math.PI)
+                RotationAngle += 2 * Math.PI;
+
+            if (RotationAngle > 2 * Math.PI)
+                RotationAngle -= 2 * Math.PI;
         }
+
+        /// <summary>
+        /// Set the angle of rotation for the sprite
+        /// </summary>
+        /// <param name="degrees"></param>
         public void PointInDirection_Rotate(double degrees)
         {
-            RotationAngle = degrees;
+            RotationAngle = degrees / 180 * Math.PI;
         }
 
         /// <summary>
