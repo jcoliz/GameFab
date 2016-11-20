@@ -33,9 +33,9 @@ namespace Example.Models
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        protected int Random(int from, int to)
+        protected double Random(double from, double to)
         {
-            return random.Next(from, to);
+            return random.Next((int)(from * 1000), (int)(to * 1000)) / 1000.0;
         }
 
         /// <summary>
