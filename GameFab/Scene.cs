@@ -63,6 +63,7 @@ namespace GameFab
         protected Sprite CreateSprite(Sprite.SpriteEventHandler loaded = null)
         {
             var s = Sprite.Create();
+            s.Owner = this;
             loaded?.Invoke(s);
             return s;
         }
@@ -89,6 +90,8 @@ namespace GameFab
         protected bool IsMousePressed { get; private set; }
 
         protected Point MousePoint { get; private set; }
+
+        public Size Dimensions { get; set; } = new Size(1280, 720);
 
         #endregion
 
@@ -143,7 +146,10 @@ namespace GameFab
         private void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
         {
             IsMousePressed = true;
-            MousePoint = args.CurrentPoint.Position;
+
+            var x =  args.CurrentPoint.Position.X - (sender.Bounds.Right - sender.Bounds.Left) / 2;
+            var y = (sender.Bounds.Bottom - sender.Bounds.Top) / 2 - args.CurrentPoint.Position.Y;
+            MousePoint = new Point(x,y);
             Sprite.SendPointerPressed(MousePoint);
         }
 
@@ -192,14 +198,13 @@ namespace GameFab
             {
                 try
                 {
-                    if (background != null && bitmaps.ContainsKey(background))
+                    if (background != null && bitmaps.ContainsKey(background) && Dimensions != null)
                     {
-                        var origin = new Point() { X = 0, Y = 0 };
-                        var destsize = sender.Size;
-                        var destrect = new Rect(origin, destsize);
+                        var origin = new Point() { X = (sender.Size.Width - Dimensions.Width) / 2, Y = (sender.Size.Height - Dimensions.Height) /2 };
+                        var destrect = new Rect(origin, Dimensions);
                         args.DrawingSession.DrawImage(bitmaps[background], destrect);
-
                     }
+                    var center = new Point(sender.Size.Width / 2, sender.Size.Height / 2);
                     foreach (var sprite in Sprite.Sprites)
                     {
                         if (sprite.Costume != null && sprite.Visible && bitmaps.ContainsKey(sprite.Costume))
@@ -223,7 +228,8 @@ namespace GameFab
                                     TransformMatrix = Matrix3x2.CreateRotation((float)sprite.RotationAngle, new Vector2( (float)bitmap.Size.Width/2, (float)bitmap.Size.Height/2) )
                                 };
                             }
-                            args.DrawingSession.DrawImage(drawme, (float)sprite.Position.X, (float)sprite.Position.Y);
+                            var draw_at = new Point(center.X + sprite.Position.X - sprite.CostumeSize.Width / 2,center.Y - sprite.Position.Y - sprite.CostumeSize.Height/2);
+                            args.DrawingSession.DrawImage(drawme, (float)draw_at.X, (float)draw_at.Y);
 
                             // Render the 'saying'
                             if (sprite.Saying?.Length > 0)
@@ -232,8 +238,8 @@ namespace GameFab
                                 var format = new CanvasTextFormat { FontSize = 30.0f, WordWrapping = CanvasWordWrapping.NoWrap };
                                 var textLayout = new CanvasTextLayout(drawingSession, sprite.Saying, format, 0.0f, 0.0f);
 
-                                float xcenter = (float)(sprite.Position.X + bitmap.Size.Width / 2.0);
-                                float ytop = (float)(sprite.Position.Y + bitmap.Size.Height + 10.0);
+                                float xcenter = (float)(center.X + sprite.Position.X);
+                                float ytop = (float)(center.Y - sprite.Position.Y + bitmap.Size.Height / 2 + 10.0);
 
                                 var theRectYouAreLookingFor = new Rect(xcenter - textLayout.LayoutBounds.Width / 2 - 5, ytop, textLayout.LayoutBounds.Width + 10, textLayout.LayoutBounds.Height);
                                 drawingSession.FillRectangle(theRectYouAreLookingFor, Colors.White);

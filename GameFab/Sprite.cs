@@ -128,7 +128,7 @@ namespace GameFab
         /// <param name="target"></param>
         public void PointTowards(Point target)
         {
-            heading = HeadingBetween(Position, target);
+            heading = - HeadingBetween(Position, target);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace GameFab
         {
             angle -= 90;
             var radians = angle * Math.PI / 180.0;
-            heading = radians;
+            heading = - radians;
         }
 
         /// <summary>
@@ -173,28 +173,28 @@ namespace GameFab
             var position = GetPosition();
             var needstomove = false;
 
-            if (position.X < 10.0)
+            if (position.X < - Owner.Dimensions.Width / 2 )
             {
                 needstomove = true;
-                position.X = 10.0;
+                position.X = - Owner.Dimensions.Width / 2;
                 heading = Math.PI - heading;
             }
-            if (position.X > 990.0)
+            if (position.X > Owner.Dimensions.Width / 2)
             {
                 needstomove = true;
-                position.X = 990.0;
+                position.X = Owner.Dimensions.Width / 2;
                 heading = Math.PI - heading;
             }
-            if (position.Y < 10.0)
+            if (position.Y < - Owner.Dimensions.Height / 2)
             {
                 needstomove = true;
-                position.Y = 10.0;
+                position.Y = -Owner.Dimensions.Height / 2;
                 heading = -heading;
             }
-            if (position.Y > 490.0)
+            if (position.Y > Owner.Dimensions.Height / 2)
             {
                 needstomove = true;
-                position.Y = 490.0;
+                position.Y = Owner.Dimensions.Height / 2;
                 heading = -heading;
             }
             if (needstomove)
@@ -495,6 +495,10 @@ namespace GameFab
 
         #region Public methods meant to be called by the Scene
 
+        /// <summary>
+        /// The scene who is containing & drawing us
+        /// </summary>
+        public Scene Owner { get; set; }
         public static void ClearAll()
         {
             lock (Sprites)

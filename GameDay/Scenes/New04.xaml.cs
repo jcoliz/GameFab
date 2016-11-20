@@ -52,13 +52,13 @@ namespace GameDay.Scenes
             Server1 = CreateSprite((me) =>
             {
                 me.SetCostume("04/1.png");
-                me.SetPosition(10, 500);
+                me.SetPosition(- Dimensions.Width / 4, - Dimensions.Height / 2 + 10);
                 me.Show();
             });
             Server2 = CreateSprite((me) =>
             {
                 me.SetCostume("04/1.png");
-                me.SetPosition(510, 500);
+                me.SetPosition(+Dimensions.Width / 4, -Dimensions.Height / 2 + 10);
                 me.Show();
             });
         }
@@ -82,10 +82,13 @@ namespace GameDay.Scenes
         {
             if (what.message == "start")
             {
+                me.SetCostumes("04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
+                me.SetPosition(Dimensions.Width / 2, 0);
+                me.PointTowards(Neo_Cat.Position);
+                me.Show();
+
                 Task.Run(async () =>
                 {
-                    me.SetCostumes("04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
-                    me.Show();
                     while (Running)
                     {
                         await Delay(0.3);
@@ -95,8 +98,6 @@ namespace GameDay.Scenes
                 Task.Run(async () =>
                 {
                     var deadly = true;
-                    me.SetPosition(500, 200);
-                    me.PointTowards(Neo_Cat.Position);
                     while (Running)
                     {
                         if (me.IsTouching(Neo_Cat))
@@ -190,7 +191,7 @@ namespace GameDay.Scenes
             Task.Run(() =>
             {
                 me.SetCostume("04/7.png");
-                me.SetPosition(176, 307);
+                me.SetPosition(0,0);
             });
         }
     }

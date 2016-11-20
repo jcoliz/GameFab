@@ -55,7 +55,7 @@ namespace GameDay.Scenes
         }
 
         double yspeed = 0;
-        double gravity = 2; // in pixels per tick squared
+        double gravity = -2; // in pixels per tick squared
 
         protected override IEnumerable<string> Assets => new[] { "Flappy/Pillar.png", "Flappy/Player.png" };
 
@@ -64,7 +64,7 @@ namespace GameDay.Scenes
             Task.Run(async () => 
             {
                 me.SetCostume("Flappy/Player.png");
-                me.SetPosition(250.0, 250.0);
+                me.SetPosition(- Dimensions.Width / 4, 0);
                 me.Show();
 
                 // Apply gravity
@@ -81,7 +81,7 @@ namespace GameDay.Scenes
             // Apply upward force
             if (what.VirtualKey == Windows.System.VirtualKey.Space)
             {
-                yspeed = -20;
+                yspeed = 20;
                 me.ChangeYby(yspeed);
             }
         }
@@ -90,14 +90,18 @@ namespace GameDay.Scenes
         {
             Task.Run(() => 
             {
-                double y = Random(200,500);
+                double opening_center = Random(-Dimensions.Height / 2 + 200, Dimensions.Height / 2 - 200);
+                double opening_bottom = opening_center - 100;
+                double opening_top = opening_center + 100;
+                double pillar_image_height = 300;
+
                 me.SetCostume("Flappy/Pillar.png");
-                me.SetPosition(1000.0, y);
+                me.SetPosition(Dimensions.Width / 2, opening_bottom - pillar_image_height / 2 );
 
                 var top = CreateSprite();
                 me.Variable["top"] = top;
                 top.SetCostume("Flappy/Pillar.png");
-                top.SetPosition(1000.0, y - 500);
+                top.SetPosition(Dimensions.Width / 2, opening_top + pillar_image_height / 2);
                 me.Show();
                 top.Show();
 
@@ -112,7 +116,7 @@ namespace GameDay.Scenes
                 var top = me.Variable["top"] as Sprite;
                 top.ChangeXby(-5);
                 var x = me.ChangeXby(-5);
-                if (x < -100.0)
+                if (x < -Dimensions.Width / 2)
                 {
                     me.MessageReceived -= Pillar_MessageReceived;
                     me.Destroy();

@@ -54,7 +54,7 @@ namespace GameDay.Scenes
         {
             me.SetCostume("02/6.png");
             me.Show();
-            me.SetPosition(176,307);
+            me.SetPosition(0,0);
             me.KeyPressed += Astro_Cat_KeyPressed;
 
             Task.Run(async () =>
@@ -93,11 +93,11 @@ namespace GameDay.Scenes
         {
             if (what.VirtualKey == Windows.System.VirtualKey.Down)
             {
-                me.ChangeYby(15);
+                me.ChangeYby(-15);
             }
             if (what.VirtualKey == Windows.System.VirtualKey.Up)
             {
-                me.ChangeYby(-15);
+                me.ChangeYby(15);
             }
             if (what.VirtualKey == Windows.System.VirtualKey.Left)
             {
@@ -109,14 +109,13 @@ namespace GameDay.Scenes
             }
         }
 
-        private void Banner_Loaded(object sender)
+        private void Banner_Loaded(Sprite me)
         {
-            var me = sender as Sprite;
+            me.SetCostume("02/4.png");
+            me.SetPosition(0, 0);
 
             Task.Run(async () =>
             {
-                me.SetCostume("02/4.png");
-
                 int i = 3;
                 while (i-- > 0)
                 {
@@ -139,13 +138,12 @@ namespace GameDay.Scenes
                 while (true)
                 {
                     await Delay(Random(0, 1.5));
-                    me.SetPosition(Random(0, 950), 10);
+                    me.SetPosition(Random(- Dimensions.Width / 2, Dimensions.Width / 2), Dimensions.Height / 2);
                     me.Show();
 
-                    var i = 8;
-                    while (i-- > 0)
+                    while (me.Position.Y > - Dimensions.Height / 2)
                     {
-                        me.ChangeYby(40);
+                        me.ChangeYby(-40);
                         await Delay(0.3);
                     }
 
@@ -165,7 +163,7 @@ namespace GameDay.Scenes
                 int i = 7;
                 while (i-- > 0)
                 {
-                    me.SetPosition(Random(0, 950), Random(0, 500));
+                    me.SetPosition(Random(- Dimensions.Width / 2, Dimensions.Width / 2), Random(- Dimensions.Height / 2, Dimensions.Height / 2));
                     me.Show();
 
                     while (!me.IsTouching(Astro_Cat))
