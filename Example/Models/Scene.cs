@@ -17,6 +17,7 @@ using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.Text;
 using Windows.UI;
 using Microsoft.Graphics.Canvas.Effects;
+using System.Numerics;
 
 namespace Example.Models
 {
@@ -175,23 +176,27 @@ namespace Example.Models
                         {
                             var bitmap = bitmaps[sprite.Costume];
                             sprite.CostumeSize = bitmap.Size;
-
+                            ICanvasImage drawme = bitmap;
                             if (sprite.Opacity < 1.0)
                             {
-                                var o = new OpacityEffect()
+                                drawme = new OpacityEffect()
                                 {
-                                    Source = bitmap,
+                                    Source = drawme,
                                     Opacity = (float)sprite.Opacity
                                 };
-                                args.DrawingSession.DrawImage(o, (float)sprite.Position.X, (float)sprite.Position.Y);
-
                             }
-                            else
+                            if (sprite.RotationAngle != 0.0)
                             {
-                                args.DrawingSession.DrawImage(bitmap, (float)sprite.Position.X, (float)sprite.Position.Y);
+                                drawme = new Transform2DEffect()
+                                {
+                                    Source = drawme,
+                                    TransformMatrix = Matrix3x2.CreateRotation((float)sprite.RotationAngle, new Vector2( (float)bitmap.Size.Width/2, (float)bitmap.Size.Height/2) )
+                                };
                             }
+                            args.DrawingSession.DrawImage(drawme, (float)sprite.Position.X, (float)sprite.Position.Y);
 
 
+                            // Render the 'saying'
                             if (sprite.Saying?.Length > 0)
                             {
                                 var drawingSession = args.DrawingSession;
