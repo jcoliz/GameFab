@@ -1,4 +1,4 @@
-﻿using Example.Controls;
+﻿using Example.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,202 +26,171 @@ namespace Example.Scenes
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class _02 : Page
+    public sealed partial class _02 : Scene
     {
-        MediaPlayer bgplayer;
-        Random random = new Random();
-        Point mousepoint;
-        bool mousepressed = false;
-
-        private async Task<int> Screen_Width()
-        {
-            int result = 500;
-
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-            {
-                result = (int)Screen.ActualWidth;
-            });
-
-            return result;
-        }
-
-        private int Random(int from, int to)
-        {
-            return random.Next(from, to);
-        }
-
-        private Task Delay(int ms)
-        {
-            return Task.Delay(ms);
-        }
-
         public _02()
         {
             this.InitializeComponent();
-
-            this.Loaded += MainPage_Loaded;
         }
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private Sprite Lightning;
+        private Sprite String;
+        private Sprite Astro_Cat;
+        private Sprite Banner;
+
+        protected override IEnumerable<string> Assets => new[] { "02/1.png", "02/2.png", "02/4.png", "02/5.png", "02/6.png", "02/8.png" };
+
+        private async void Scene_Loaded(object sender, RoutedEventArgs e)
         {
-            Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
-            Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
-            Window.Current.CoreWindow.PointerReleased += CoreWindow_PointerReleased;
-            //bgplayer  = new MediaPlayer() { AutoPlay = true, IsLoopingEnabled = true };
-            //bgplayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/02/Techno.wav"));
+            Lightning = await CreateSprite(Lightning_Loaded);
+            String = await CreateSprite(String_Loaded);
+            Astro_Cat = await CreateSprite(Astro_Cat_Loaded);
+            Banner = await CreateSprite(Banner_Loaded);
+
+            SetBackground("02/8.png");
         }
 
-        private void CoreWindow_PointerReleased(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
+        private void Astro_Cat_Loaded(Sprite me)
         {
-            mousepressed = false;
-        }
-
-        private void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
-        {
-            var clicked = args.CurrentPoint.Position;
-            mousepoint = new Point(clicked.X, clicked.Y);
-            mousepressed = true;
-            var ignore = Astro_Cat.Say($"Mouse: {clicked.X},{clicked.Y}");
-        }
-
-        private async void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
-        {
-            if (args.VirtualKey == Windows.System.VirtualKey.Down)
-            {
-                await Astro_Cat.ChangeYby(15);
-            }
-            if (args.VirtualKey == Windows.System.VirtualKey.Up)
-            {
-                await Astro_Cat.ChangeYby(-15);
-            }
-            if (args.VirtualKey == Windows.System.VirtualKey.Left)
-            {
-                await Astro_Cat.ChangeXby(-15);
-            }
-            if (args.VirtualKey == Windows.System.VirtualKey.Right)
-            {
-                await Astro_Cat.ChangeXby(15);
-            }
-        }
-
-        private void Astro_Cat_Loaded(object sender, RoutedEventArgs e)
-        {
-            var me = sender as Sprite;
+            me.SetCostume("02/6.png");
+            me.Show();
+            me.SetPosition(176,307);
+            me.KeyPressed += Astro_Cat_KeyPressed;
 
             Task.Run(async () =>
             {
                 while (true)
                 {
-                    await me.ChangeYby(2);
-                    await Delay(300);
-                    await me.ChangeYby(-2);
-                    await Delay(300);
+                    me.ChangeYby(2);
+                    await Delay(0.3);
+                    me.ChangeYby(-2);
+                    await Delay(0.3);
                 }
             });
 
             Task.Run(async () =>
             {
-                await me.SetCostume("02/6.png");
                 while (true)
                 {
                     if (await me.IsTouching(Lightning))
                     {
-                        await me.PlaySound("02/Zap.wav");
-                        await Lightning.Hide();
-                        double opacity = await me.ReduceOpacityBy(0.2);
+                        me.PlaySound("02/Zap.wav");
+                        Lightning.Hide();
+                        double opacity = me.ReduceOpacityBy(0.2);
                         if (opacity < 0.2)
                         {
-                            await me.Hide();
-                            await me.Say("You lose!!");
+                            me.Hide();
+                            me.Say("You lose!!");
                         }
                     }
                     else
-                        await Delay(200);
+                        await Delay(0.2);
                 }
             });
         }
 
-        private void Banner_Loaded(object sender, RoutedEventArgs e)
+        private void Astro_Cat_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
+        {
+            if (what.VirtualKey == Windows.System.VirtualKey.Down)
+            {
+                me.ChangeYby(15);
+            }
+            if (what.VirtualKey == Windows.System.VirtualKey.Up)
+            {
+                me.ChangeYby(-15);
+            }
+            if (what.VirtualKey == Windows.System.VirtualKey.Left)
+            {
+                me.ChangeXby(-15);
+            }
+            if (what.VirtualKey == Windows.System.VirtualKey.Right)
+            {
+                me.ChangeXby(15);
+            }
+        }
+
+        private void Banner_Loaded(object sender)
         {
             var me = sender as Sprite;
 
             Task.Run(async () =>
             {
-                await me.SetCostume("02/4.png");
+                me.SetCostume("02/4.png");
 
                 int i = 3;
                 while (i-- > 0)
                 {
-                    await me.Show();
-                    await Delay(1000);
-                    await me.Hide();
-                    await Delay(500);
+                    me.Show();
+                    await Delay(1);
+                    me.Hide();
+                    await Delay(0.5);
                 }
             });
         }
 
-        private void Lightning_Loaded(object sender, RoutedEventArgs e)
+        private void Lightning_Loaded(object sender)
         {
             var me = sender as Sprite;
 
             Task.Run(async () =>
             {
-                await me.SetCostume("02/5.png");
-                await Delay(1000);
+                me.SetCostume("02/5.png");
+                await Delay(1);
                 while (true)
                 {
-                    await Delay(Random(0, 1500));
-                    await me.SetPosition(Random(0, await Screen_Width() - 50), 10);
-                    await me.Show();
+                    await Delay(Random(0, 1.5));
+                    me.SetPosition(Random(0, 950), 10);
+                    me.Show();
 
                     var i = 8;
                     while (i-- > 0)
                     {
-                        await me.ChangeYby(40);
-                        await Delay(300);
+                        me.ChangeYby(40);
+                        await Delay(0.3);
                     }
 
-                    await me.Hide();
+                    me.Hide();
                 }
             });
         }
 
-        private void String_Loaded(object sender,RoutedEventArgs e)
+        private void String_Loaded(object sender)
         {
             var me = sender as Sprite;
             Task.Run(async () =>
             {
-                await me.SetCostume("02/1.png");
-                await Delay(1000);
+                me.SetCostume("02/1.png");
+                await Delay(1);
 
                 int i = 7;
                 while (i-- > 0)
                 {
-                    await me.SetPosition(Random(0, await Screen_Width() - 50), Random(0, 500));
-                    await me.Show();
+                    me.SetPosition(Random(0, 950), Random(0, 500));
+                    me.Show();
 
                     while (!await me.IsTouching(Astro_Cat))
                     {
-                        await me.ChangeYby(1);
-                        await me.TurnBy(Sprite.Direction.Right, 5);
-                        await Delay(200);
-                        await me.ChangeYby(-1);
-                        await me.TurnBy(Sprite.Direction.Right, 5);
-                        await Delay(200);
+                        me.ChangeYby(1);
+                        me.TurnBy(Sprite.Direction.Right, 5);
+                        await Delay(0.2);
+                        me.ChangeYby(-1);
+                        me.TurnBy(Sprite.Direction.Right, 5);
+                        await Delay(0.2);
                     }
 
-                    await me.PlaySound("02/Humming.wav");
-                    await Astro_Cat.Say("Got it!");
-                    await Delay(500);
-                    await Astro_Cat.Say();
-                    await me.Hide();
+                    me.PlaySound("02/Humming.wav");
+                    Astro_Cat.Say("Got it!");
+                    await Delay(0.5);
+                    Astro_Cat.Say();
+                    me.Hide();
                 }
 
-                await me.SetCostume("02/2.png");
-                await me.PointInDirection_Rotate(0);
-                await me.Show();
-                await me.Say("Stargate Opened!!!");
+                me.SetCostume("02/2.png");
+                me.PointInDirection_Rotate(0);
+                me.Show();
+                me.Say("Stargate Opened!!!");
             });
         }
+
     }
 }
