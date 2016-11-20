@@ -2,11 +2,9 @@
     x:Class="Example.Scenes._02"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Example.Scenes"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
-    xmlns:m="using:Example.Models" Loaded="Scene_Loaded">
+    xmlns:m="using:Example.Models" 
+    Loaded="Scene_Loaded">
 
-    <Grid Background="Black">
-        <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
-    </Grid>
+    <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
 </m:Scene>

@@ -171,13 +171,10 @@ namespace Example.Scenes
             }
         }
 
-        private void Neo_Cat_PointerPressed(Models.Sprite me, Models.Sprite.PointerArgs what)
+        private async void Neo_Cat_PointerPressed(Models.Sprite me, Sprite.PointerArgs what)
         {
-            Task.Run(async () =>
-            {
-                me.SetCostume("04/8.png");
-                await me.Glide(0.1, what.mousepoint);
-            });
+            me.SetCostume("04/8.png");
+            await me.Glide(0.1, what.mousepoint);
         }
 
         private void Neo_Cat_PointerReleased(Models.Sprite me, Models.Sprite.PointerArgs what)
