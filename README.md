@@ -13,9 +13,9 @@ Under the hood, the graphics system runs on Win2D, which makes Direct2D immediat
 
 This project contains the core library and a sample with several game scenes. These games were adapted from the "Getting Started With Scratch" book from No Starch Press.
 
-	1. Clone the 'release' branch of the repository
-	2. Open GameFabJr.sln using Visual Studio 2015
-	3. Press F5 to build and debug, which will launch the "GameDay" sample.
+1. Clone the 'release' branch of the repository
+2. Open GameFabJr.sln using Visual Studio 2015
+3. Press F5 to build and debug, which will launch the "GameDay" sample.
 
 # How far along is it?
 
