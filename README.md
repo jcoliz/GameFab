@@ -32,19 +32,19 @@ Yes! I am most interested in contributions that fill out missing Scratch blocks,
 
 Game Fab Jr. provides "Scenes" and "Sprites", just like Scratch. Scenes are XAML page files, such as the file "VirusAttack.xaml" under the "Scenes" folder in the sample. 
 
-This is the simplest scene. We create a .XAML page containing a class derived from GameFab.Models. It only contains a Win32 canvas where we will draw into. Later, we could add UI elements on top of this to show the score, or provide a menu.
+Here is an example of the simplest scene. We create a .XAML page containing a class derived from GameFab.Scene. It only contains a Win2D canvas where we will draw into. Later, we could add UI elements on top of this to show the score, or provide a menu.
 
 ``` xaml
- <m:Scene
+ <gfab:Scene
     x:Class="GameDay.Scenes._02"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
-    xmlns:m="using:GameFab.Models" 
+    xmlns:gfab="using:GameFab" 
     Loaded="Scene_Loaded">
 
     <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
- </m:Scene>
+ </gfab:Scene>
 ```
 
 The entry point into our .CS code-behind is the "Scene_Loaded" event handler.
@@ -59,16 +59,17 @@ The entry point into our .CS code-behind is the "Scene_Loaded" event handler.
 
         private Sprite Player;
 
-        protected override IEnumerable<string> Assets => new[] { "02/1.png", "02/2.png" };
+        protected override IEnumerable<string> Assets => new[] { "02/Background.png", "02/Player.png" };
 
-        private async void Scene_Loaded(object sender, RoutedEventArgs e)
+        private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
-            Astro_Cat = await CreateSprite(Astro_Cat_Loaded);
-            SetBackground("02/1.png");
+            Player = CreateSprite(Player_Loaded);
+            SetBackground("02/Background.png");
         }
-        private void Astro_Cat_Loaded(Sprite me)
+	
+        private void Player_Loaded(Sprite me)
         {
-            me.SetCostume("02/2.png");
+            me.SetCostume("02/Player.png");
             me.SetPosition(176,307);
             me.Show();
         }
@@ -77,13 +78,17 @@ The entry point into our .CS code-behind is the "Scene_Loaded" event handler.
 
 This is now a very simple scene, with a single player. The player doesn't do anything yet, just shows itself. Here, in the Scene_Loaded handler, we create the sprite and tell it what to do when it loads, plus we load the background. Also important is implementing the Assets property, where we will tell the system which images need to be loaded into the scene.
 
-We could take another step to receive input, such as mouse/tap events or key presses. First, within Astro_Cat_Loaded, we'll need to wire up these handlers:
+We could take another step to receive input, such as mouse/tap events or key presses. First, within Player_Loaded, we'll wire up these handlers:
 
 ```c#
-	Me.KeyPressed += Astro_Cat_KeyPressed
-	Me.PointerPressed += Astro_Cat_PointerPressed
+	me.KeyPressed += Player_KeyPressed
+	me.PointerPressed += Player_PointerPressed
+```
 
-        private void Astro_Cat_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
+And write the handlers themselves:
+
+```c#
+        private void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
         {
             if (what.VirtualKey == Windows.System.VirtualKey.Down)
             {
@@ -103,7 +108,7 @@ We could take another step to receive input, such as mouse/tap events or key pre
             }
         }
 
-        private async void Neo_Cat_PointerPressed(Models.Sprite me, Sprite.PointerArgs what)
+        private async void Player_PointerPressed(Models.Sprite me, Sprite.PointerArgs what)
         {
             await me.Glide(0.1, what.mousepoint);
         }
@@ -113,26 +118,26 @@ The "Loaded" event for a sprite is where scripts for Scratch's "When green flag 
 
 In this example, we have a script which bobs the player up and down repeatedly, another script which listens for keyboard input and moves the player, and another which checks for collision against the sprite named 'Obstacle' before broadcasting a message.
 
-```
- private void SuperCat_Loaded(Sprite me)
+```c#
+ private void Player_Loaded(Sprite me)
  {
-	Task.Run(()=>
+	Task.Run(async ()=>
 	{
-		While(true)
+		while(true)
 		{
-			Me.ChangeYby(-2);
-			Await Delay(0.5);
-			Me.ChangeYby(2);
-			Await Delay(0.5);
+			me.ChangeYby(-2);
+			await Delay(0.5);
+			me.ChangeYby(2);
+			await Delay(0.5);
 		}
 	});
-	Task.Run(()=>
+	Task.Run(async ()=>
 	{
-		While(true)
+		while(true)
 		{
 			If (await me.IsTouching(Obstacle))
 				Broadcast("ouch");
-			Await Delay(0.1);
+			await Delay(0.1);
 		}
 	});
 }
@@ -149,13 +154,13 @@ Much like the 'Loaded' event for the green flag, if we have different messages w
 First we will have wired up the event in the Loaded event:
 
 ```c#
-Me.MessageReceived += SuperCat_MessageReceived
+	me.MessageReceived += Player_MessageReceived
 ```
 
 Then write the event handler itself:
 
 ```c#
-private void SuperCat_MessageReceived(Sprite me, String message)
+private void Player_MessageReceived(Sprite me, String message)
 {
 	switch(message)
 	{
@@ -197,7 +202,7 @@ Place all visual and audio assets to be in the "Assets" folder of an app. Within
 Within your scene, you'll override the "Assets" property of the Scene, and return a list of all image assets used in the scene. This ensures they are loaded into the Win2D drawing system, and ready for drawing.
 
 ```c#
-        protected override IEnumerable<string> Assets => new[] { "04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png" };
+	protected override IEnumerable<string> Assets => new[] { "04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png" };
 ```
 
 To refer to these assets within blocks, refer to their name and/or subfolder within 'Assets'. Scratch blocks which would have taken an asset name, such as SetCostume, here take a filename string, which should be in the Assets directory, for example:
