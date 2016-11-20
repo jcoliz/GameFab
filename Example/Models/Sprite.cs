@@ -45,7 +45,7 @@ namespace Example.Models
         /// You don't need to call this yourself. Simply including a sprite in XAML will
         /// construct it.
         /// </remarks>
-        public Sprite()
+        private Sprite()
         {
             lock(Sprites)
             {
@@ -53,17 +53,37 @@ namespace Example.Models
             }
         }
 
+        /// <summary>
+        /// Creates a sprite for your use
+        /// </summary>
+        /// <remarks>
+        /// This will recycle an existing removed sprite if there is one available
+        /// </remarks>
+        /// <returns></returns>
+        public static Sprite Create()
+        {
+            // Is there a removed sprite we could recylce?
+            var removed = All.Where(x => x.Removed).FirstOrDefault();
+            if (removed != null)
+            {
+                removed.Removed = false;
+                return removed;
+            }
+            else
+                return new Sprite();
+
+        }
+
+        /// <summary>
+        /// Flag the sprite as no longer needed
+        /// </summary>
+        /// <remarks>
+        /// Be sure to remove all event hanlders first!!
+        /// </remarks>
         public void Destroy()
         {
             this.Hide();
             this.Removed = true;
-
-            // Argh, there's no safe time to do this!
-            lock (Sprites)
-            {
-                All.Remove(this);
-            }
-
         }
 
         /// <summary>
