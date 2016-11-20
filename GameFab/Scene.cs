@@ -93,10 +93,15 @@ namespace GameFab
 
         public Size Dimensions { get; set; } = new Size(1280, 720);
 
+        public double LeftEdge => -Dimensions.Width / 2;
+        public double RightEdge => Dimensions.Width / 2;
+        public double TopEdge => Dimensions.Height / 2;
+        public double BottomEdge => -Dimensions.Height / 2;
+
         #endregion
 
         #region Constructor
-         
+
         protected Scene()
         {
             Sprite.ClearAll();

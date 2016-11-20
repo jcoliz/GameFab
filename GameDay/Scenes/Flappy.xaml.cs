@@ -64,7 +64,7 @@ namespace GameDay.Scenes
             Task.Run(async () => 
             {
                 me.SetCostume("Flappy/Player.png");
-                me.SetPosition(- Dimensions.Width / 4, 0);
+                me.SetPosition(LeftEdge / 2, 0);
                 me.Show();
 
                 // Apply gravity
@@ -90,18 +90,18 @@ namespace GameDay.Scenes
         {
             Task.Run(() => 
             {
-                double opening_center = Random(-Dimensions.Height / 2 + 200, Dimensions.Height / 2 - 200);
+                double opening_center = Random(BottomEdge + 200, TopEdge - 200);
                 double opening_bottom = opening_center - 100;
                 double opening_top = opening_center + 100;
                 double pillar_image_height = 300;
 
                 me.SetCostume("Flappy/Pillar.png");
-                me.SetPosition(Dimensions.Width / 2, opening_bottom - pillar_image_height / 2 );
+                me.SetPosition(RightEdge, opening_bottom - pillar_image_height / 2 );
 
                 var top = CreateSprite();
                 me.Variable["top"] = top;
                 top.SetCostume("Flappy/Pillar.png");
-                top.SetPosition(Dimensions.Width / 2, opening_top + pillar_image_height / 2);
+                top.SetPosition(RightEdge, opening_top + pillar_image_height / 2);
                 me.Show();
                 top.Show();
 
@@ -116,7 +116,7 @@ namespace GameDay.Scenes
                 var top = me.Variable["top"] as Sprite;
                 top.ChangeXby(-5);
                 var x = me.ChangeXby(-5);
-                if (x < -Dimensions.Width / 2)
+                if (x < LeftEdge)
                 {
                     me.MessageReceived -= Pillar_MessageReceived;
                     me.Destroy();

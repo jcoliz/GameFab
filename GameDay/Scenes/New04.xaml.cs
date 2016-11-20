@@ -52,13 +52,13 @@ namespace GameDay.Scenes
             Server1 = CreateSprite((me) =>
             {
                 me.SetCostume("04/1.png");
-                me.SetPosition(- Dimensions.Width / 4, - Dimensions.Height / 2 + 10);
+                me.SetPosition(LeftEdge / 2, BottomEdge + 10);
                 me.Show();
             });
             Server2 = CreateSprite((me) =>
             {
                 me.SetCostume("04/1.png");
-                me.SetPosition(+Dimensions.Width / 4, -Dimensions.Height / 2 + 10);
+                me.SetPosition(RightEdge / 2, BottomEdge + 10);
                 me.Show();
             });
         }
@@ -83,7 +83,7 @@ namespace GameDay.Scenes
             if (what.message == "start")
             {
                 me.SetCostumes("04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
-                me.SetPosition(Dimensions.Width / 2, 0);
+                me.SetPosition(RightEdge, 0);
                 me.PointTowards(Neo_Cat.Position);
                 me.Show();
 
