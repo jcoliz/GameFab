@@ -114,6 +114,7 @@ namespace Example.Scenes
                 var x = me.ChangeXby(-5);
                 if (x < -100.0)
                 {
+                    me.MessageReceived -= Pillar_MessageReceived;
                     me.Destroy();
                     top.Destroy();
                 }

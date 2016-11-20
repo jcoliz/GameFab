@@ -66,7 +66,7 @@ namespace Example.Models
 
         protected async Task<Models.Sprite> CreateSprite(Models.Sprite.SpriteEventHandler loaded = null)
         {
-            var s = new Models.Sprite();
+            var s = Models.Sprite.Create();
             loaded?.Invoke(s);
             return s;
         }
