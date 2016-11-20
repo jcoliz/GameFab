@@ -201,6 +201,7 @@ namespace Example.Models
 
         protected void CanvasAnimatedControl_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
+            sender.TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 30);
             args.TrackAsyncAction(LoadResources(sender).AsAsyncAction());
         }
 
