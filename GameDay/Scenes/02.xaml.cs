@@ -1,4 +1,4 @@
-﻿using Example.Models;
+﻿using GameFab;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace Example.Scenes
+namespace GameDay.Scenes
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -40,12 +40,12 @@ namespace Example.Scenes
 
         protected override IEnumerable<string> Assets => new[] { "02/1.png", "02/2.png", "02/4.png", "02/5.png", "02/6.png", "02/8.png" };
 
-        private async void Scene_Loaded(object sender, RoutedEventArgs e)
+        private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
-            Lightning = await CreateSprite(Lightning_Loaded);
-            String = await CreateSprite(String_Loaded);
-            Astro_Cat = await CreateSprite(Astro_Cat_Loaded);
-            Banner = await CreateSprite(Banner_Loaded);
+            Lightning = CreateSprite(Lightning_Loaded);
+            String = CreateSprite(String_Loaded);
+            Astro_Cat = CreateSprite(Astro_Cat_Loaded);
+            Banner = CreateSprite(Banner_Loaded);
 
             SetBackground("02/8.png");
         }
@@ -72,7 +72,7 @@ namespace Example.Scenes
             {
                 while (true)
                 {
-                    if (await me.IsTouching(Lightning))
+                    if (me.IsTouching(Lightning))
                     {
                         me.PlaySound("02/Zap.wav");
                         Lightning.Hide();
@@ -168,7 +168,7 @@ namespace Example.Scenes
                     me.SetPosition(Random(0, 950), Random(0, 500));
                     me.Show();
 
-                    while (!await me.IsTouching(Astro_Cat))
+                    while (!me.IsTouching(Astro_Cat))
                     {
                         me.ChangeYby(1);
                         me.TurnBy(Sprite.Direction.Right, 5);

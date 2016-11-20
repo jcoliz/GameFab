@@ -19,7 +19,7 @@ using Windows.UI;
 using Microsoft.Graphics.Canvas.Effects;
 using System.Numerics;
 
-namespace Example.Models
+namespace GameFab
 {
     public abstract class Scene: Page
     {
@@ -55,7 +55,7 @@ namespace Example.Models
         /// <param name="message"></param>
         protected void Broadcast(string message)
         {
-            Models.Sprite.Broadcast(message);
+            Sprite.Broadcast(message);
         }
 
         /// <summary>
@@ -65,9 +65,9 @@ namespace Example.Models
 
         protected Point MousePoint { get; private set; }
 
-        protected async Task<Models.Sprite> CreateSprite(Models.Sprite.SpriteEventHandler loaded = null)
+        protected Sprite CreateSprite(Sprite.SpriteEventHandler loaded = null)
         {
-            var s = Models.Sprite.Create();
+            var s = Sprite.Create();
             loaded?.Invoke(s);
             return s;
         }
@@ -104,26 +104,26 @@ namespace Example.Models
             Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
             Window.Current.CoreWindow.PointerReleased += CoreWindow_PointerReleased;
 
-            Models.Sprite.SendSceneLoaded();
+            Sprite.SendSceneLoaded();
         }
 
         private void CoreWindow_PointerReleased(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
         {
             IsMousePressed = false;
             MousePoint = args.CurrentPoint.Position;
-            Models.Sprite.SendPointerReleased(MousePoint);
+            Sprite.SendPointerReleased(MousePoint);
         }
 
         private void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
         {
             IsMousePressed = true;
             MousePoint = args.CurrentPoint.Position;
-            Models.Sprite.SendPointerPressed(MousePoint);
+            Sprite.SendPointerPressed(MousePoint);
         }
 
         private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            Models.Sprite.SendKeyPressed(args);
+            Sprite.SendKeyPressed(args);
         }
 
         public class Variable<T>: INotifyPropertyChanged
@@ -233,13 +233,12 @@ namespace Example.Models
                 foreach(var i in Assets)
                     bitmaps[i] = await CanvasBitmap.LoadAsync(sender, new Uri($"ms-appx:///Assets/{i}"));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
             }
         }
 
-        internal void SetBackground(string v)
+        public void SetBackground(string v)
         {
             background = v;
         }
