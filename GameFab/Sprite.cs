@@ -11,84 +11,7 @@ namespace GameFab
 {
     public class Sprite
     {
-        #region Drawing Parameters
-        public Point Position { get; private set; }
-
-        public string Costume { get; private set; }
-
-        public bool Visible { get; private set; } = false;
-
-        public double Opacity { get; private set; } = 1.0;
-
-        /// <summary>
-        /// Angle of rotation in radians
-        /// </summary>
-        public double RotationAngle { get; private set; } = 0.0;
-
-        public string Saying { get; private set; } = null;
-        #endregion
-
-
-        Random random = new Random();
-        MediaPlayer player = new MediaPlayer();
-        List<string> costumes;
-        int? nextcostumeindex = null;
-        double? heading = null;
-        bool Removed = false; // If this has been removed from consideration, we will want to clean these up at some point
-
-        /// <summary>
-        /// Stash sprite-specific varaiables here
-        /// </summary>
-        public Dictionary<string, object> Variable { get; } = new Dictionary<string, object>();
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <remarks>
-        /// You don't need to call this yourself. Simply including a sprite in XAML will
-        /// construct it.
-        /// </remarks>
-        private Sprite()
-        {
-            lock(Sprites)
-            {
-                All.Add(this);
-            }
-        }
-
-        /// <summary>
-        /// Creates a sprite for your use
-        /// </summary>
-        /// <remarks>
-        /// This will recycle an existing removed sprite if there is one available
-        /// </remarks>
-        /// <returns></returns>
-        public static Sprite Create()
-        {
-            // Is there a removed sprite we could recylce?
-            var removed = All.Where(x => x.Removed).FirstOrDefault();
-            if (removed != null)
-            {
-                removed.Removed = false;
-                return removed;
-            }
-            else
-                return new Sprite();
-
-        }
-
-        /// <summary>
-        /// Flag the sprite as no longer needed
-        /// </summary>
-        /// <remarks>
-        /// Be sure to remove all event hanlders first!!
-        /// </remarks>
-        public void Destroy()
-        {
-            this.Hide();
-            this.SetCostume(null);
-            this.Removed = true;
-        }
+        #region Public Methods which implement Scratch-Like 'Blocks'
 
         /// <summary>
         /// Set the current costume of the sprite
@@ -100,6 +23,10 @@ namespace GameFab
             Costume = asset;
         }
 
+        /// <summary>
+        /// Set a series of costumes. This is used when we call 'NextCostume'
+        /// </summary>
+        /// <param name="assets"></param>
         public void SetCostumes(params string[] assets)
         {
             try
@@ -115,6 +42,10 @@ namespace GameFab
             }
         }
 
+        /// <summary>
+        /// Change to the next available costume. Be sure to set the costumes first with
+        /// SetCostumes
+        /// </summary>
         public void NextCostume()
         {
             var costume = nextcostumeindex.Value;
@@ -152,11 +83,18 @@ namespace GameFab
         {
             Position = new Point(x, y);
         }
+
+        /// <summary>
+        /// Set the position of the sprite within the scene
+        /// </summary>
         public void SetPosition(Point where)
         {
             Position = where;
         }
 
+        /// <summary>
+        /// Get the position of the sprite within the scene
+        /// </summary>
         public Point GetPosition()
         {
             return Position;
@@ -184,6 +122,10 @@ namespace GameFab
             return Position.X;
         }
 
+        /// <summary>
+        /// Point the sprite toward this target
+        /// </summary>
+        /// <param name="target"></param>
         public void PointTowards(Point target)
         {
             heading = HeadingBetween(Position, target);
@@ -204,6 +146,10 @@ namespace GameFab
             heading = radians;
         }
 
+        /// <summary>
+        /// Move in the heading we're pointing by the indicated distance
+        /// </summary>
+        /// <param name="steps"></param>
         public void Move(double steps)
         {
             if (!heading.HasValue)
@@ -212,6 +158,13 @@ namespace GameFab
             Position = ProgressToward(Position, heading.Value, steps);
         }
 
+        /// <summary>
+        /// Bounce off the screen edges, changing the heading to reflect off the
+        /// edge if we are in range of an edge
+        /// </summary>
+        /// <remarks>
+        /// This uses an 'edge' of 1000x500, which isn't always right.
+        /// </remarks>
         public void IfOnEdgeBounce()
         {
             if (!heading.HasValue)
@@ -247,8 +200,6 @@ namespace GameFab
             if (needstomove)
                 SetPosition(position);
         }
-
-        public Size CostumeSize { get; set; }
 
         /// <summary>
         /// Test whether this sprite is touching another sprite
@@ -294,11 +245,20 @@ namespace GameFab
             player.Play();
         }
 
+        /// <summary>
+        /// Show this text in a 'speech bubble' near the sprite
+        /// </summary>
+        /// <param name="text">Text to show, or null to close the bubble</param>
         public void Say(string text = null)
         {
             Saying = text;
         }
 
+        /// <summary>
+        /// Reduce the sprites opacity. This is the 'ghost' effect
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public double ReduceOpacityBy(double value)
         {
             Opacity -= value;
@@ -310,6 +270,11 @@ namespace GameFab
 
         public enum Direction { None = 0, Left, Right };
 
+        /// <summary>
+        /// Increase/decrease our visual rotation by the indicated amount
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="degrees"></param>
         public void TurnBy(Direction direction, double degrees)
         {
             if (direction == Direction.Left)
@@ -332,6 +297,39 @@ namespace GameFab
         {
             RotationAngle = degrees / 180 * Math.PI;
         }
+
+        /// <summary>
+        /// Move the sprite over time to a certain position
+        /// </summary>
+        /// <param name="total_time_seconds">How long it should take</param>
+        /// <param name="destination">Where to go</param>
+        /// <returns>async Task</returns>
+        public async Task Glide(double total_time_seconds, Point destination)
+        {
+            double total_time = total_time_seconds * 1000;
+            Point starting_position = GetPosition();
+            const double update_frequency_ms = 25;
+            double elapsed_time = 0;
+            double total_distance = DistanceBetween(starting_position, destination);
+            double heading = HeadingBetween(starting_position, destination);
+            while (elapsed_time < total_time)
+            {
+                // distance we should be at THIS moment
+                double now_distance = elapsed_time * total_distance / total_time;
+
+                // new position is along the heading by that far
+                Point new_position = ProgressToward(starting_position, heading, now_distance);
+
+                this.SetPosition(new_position.X, new_position.Y);
+                await Task.Delay((int)update_frequency_ms);
+
+                elapsed_time += update_frequency_ms;
+            }
+            this.SetPosition(destination.X, destination.Y);
+        }
+        #endregion
+
+        #region Event handlers you use to launch scripts
 
         /// <summary>
         /// Arguments which are passed in for a MessageReceived event
@@ -384,6 +382,127 @@ namespace GameFab
 
         public event SpriteEventHandler<Windows.UI.Core.KeyEventArgs> KeyPressed;
 
+        #endregion
+
+        #region Public Properties/Methods you might use from scripts, but are not strictly Scratch blocks
+        /// <summary>
+        /// Stash sprite-specific varaiables here
+        /// </summary>
+        public Dictionary<string, object> Variable { get; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Flag the sprite as no longer needed
+        /// </summary>
+        /// <remarks>
+        /// Be sure to remove all event hanlders first!!
+        /// </remarks>
+        public void Destroy()
+        {
+            this.Hide();
+            this.SetCostume(null);
+            this.Removed = true;
+        }
+        #endregion
+
+        #region Drawing parameters used by the scene to render us
+
+        public Point Position { get; private set; }
+
+        public string Costume { get; private set; }
+
+        public bool Visible { get; private set; } = false;
+
+        public double Opacity { get; private set; } = 1.0;
+
+        /// <summary>
+        /// Angle of rotation in radians
+        /// </summary>
+        public double RotationAngle { get; private set; } = 0.0;
+
+        public string Saying { get; private set; } = null;
+
+        /// <summary>
+        /// In case anyone wants to know how large we are, it's the size of our costume.
+        /// This is set by the scene when we are drawn.
+        /// </summary>
+        public Size CostumeSize { get; set; }
+
+        public static IReadOnlyList<Sprite> Sprites => All;
+
+        #endregion
+
+        #region Private properties
+        Random random = new Random();
+        MediaPlayer player = new MediaPlayer();
+        List<string> costumes;
+        int? nextcostumeindex = null;
+        double? heading = null;
+        bool Removed = false; // If this has been removed from consideration, we will want to clean these up at some point
+
+        private static List<Sprite> All = new List<Sprite>();
+
+        private static IEnumerable<Sprite> AllActive
+        {
+            get
+            {
+                IEnumerable<Sprite> result = null;
+                lock (Sprites)
+                {
+                    result = All.Where(x => !x.Removed);
+                }
+                return result.ToList();
+            }
+        }
+        #endregion
+
+        #region Construction/Creation
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <remarks>
+        /// You don't need to call this yourself. Simply including a sprite in XAML will
+        /// construct it.
+        /// </remarks>
+        private Sprite()
+        {
+            lock(Sprites)
+            {
+                All.Add(this);
+            }
+        }
+
+        /// <summary>
+        /// Creates a sprite for your use
+        /// </summary>
+        /// <remarks>
+        /// This will recycle an existing removed sprite if there is one available
+        /// </remarks>
+        /// <returns></returns>
+        public static Sprite Create()
+        {
+            // Is there a removed sprite we could recylce?
+            var removed = All.Where(x => x.Removed).FirstOrDefault();
+            if (removed != null)
+            {
+                removed.Removed = false;
+                return removed;
+            }
+            else
+                return new Sprite();
+
+        }
+        #endregion
+
+        #region Public methods meant to be called by the Scene
+
+        public static void ClearAll()
+        {
+            lock (Sprites)
+            {
+                All.Clear();
+            }
+        }
+
         /// <summary>
         /// Broadcast this message to all sprites
         /// </summary>
@@ -420,56 +539,9 @@ namespace GameFab
             foreach (var sprite in AllActive)
                 sprite.KeyPressed?.Invoke(sprite, keys);
         }
+        #endregion
 
-        public static IReadOnlyList<Sprite> Sprites => All;
-
-        private static List<Sprite> All = new List<Sprite>();
-
-        private static IEnumerable<Sprite> AllActive
-        {
-            get
-            {
-                IEnumerable<Sprite> result = null;
-                lock(Sprites)
-                {
-                    result = All.Where(x => !x.Removed);
-                }
-                return result.ToList();
-            }
-        }
-
-        public static void ClearAll()
-        {
-            lock(Sprites)
-            {
-                All.Clear();
-            }
-        }
-
-        public async Task Glide(double total_time_seconds, Point destination)
-        {
-            double total_time = total_time_seconds * 1000;
-            Point starting_position = GetPosition();
-            const double update_frequency_ms = 25;
-            double elapsed_time = 0;
-            double total_distance = DistanceBetween(starting_position, destination);
-            double heading = HeadingBetween(starting_position, destination);
-            while (elapsed_time < total_time)
-            {
-                // distance we should be at THIS moment
-                double now_distance = elapsed_time * total_distance / total_time;
-
-                // new position is along the heading by that far
-                Point new_position = ProgressToward(starting_position, heading, now_distance);
-
-                this.SetPosition(new_position.X, new_position.Y);
-                await Task.Delay((int)update_frequency_ms);
-
-                elapsed_time += update_frequency_ms;
-            }
-            this.SetPosition(destination.X, destination.Y);
-        }
-
+        #region Private helper methods
         private static double DistanceBetween(Point first, Point second)
         {
             var x_distance = second.X - first.X;
@@ -493,6 +565,8 @@ namespace GameFab
 
             return new Point(from.X + x_distance, from.Y + y_distance);
         }
+        #endregion
+
     }
 
 }

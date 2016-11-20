@@ -23,10 +23,8 @@ namespace GameFab
 {
     public abstract class Scene: Page
     {
-        Random random = new Random();
-        Point mousepoint;
 
-        abstract protected IEnumerable<string> Assets { get; }
+        #region Public methods which implement Scratch 'blocks'
 
         /// <summary>
         /// Generate a random number between these parameters (inclusive)
@@ -58,12 +56,9 @@ namespace GameFab
             Sprite.Broadcast(message);
         }
 
-        /// <summary>
-        /// Whether the mouse/pointer is currently being held down
-        /// </summary>
-        protected bool IsMousePressed { get; private set; }
+        #endregion
 
-        protected Point MousePoint { get; private set; }
+        #region Other public methods which are interesting from scripts
 
         protected Sprite CreateSprite(Sprite.SpriteEventHandler loaded = null)
         {
@@ -72,12 +67,43 @@ namespace GameFab
             return s;
         }
 
-        public Scene()
+        protected void SetBackground(string v)
+        {
+            background = v;
+        }
+
+        #endregion
+
+        #region Private properties
+        Random random = new Random();
+        Point mousepoint;
+        #endregion
+
+        #region Protected properties. These are available from scripts if you need them
+
+        abstract protected IEnumerable<string> Assets { get; }
+
+        /// <summary>
+        /// Whether the mouse/pointer is currently being held down
+        /// </summary>
+        protected bool IsMousePressed { get; private set; }
+
+        protected Point MousePoint { get; private set; }
+
+        #endregion
+
+        #region Constructor
+         
+        protected Scene()
         {
             Sprite.ClearAll();
             base.Loaded += Scene_Loaded;
             SystemNavigationManager.GetForCurrentView().BackRequested += SystemNavigationManager_BackRequested;
         }
+
+        #endregion
+
+        #region Internals
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -153,6 +179,10 @@ namespace GameFab
             public event PropertyChangedEventHandler PropertyChanged;
         }
 
+        #endregion
+
+        #region Drawing
+
         string background;
         Dictionary<string, CanvasBitmap> bitmaps = new Dictionary<string, CanvasBitmap>();
 
@@ -194,7 +224,6 @@ namespace GameFab
                                 };
                             }
                             args.DrawingSession.DrawImage(drawme, (float)sprite.Position.X, (float)sprite.Position.Y);
-
 
                             // Render the 'saying'
                             if (sprite.Saying?.Length > 0)
@@ -238,9 +267,6 @@ namespace GameFab
             }
         }
 
-        public void SetBackground(string v)
-        {
-            background = v;
-        }
+        #endregion
     }
 }
