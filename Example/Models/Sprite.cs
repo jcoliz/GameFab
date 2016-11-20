@@ -275,7 +275,7 @@ namespace Example.Models
             Saying = text;
         }
 
-        public async Task<double> ReduceOpacityBy(double value)
+        public double ReduceOpacityBy(double value)
         {
             Opacity -= value;
             if (Opacity < 0)
