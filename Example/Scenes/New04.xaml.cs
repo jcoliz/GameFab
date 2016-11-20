@@ -32,6 +32,37 @@ namespace Example.Scenes
 
         protected override IEnumerable<string> Assets => new[] { "04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png" };
 
+        private Models.Sprite Neo_Cat = null;
+        private Models.Sprite Virus = null;
+        private Models.Sprite Server1 = null;
+        private Models.Sprite Server2 = null;
+
+        private async void Scene_Loaded(object sender, RoutedEventArgs e)
+        {
+            base.SetBackground("04/21.png");
+
+            Neo_Cat = await CreateSprite(this.Neo_Cat_Loaded);
+            Neo_Cat.MessageReceived += Neo_Cat_MessageReceived;
+            Neo_Cat.PointerPressed += Neo_Cat_PointerPressed;
+            Neo_Cat.PointerReleased += Neo_Cat_PointerReleased;
+
+            Virus = await CreateSprite();
+            Virus.MessageReceived += Virus_MessageReceived;
+
+            Server1 = await CreateSprite((me) =>
+            {
+                me.SetCostume("04/1.png");
+                me.SetPosition(10, 500);
+                me.Show();
+            });
+            Server2 = await CreateSprite((me) =>
+            {
+                me.SetCostume("04/1.png");
+                me.SetPosition(510, 500);
+                me.Show();
+            });
+        }
+
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             (sender as FrameworkElement).Visibility = Visibility.Collapsed;
@@ -163,37 +194,6 @@ namespace Example.Scenes
             {
                 me.SetCostume("04/7.png");
                 me.SetPosition(176, 307);
-            });
-        }
-
-        private Models.Sprite Neo_Cat = null;
-        private Models.Sprite Virus = null;
-        private Models.Sprite Server1 = null;
-        private Models.Sprite Server2 = null;
-
-        private async void Scene_Loaded(object sender, RoutedEventArgs e)
-        {
-            base.SetBackground("04/21.png");
-
-            Neo_Cat = await CreateSprite(this.Neo_Cat_Loaded);
-            Neo_Cat.MessageReceived += Neo_Cat_MessageReceived;
-            Neo_Cat.PointerPressed += Neo_Cat_PointerPressed;
-            Neo_Cat.PointerReleased += Neo_Cat_PointerReleased;
-
-            Virus = await CreateSprite();
-            Virus.MessageReceived += Virus_MessageReceived;
-
-            Server1 = await CreateSprite((me) => 
-            {
-                me.SetCostume("04/1.png");
-                me.SetPosition(10, 500);
-                me.Show();
-            });
-            Server2 = await CreateSprite((me) =>
-            {
-                me.SetCostume("04/1.png");
-                me.SetPosition(510, 500);
-                me.Show();
             });
         }
     }

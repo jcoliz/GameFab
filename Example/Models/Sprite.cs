@@ -83,6 +83,7 @@ namespace Example.Models
         public void Destroy()
         {
             this.Hide();
+            this.SetCostume(null);
             this.Removed = true;
         }
 
