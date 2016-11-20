@@ -43,7 +43,9 @@ Here is an example of the simplest scene. We create a .XAML page containing a cl
     xmlns:gfab="using:GameFab" 
     Loaded="Scene_Loaded">
 
-    <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
+    <win2d:CanvasAnimatedControl 
+    	Draw="CanvasAnimatedControl_Draw" 
+		CreateResources="CanvasAnimatedControl_CreateResources" />
  </gfab:Scene>
 ```
 
@@ -202,7 +204,11 @@ Place all visual and audio assets to be in the "Assets" folder of an app. Within
 Within your scene, you'll override the "Assets" property of the Scene, and return a list of all image assets used in the scene. This ensures they are loaded into the Win2D drawing system, and ready for drawing.
 
 ```c#
-	protected override IEnumerable<string> Assets => new[] { "04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png" };
+	protected override IEnumerable<string> Assets => new[] 
+	{ 
+		"04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", 
+		"04/R.png", "04/U.png", "04/S.png", "04/1.png" 
+	};
 ```
 
 To refer to these assets within blocks, refer to their name and/or subfolder within 'Assets'. Scratch blocks which would have taken an asset name, such as SetCostume, here take a filename string, which should be in the Assets directory, for example:
