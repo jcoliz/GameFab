@@ -29,6 +29,14 @@ namespace GameDay.Scenes
             this.InitializeComponent();
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            // TODO: Should move this whole override to the base class, and expose a 'running' from there.
+            base.OnNavigatedFrom(e);
+
+            Running = false;
+        }
+
         private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
             // Spawn the needed number of pillars over the correct time.
@@ -36,7 +44,7 @@ namespace GameDay.Scenes
             {
                 var player = CreateSprite(Player_SceneLoaded);
                 player.KeyPressed += Player_KeyPressed;
-                while (true)
+                while (Running)
                 {
                     CreateSprite(this.Pillar_SceneLoaded);
                     await Delay(3.0);
@@ -46,7 +54,7 @@ namespace GameDay.Scenes
             // Syncrhonize the visual updates by sending out a message on a regular time
             Task.Run(async () => 
             {
-                while(true)
+                while(Running)
                 {
                     await Delay(0.05);
                     Broadcast("update");
@@ -56,6 +64,7 @@ namespace GameDay.Scenes
 
         double yspeed = 0;
         double gravity = -2; // in pixels per tick squared
+        bool Running = true;
 
         protected override IEnumerable<string> Assets => new[] { "Flappy/Pillar.png", "Flappy/Player.png" };
 
@@ -68,7 +77,7 @@ namespace GameDay.Scenes
                 me.Show();
 
                 // Apply gravity
-                while(true)
+                while(Running)
                 {
                     yspeed += gravity;
                     me.ChangeYby(yspeed);
