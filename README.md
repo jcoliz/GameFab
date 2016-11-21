@@ -245,3 +245,37 @@ The scene includes helper properties to describe the visisble edges of the scene
 # Coordinates
 
 As with Scratch, the center of the screen is 0,0. To move a sprite to the right, increase its X position. To move it up, increase its Y position. Sprites can be rotated to any angle, expressed in degrees (0-360), where 0 points straight up.
+
+# Adding UI
+
+The Scene definition in XAML allows us to add in other UI elements on top of the drawing canvas. For example, here is the XAML scene definition for the Flappy example. This adds an additional bit of XAML UI atop the drawn scene.
+
+```xaml
+	<gfab:Scene Loaded="Scene_Loaded"
+		x:Class="GameDay.Scenes.Flappy"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+		xmlns:gfab="using:GameFab">
+
+	  <Grid Background="Black">
+		<win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
+		<StackPanel HorizontalAlignment="Center" Margin="20,0">
+		  <TextBlock Text="Score" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+		  <TextBlock Text="{x:Bind Score.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+		</StackPanel>
+	  </Grid>
+	</gfab:Scene>
+```
+
+This example uses the special 'Variable' class which is designed to make this easy. From our code-behind, we will declare one such variable:
+
+```c#
+    public Variable<int> Score = new Variable<int>(0);
+```
+
+Then, in our script we can simply update its value, and the system will automatically display the updated Value:
+
+```c#
+	++Score.Value;
+```
