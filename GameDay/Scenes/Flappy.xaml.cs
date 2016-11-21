@@ -35,9 +35,6 @@ namespace GameDay.Scenes
             base.OnNavigatedFrom(e);
 
             Running = false;
-            Player.KeyPressed -= Player_KeyPressed;
-            Player.MessageReceived -= Player_MessageReceived;
-            Player = null;
         }
 
         public Variable<int> Score = new Variable<int>(0);
@@ -105,8 +102,6 @@ namespace GameDay.Scenes
                         Broadcast("gameover");
                     await Delay(0.1);
                 }
-                me.KeyPressed -= Player_KeyPressed;
-                me.MessageReceived -= Player_MessageReceived;
             });
         }
         private void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
