@@ -2,7 +2,7 @@
 
 Block | Function | Available? | Comments
 --- | --- | --- | ---
-Move () Steps | Moves the sprite forward the amount of steps in the direction the sprite is facing. | 
+Move () Steps | Moves the sprite forward the amount of steps in the direction the sprite is facing. | Yes
 Turn () Degrees (Clockwise) | Turns the sprite (clockwise) the specified amount. | Yes
 Turn () Degrees (Counter-clockwise) | Turns the sprite (counter-clockwise) the specified amount. | Yes
 Point in Direction () | Points the sprite in the direction. | Yes
@@ -11,9 +11,9 @@ Go to X: () Y: () | Moves the sprite to the specified X and Y position. | Yes
 Go to () | Moves the sprite to the mouse-pointer or another sprite. | No
 Glide () Secs to X: () Y: () | Glides the sprite to the location, taking as long as the specified amount of time. | Yes
 Change X by () | Changes the sprite's X position by the amount. | Yes
-Set X to () | Sets the sprite's X position to the amount. | No
-Change Y by () — Changes the sprite's Y position by the amount. | Yes
-Set Y to () | Sets the sprite's Y position to the amount. | No
+Set X to () | Sets the sprite's X position to the amount. | No | Use SetPosition() for now
+Change Y by () | Changes the sprite's Y position by the amount. | Yes
+Set Y to () | Sets the sprite's Y position to the amount. | No | Use SetPosition() for now
 If on Edge, Bounce | If touching the edge of the screen, the sprite's direction flips over. | Yes
 Set Rotation Style () | This sets the rotation style of a sprite. | No
 X Position | The X position of the sprite. | Yes
@@ -35,7 +35,7 @@ Switch Backdrop to () | | Yes
 Switch Backdrop to () and wait | Like the Switch to Backdrop () block, though it waits until all of the hat blocks triggered by this have completed. (Stage only) | No
 Next Costume | Changes the sprite's/Stage's costume/backdrop to the next one in the costume list. | Yes
 Next Backdrop | | No
-Change () Effect by () | Changes the specified effect by the amount. | No
+Change () Effect by () | Changes the specified effect by the amount. | No | Can use Opacity property for 'change ghost effect'
 Set () Effect to () | Sets the specified effect to the amount. | No
 Clear Graphic Effects | Clears all graphic effects on the sprite. | No
 Change Size by () | Changes the sprite's size by the amount. | No
@@ -178,4 +178,4 @@ Letter () of () | The specified character of the value. | Yes
 Length of () | The length of the value. | Yes
 () Mod () | The remainder of the division. | Yes
 Round () | Rounds the value to the nearest whole number. | Yes
-() of () | The absolute value (abs), square root (sqrt), sine (sin), cosine (cos), tangent (tan), asine (asin), acosine (acos), atangent (atan), natural logarithm (ln), logarithm (log), exponential function (e^), or base 10 exponential function (10^) of a specified value. | Yes
+() of () | The absolute value (abs), square root (sqrt), sine (sin), cosine (cos), tangent (tan), asine (asin), acosine (acos), atangent (atan), natural logarithm (ln), logarithm (log), exponential function (e^), or base 10 exponential function (10^) of a specified value. | Yes | These functions are available in the 'Math' namespace, e.g. Math.Sin
