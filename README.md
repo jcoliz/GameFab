@@ -26,11 +26,11 @@ Really, I am just getting started. My immediate goal is to fully implement all t
 
 Right now, I have completed two of the book's chapters to a fully functional mini-game. There are some edge case blocks, such as the 'color' effect, which I have put off until later.
 
-Shortly, I hope to generate a documentation page so you can see exactly at a glance which blocks are implemented. Right now, you can check the comments in the Sprite.cs and Scene.cs files for this information.
+To see which Scratch blocks are available, check out the [List of Scratch blocks with status](https://github.com/jcoliz/GameFab/blob/master/ScratchBlocks.md) page. Also, you can have a look at the comments in the [Sprite.cs](https://github.com/jcoliz/GameFab/blob/master/GameFab/Sprite.cs) and [Scene.cs](https://github.com/jcoliz/GameFab/blob/master/GameFab/Scene.cs) files for further details.
 
 # Are you taking contributions?
 
-Yes! I am most interested in contributions that fill out missing Scratch blocks, plus of course testing in new environments, and filing bugs. New blocks should include new sample levels which demonstrate how to use the blocks.
+Yes! I am most interested in contributions that fill out missing Scratch blocks, plus of course testing in new environments, and filing bugs. New blocks should include new sample games which demonstrate how to use the blocks.
 
 # How does it work?
 
@@ -40,7 +40,7 @@ Here is an example of the simplest scene. We create a .XAML page containing a cl
 
 ```xaml
 	<gfab:Scene
-		x:Class="GameDay.Scenes._02"
+		x:Class="GameDay.Scenes.Chapter02"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
@@ -56,9 +56,9 @@ Here is an example of the simplest scene. We create a .XAML page containing a cl
 The entry point into our .CS code-behind is the "Scene_Loaded" event handler.
 
 ```c#
-	public sealed partial class _02 : Scene
+	public sealed partial class Chapter02 : Scene
 	{
-		public _02()
+		public Chapter02()
 		{
 			this.InitializeComponent();
 		}
