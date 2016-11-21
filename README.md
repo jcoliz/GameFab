@@ -28,6 +28,8 @@ Right now, I have completed two of the book's chapters to a fully functional min
 
 To see which Scratch blocks are available, check out the [List of Scratch blocks with status](https://github.com/jcoliz/GameFab/blob/master/ScratchBlocks.md) page. Also, you can have a look at the comments in the [Sprite.cs](https://github.com/jcoliz/GameFab/blob/master/GameFab/Sprite.cs) and [Scene.cs](https://github.com/jcoliz/GameFab/blob/master/GameFab/Scene.cs) files for further details.
 
+To see what's coming next, check out the [Roadmap](https://github.com/jcoliz/GameFab/blob/master/Roadmap.md).
+
 # Are you taking contributions?
 
 Yes! I am most interested in contributions that fill out missing Scratch blocks, plus of course testing in new environments, and filing bugs. New blocks should include new sample games which demonstrate how to use the blocks.
