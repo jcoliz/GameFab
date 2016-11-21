@@ -35,8 +35,6 @@ namespace GameDay.Scenes
         public Scene.Variable<int> Score = new Variable<int>();
         public Scene.Variable<int> Timer = new Variable<int>();
 
-        private bool Running { get; set; } = true;
-
         protected override IEnumerable<string> Assets => new[] { "04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png" };
 
         private Sprite Neo_Cat = null;

@@ -85,6 +85,11 @@ namespace GameFab
         abstract protected IEnumerable<string> Assets { get; }
 
         /// <summary>
+        /// Whether the scripts in this scene should continue running
+        /// </summary>
+        protected bool Running { get; set; } = true;
+
+        /// <summary>
         /// Whether the mouse/pointer is currently being held down
         /// </summary>
         protected bool IsMousePressed { get; private set; }
@@ -131,6 +136,7 @@ namespace GameFab
             Window.Current.CoreWindow.PointerReleased -= CoreWindow_PointerReleased;
             base.Loaded -= Scene_Loaded;
             SystemNavigationManager.GetForCurrentView().BackRequested -= SystemNavigationManager_BackRequested;
+            Running = false;
         }
 
         private void SystemNavigationManager_BackRequested(object sender, BackRequestedEventArgs e)

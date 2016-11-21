@@ -32,19 +32,11 @@ namespace GameDay.Scenes
         {
             this.InitializeComponent();
         }
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-
-            Running = false;
-        }
 
         private Sprite Lightning;
         private Sprite String;
         private Sprite Astro_Cat;
         private Sprite Banner;
-
-        private bool Running = true;
 
         protected override IEnumerable<string> Assets => new[] { "02/1.png", "02/2.png", "02/4.png", "02/5.png", "02/6.png", "02/8.png" };
 

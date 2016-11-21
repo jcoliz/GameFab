@@ -29,14 +29,6 @@ namespace GameDay.Scenes
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            // TODO: Should move this whole override to the base class, and expose a 'running' from there.
-            base.OnNavigatedFrom(e);
-
-            Running = false;
-        }
-
         public Variable<int> Score = new Variable<int>(0);
 
         Sprite Player;
@@ -79,7 +71,6 @@ namespace GameDay.Scenes
 
         double yspeed = 0;
         double gravity = -2; // in pixels per tick squared
-        bool Running = true;
 
         protected override IEnumerable<string> Assets => new[] { "Flappy/Butterfly/Background.png", "Flappy/Butterfly/Obstacle-Top-1.png", "Flappy/Butterfly/Obstacle-Bottom-1.png", "Flappy/Butterfly/Player.png" };
 
