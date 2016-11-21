@@ -87,6 +87,7 @@ namespace GameDay.Scenes
         {
             Task.Run(async () => 
             {
+                // Set up the player with all initial values and event handlers
                 me.SetCostume("Flappy/Butterfly/Player.png");
                 me.SetPosition(LeftEdge / 2, 0);
                 me.Show();
