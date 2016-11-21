@@ -215,15 +215,26 @@ namespace GameFab
                 Rect rect1;
                 Rect rect2;
 
-                if (Visible)
-                    rect1 = new Rect(new Point( Position.X - CostumeSize.Width/2,Position.Y - CostumeSize.Height/2), CostumeSize);
-                else
-                    rect1 = Rect.Empty;
+                if (!Visible || !fe2.Visible)
+                    return false;
 
-                if (fe2.Visible)
-                    rect2 = new Rect(new Point(fe2.Position.X - fe2.CostumeSize.Width / 2, fe2.Position.Y - fe2.CostumeSize.Height / 2), fe2.CostumeSize);
-                else
-                    rect2 = Rect.Empty;
+                if (CollisionRadius.HasValue && fe2.CollisionRadius.HasValue)
+                    return DistanceBetween(Position, fe2.Position) < CollisionRadius.Value + fe2.CollisionRadius.Value;
+
+                rect1 = new Rect(new Point( Position.X - CostumeSize.Width/2,Position.Y - CostumeSize.Height/2), CostumeSize);
+                rect2 = new Rect(new Point(fe2.Position.X - fe2.CostumeSize.Width / 2, fe2.Position.Y - fe2.CostumeSize.Height / 2), fe2.CostumeSize);
+
+                if (CollisionRadius.HasValue)
+                {
+                    rect2 = new Rect(rect2.X - CollisionRadius.Value, rect2.Y - CollisionRadius.Value, rect2.Width + 2 * CollisionRadius.Value, rect2.Height + 2 * CollisionRadius.Value);
+                    return rect2.Contains(Position);
+                }
+
+                if (fe2.CollisionRadius.HasValue)
+                {
+                    rect1 = new Rect(rect1.X - fe2.CollisionRadius.Value, rect1.Y - fe2.CollisionRadius.Value, rect1.Width + 2 * fe2.CollisionRadius.Value, rect1.Height + 2 * fe2.CollisionRadius.Value);
+                    return rect1.Contains(fe2.Position);
+                }
 
                 rect1.Intersect(rect2);
 
@@ -404,6 +415,13 @@ namespace GameFab
             this.SetCostume(null);
             this.Removed = true;
         }
+
+        /// <summary>
+        /// Setting this will make this sprite act like a circle for the purposes of
+        /// collision detection. The radius of the circle is what you're setting here.
+        /// Or set to null to have it behave like a regular rectangle.
+        /// </summary>
+        public double? CollisionRadius { get; set; } = null;
         #endregion
 
         #region Drawing parameters used by the scene to render us
