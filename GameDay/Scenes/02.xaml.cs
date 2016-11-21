@@ -32,11 +32,19 @@ namespace GameDay.Scenes
         {
             this.InitializeComponent();
         }
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            Running = false;
+        }
 
         private Sprite Lightning;
         private Sprite String;
         private Sprite Astro_Cat;
         private Sprite Banner;
+
+        private bool Running = true;
 
         protected override IEnumerable<string> Assets => new[] { "02/1.png", "02/2.png", "02/4.png", "02/5.png", "02/6.png", "02/8.png" };
 
@@ -59,7 +67,7 @@ namespace GameDay.Scenes
 
             Task.Run(async () =>
             {
-                while (true)
+                while (Running)
                 {
                     me.ChangeYby(2);
                     await Delay(0.3);
@@ -70,7 +78,7 @@ namespace GameDay.Scenes
 
             Task.Run(async () =>
             {
-                while (true)
+                while (Running)
                 {
                     if (me.IsTouching(Lightning))
                     {
@@ -127,15 +135,13 @@ namespace GameDay.Scenes
             });
         }
 
-        private void Lightning_Loaded(object sender)
+        private void Lightning_Loaded(Sprite me)
         {
-            var me = sender as Sprite;
-
             Task.Run(async () =>
             {
                 me.SetCostume("02/5.png");
                 await Delay(1);
-                while (true)
+                while (Running)
                 {
                     await Delay(Random(0, 1.5));
                     me.SetPosition(Random(- Dimensions.Width / 2, Dimensions.Width / 2), Dimensions.Height / 2);
@@ -152,21 +158,20 @@ namespace GameDay.Scenes
             });
         }
 
-        private void String_Loaded(object sender)
+        private void String_Loaded(Sprite me)
         {
-            var me = sender as Sprite;
             Task.Run(async () =>
             {
                 me.SetCostume("02/1.png");
                 await Delay(1);
 
                 int i = 7;
-                while (i-- > 0)
+                while (i-- > 0 && Running)
                 {
-                    me.SetPosition(Random(- Dimensions.Width / 2, Dimensions.Width / 2), Random(- Dimensions.Height / 2, Dimensions.Height / 2));
+                    me.SetPosition(Random(LeftEdge, RightEdge), Random(BottomEdge, TopEdge));
                     me.Show();
 
-                    while (!me.IsTouching(Astro_Cat))
+                    while (!me.IsTouching(Astro_Cat) && Running)
                     {
                         me.ChangeYby(1);
                         me.TurnBy(Sprite.Direction.Right, 5);
@@ -189,6 +194,5 @@ namespace GameDay.Scenes
                 me.Say("Stargate Opened!!!");
             });
         }
-
     }
 }

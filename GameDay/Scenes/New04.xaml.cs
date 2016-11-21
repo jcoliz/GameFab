@@ -24,6 +24,13 @@ namespace GameDay.Scenes
             this.InitializeComponent();
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            Running = false;
+        }
+
         public Scene.Variable<int> Chances = new Variable<int>(5);
         public Scene.Variable<int> Score = new Variable<int>();
         public Scene.Variable<int> Timer = new Variable<int>();
@@ -143,11 +150,8 @@ namespace GameDay.Scenes
         {
             if (what.message == "start")
             {
-                Task.Run(() =>
-                {
-                    me.SetCostume("04/7.png");
-                    me.Show();
-                });
+                me.SetCostume("04/7.png");
+                me.Show();
             }
             else if (what.message == "oh")
             {
@@ -165,10 +169,7 @@ namespace GameDay.Scenes
             }
             else if (what.message == "win")
             {
-                Task.Run(() =>
-                {
-                    me.Say("WINNER!!");
-                });
+                me.Say("WINNER!!");
             }
         }
 
@@ -180,19 +181,13 @@ namespace GameDay.Scenes
 
         private void Neo_Cat_PointerReleased(Sprite me, Sprite.PointerArgs what)
         {
-            Task.Run(() =>
-            {
-                me.SetCostume("04/7.png");
-            });
+            me.SetCostume("04/7.png");
         }
 
         private void Neo_Cat_Loaded(Sprite me)
         {
-            Task.Run(() =>
-            {
-                me.SetCostume("04/7.png");
-                me.SetPosition(0,0);
-            });
+            me.SetCostume("04/7.png");
+            me.SetPosition(0, 0);
         }
     }
 }
