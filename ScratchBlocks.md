@@ -11,14 +11,14 @@ Go to X: () Y: () | Moves the sprite to the specified X and Y position. | Yes
 Go to () | Moves the sprite to the mouse-pointer or another sprite. | Yes | Use me.SetPosition(othersprite.Position)
 Glide () Secs to X: () Y: () | Glides the sprite to the location, taking as long as the specified amount of time. | Yes
 Change X by () | Changes the sprite's X position by the amount. | Yes
-Set X to () | Sets the sprite's X position to the amount. | No | Use SetPosition() for now
+Set X to () | Sets the sprite's X position to the amount. | Yes
 Change Y by () | Changes the sprite's Y position by the amount. | Yes
-Set Y to () | Sets the sprite's Y position to the amount. | No | Use SetPosition() for now
+Set Y to () | Sets the sprite's Y position to the amount. | Yes
 If on Edge, Bounce | If touching the edge of the screen, the sprite's direction flips over. | Yes
 Set Rotation Style () | This sets the rotation style of a sprite. | No
-X Position | The X position of the sprite. | Yes
-Y Position | The Y position of the sprite. | Yes
-Direction | The direction of the sprite. | No
+X Position | The X position of the sprite. | Yes | me.Position.X
+Y Position | The Y position of the sprite. | Yes | me.Position.Y
+Direction | The direction of the sprite. | Yes
 
 # Looks blocks
 
@@ -42,9 +42,10 @@ Change Size by () | Changes the sprite's size by the amount. | No
 Set Size to ()% | Sets the sprite's size to the amount. | No
 Go to Front | Puts a sprite in the front. | No
 Go Back () Layers | Changes the sprite's layer value by the amount. | No
-Costume # (for sprites) / Backdrop # (for the Stage) | The number of the sprite/Stage's current costume/backdrop in the list. | No
+Costume # (for sprites) | The number of the sprite/Stage's current costume/backdrop in the list. | Yes | Use me.Costume to get the custome name.
+Backdrop # (for the Stage) | | No
 Backdrop Name | Reports the name of the current backdrop. | No
-Size | The sprite's size. | No
+Size | The sprite's size. | Yes | Use me.CostumeSize
 
 # Sound blocks
 

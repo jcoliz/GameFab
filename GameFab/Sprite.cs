@@ -93,6 +93,24 @@ namespace GameFab
         }
 
         /// <summary>
+        /// Sets the X position to the value guven
+        /// </summary>
+        /// <param name="x"></param>
+        public void SetX(double x)
+        {
+            Position = new Point(x, Position.Y);
+        }
+
+        /// <summary>
+        /// Sets the X position to the value guven
+        /// </summary>
+        /// <param name="x"></param>
+        public void SetY(double y)
+        {
+            Position = new Point(Position.X, y);
+        }
+
+        /// <summary>
         /// Get the position of the sprite within the scene
         /// </summary>
         public Point GetPosition()
@@ -123,6 +141,11 @@ namespace GameFab
 
             return Position.X;
         }
+
+        /// <summary>
+        /// The direction we are facing, in degrees, where 0 is straight up
+        /// </summary>
+        public double Direction => heading.HasValue ? heading.Value / Math.PI * 180 + 90 : 0.0;
 
         /// <summary>
         /// Point the sprite toward this target
@@ -281,16 +304,16 @@ namespace GameFab
             return Opacity;
         }
 
-        public enum Direction { None = 0, Left, Right };
+        public enum Facing { None = 0, Left, Right };
 
         /// <summary>
         /// Increase/decrease our visual rotation by the indicated amount
         /// </summary>
         /// <param name="direction"></param>
         /// <param name="degrees"></param>
-        public void TurnBy(Direction direction, double degrees)
+        public void TurnBy(Facing direction, double degrees)
         {
-            if (direction == Direction.Left)
+            if (direction == Facing.Left)
                 degrees = -degrees;
 
             RotationAngle += degrees / 180 * Math.PI;

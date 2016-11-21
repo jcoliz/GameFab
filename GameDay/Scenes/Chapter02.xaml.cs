@@ -166,10 +166,10 @@ namespace GameDay.Scenes
                     while (!me.IsTouching(Astro_Cat) && Running)
                     {
                         me.ChangeYby(1);
-                        me.TurnBy(Sprite.Direction.Right, 5);
+                        me.TurnBy(Sprite.Facing.Right, 5);
                         await Delay(0.2);
                         me.ChangeYby(-1);
-                        me.TurnBy(Sprite.Direction.Right, 5);
+                        me.TurnBy(Sprite.Facing.Right, 5);
                         await Delay(0.2);
                     }
 
