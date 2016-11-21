@@ -30,7 +30,7 @@ Shortly, I hope to generate a documentation page so you can see exactly at a gla
 
 # Are you taking contributions?
 
-Yes! I am most interested in contributions that fill out missing Scratch blocks, plus of course testing in new environments, and filing bugs. Please see the "Major Known Issues" section below.
+Yes! I am most interested in contributions that fill out missing Scratch blocks, plus of course testing in new environments, and filing bugs. New blocks should include new sample levels which demonstrate how to use the blocks.
 
 # How does it work?
 
