@@ -144,10 +144,10 @@ namespace GameDay.Scenes
                 while (Running)
                 {
                     await Delay(Random(0, 1.5));
-                    me.SetPosition(Random(- Dimensions.Width / 2, Dimensions.Width / 2), Dimensions.Height / 2);
+                    me.SetPosition(Random(LeftEdge, RightEdge), TopEdge);
                     me.Show();
 
-                    while (me.Position.Y > - Dimensions.Height / 2)
+                    while (me.Position.Y > BottomEdge)
                     {
                         me.ChangeYby(-40);
                         await Delay(0.3);
@@ -190,8 +190,18 @@ namespace GameDay.Scenes
 
                 me.SetCostume("02/2.png");
                 me.PointInDirection_Rotate(0);
+                me.SetPosition(0, 0);
                 me.Show();
                 me.Say("Stargate Opened!!!");
+
+                while (!me.IsTouching(Astro_Cat) && Running)
+                {
+                    await Delay(0.2);
+                }
+                me.Hide();
+                Astro_Cat.Say("Winner!");
+                Running = false;
+
             });
         }
     }
