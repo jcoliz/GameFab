@@ -12,7 +12,7 @@ Under the hood, the graphics system runs on [Win2D](https://github.com/Microsoft
 
 # How to Get Started
 
-This project contains the core library and a sample with several game scenes. These games were adapted from the "Getting Started With Scratch" book from No Starch Press.
+This project contains the core library and a sample with several game scenes. It includes mini-games were adapted from the [Super Scratch Programming Adventure!](https://www.nostarch.com/scratch) book from No Starch press.
 
 1. Clone the 'release' branch of the repository
 1. Open GameFabJr.sln using Visual Studio 2015
@@ -24,7 +24,7 @@ This project contains the core library and a sample with several game scenes. Th
 
 Really, I am just getting started. My immediate goal is to fully implement all the projects contained in the [Super Scratch Programming Adventure!](https://www.nostarch.com/scratch) book from No Starch press. Our children used this book to learn Scratch, so I have followed it as a guide when implementing Game Fab.
 
-Right now, I have completed two of the book's chapters to a fully functional level. There are some edge case blocks, such as the 'color' effect, which I have put off until later.
+Right now, I have completed two of the book's chapters to a fully functional mini-game. There are some edge case blocks, such as the 'color' effect, which I have put off until later.
 
 Shortly, I hope to generate a documentation page so you can see exactly at a glance which blocks are implemented. Right now, you can check the comments in the Sprite.cs and Scene.cs files for this information.
 
