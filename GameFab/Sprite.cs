@@ -105,9 +105,11 @@ namespace GameFab
         /// </summary>
         /// <param name="y"></param>
         /// <returns></returns>
-        public void ChangeYby(double y)
+        public double ChangeYby(double y)
         {
             Position = new Point(Position.X, Position.Y + y);
+
+            return Position.Y;
         }
 
         /// <summary>

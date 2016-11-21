@@ -37,6 +37,7 @@ namespace GameDay.Scenes
             Running = false;
             Player.KeyPressed -= Player_KeyPressed;
             Player.MessageReceived -= Player_MessageReceived;
+            Player = null;
         }
 
         public Variable<int> Score = new Variable<int>(0);
@@ -46,8 +47,6 @@ namespace GameDay.Scenes
         private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
             Player = CreateSprite(Player_SceneLoaded);
-            Player.KeyPressed += Player_KeyPressed;
-            Player.MessageReceived += Player_MessageReceived;
 
             SetBackground("Flappy/Butterfly/Background.png");
 
@@ -94,14 +93,20 @@ namespace GameDay.Scenes
                 me.SetCostume("Flappy/Butterfly/Player.png");
                 me.SetPosition(LeftEdge / 2, 0);
                 me.Show();
+                me.KeyPressed += Player_KeyPressed;
+                me.MessageReceived += Player_MessageReceived;
 
                 // Apply gravity
-                while(Running)
+                while (Running)
                 {
                     yspeed += gravity;
-                    me.ChangeYby(yspeed);
+                    var y = me.ChangeYby(yspeed);
+                    if (y > TopEdge || y < BottomEdge)
+                        Broadcast("gameover");
                     await Delay(0.1);
                 }
+                me.KeyPressed -= Player_KeyPressed;
+                me.MessageReceived -= Player_MessageReceived;
             });
         }
         private void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)

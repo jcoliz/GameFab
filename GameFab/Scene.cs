@@ -123,6 +123,16 @@ namespace GameFab
                 AppViewBackButtonVisibility.Collapsed;
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            Window.Current.CoreWindow.KeyDown -= CoreWindow_KeyDown;
+            Window.Current.CoreWindow.PointerPressed -= CoreWindow_PointerPressed;
+            Window.Current.CoreWindow.PointerReleased -= CoreWindow_PointerReleased;
+            base.Loaded -= Scene_Loaded;
+            SystemNavigationManager.GetForCurrentView().BackRequested -= SystemNavigationManager_BackRequested;
+        }
+
         private void SystemNavigationManager_BackRequested(object sender, BackRequestedEventArgs e)
         {
             if (!e.Handled && this.Frame.CanGoBack)
