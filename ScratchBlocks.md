@@ -1,6 +1,7 @@
 # Motion blocks
 
 Block | Function | Available? | Comments
+--- | --- | --- | ---
 Move () Steps | Moves the sprite forward the amount of steps in the direction the sprite is facing. | 
 Turn () Degrees (Clockwise) | Turns the sprite (clockwise) the specified amount. | Yes
 Turn () Degrees (Counter-clockwise) | Turns the sprite (counter-clockwise) the specified amount. | Yes
@@ -11,7 +12,7 @@ Go to () | Moves the sprite to the mouse-pointer or another sprite. | No
 Glide () Secs to X: () Y: () | Glides the sprite to the location, taking as long as the specified amount of time. | Yes
 Change X by () | Changes the sprite's X position by the amount. | Yes
 Set X to () | Sets the sprite's X position to the amount. | No
-Change Y by () — Changes the sprite's Y position by the amount. | Yes
+Change Y by () â€” Changes the sprite's Y position by the amount. | Yes
 Set Y to () | Sets the sprite's Y position to the amount. | No
 If on Edge, Bounce | If touching the edge of the screen, the sprite's direction flips over. | Yes
 Set Rotation Style () | This sets the rotation style of a sprite. | No
@@ -22,6 +23,7 @@ Direction | The direction of the sprite. | No
 # Looks blocks
 
 Block | Function | Available? | Comments
+--- | --- | --- | ---
 Say () for () Secs | A speech bubble appears over the sprite and stays for the specified amount of time. | No | Use Say() and Wait
 Say () | A speech bubble appears over the sprite and will not go away over time. | Yes
 Think () for () Secs | A thought bubble appears over the sprite and stays for the specified amount of time. | No | Use Say
@@ -47,6 +49,7 @@ Size | The sprite's size. | No
 # Sound blocks
 
 Block | Function | Available? | Comments
+--- | --- | --- | ---
 Play Sound () | Plays a sound without pausing the script. | Yes
 Play Sound () Until Done | Plays a sound and pauses the script until it finishes.
 Stop All Sounds | Stops all playing sounds.
@@ -65,10 +68,10 @@ Tempo | The tempo.
 
 Pen blocks are completely not available.
 
-Clear — Removes all pen marks put on the screen.
-Stamp — Pens the sprite's image on the screen. Can be removed using clear.
-Pen Down — Puts the sprite's pen down.
-Pen Up — Puts the sprite's pen up.
+Clear â€” Removes all pen marks put on the screen.
+Stamp â€” Pens the sprite's image on the screen. Can be removed using clear.
+Pen Down â€” Puts the sprite's pen down.
+Pen Up â€” Puts the sprite's pen up.
 Set Pen Color to () (color-picker) | Sets the pen color to the specified color shown on the picture.
 Change Pen Color by () | Changes the pen color by the amount.
 Set Pen Color to () (number) | Sets the pen color to the amount.
@@ -80,6 +83,7 @@ Set Pen Size to () | Sets the pen size to the amount.
 # Variables blocks
 
 Block | Function | Available? | Comments
+--- | --- | --- | ---
 Set () to () | Sets the specified variable to the amount. | Yes | Use C# variables or Variable<T> to display it
 Change () by () | Changes the specified variable by the amount. | Yes | Use C#
 Show Variable () | Shows the variable's Stage Monitor. | No
@@ -89,20 +93,21 @@ Hide Variable () | Hides the variable's Stage Monitor. | No
 
 List blocks can all be replaced by C# List<T> operations.
 
-Add () to () — Adds an item to the list (the item goes at the bottom of the list of items) with the specified content in it.
-Delete () of () — Deletes the item of the list.
-Insert () at () of () — Adds an item to the list (the item goes where you specify in the list of items) with the specified content in it.
-Replace Item () of () with () — Replaces the item's content with the specified content.
-Show List () — Shows a list.
-Hide List () — Hides a list.
-() — The list's value.
-Item () of () — The item's value.
-Length of () — How many items there are in the specified list.
-() Contains () — The condition for checking if an item's content is the specified text.
+Add () to () â€” Adds an item to the list (the item goes at the bottom of the list of items) with the specified content in it.
+Delete () of () â€” Deletes the item of the list.
+Insert () at () of () â€” Adds an item to the list (the item goes where you specify in the list of items) with the specified content in it.
+Replace Item () of () with () â€” Replaces the item's content with the specified content.
+Show List () â€” Shows a list.
+Hide List () â€” Hides a list.
+() â€” The list's value.
+Item () of () â€” The item's value.
+Length of () â€” How many items there are in the specified list.
+() Contains () â€” The condition for checking if an item's content is the specified text.
 
 # Event blocks
 
 Block | Function | Available? | Comments
+--- | --- | --- | ---
 When Green Flag Clicked | When the flag is clicked, the script activates. | Yes | Use Loaded event
 When () Key Pressed | When the specified key is pressed, the script activates. | Yes | Use KeyPressed event
 When This Sprite Clicked | When the sprite is clicked, the script activates. | No
@@ -115,6 +120,7 @@ Broadcast () and Wait | Like the Broadcast () block, but pauses the script until
 # Control blocks
 
 Block | Function | Available? | Comments
+--- | --- | --- | ---
 When I Start as a Clone (sprites only) | This hat block is triggered whenever a clone is created, and will only be run by that clone. | No
 Wait () Secs | Pauses the script for the amount of time. | Yes | Use await Delay()
 Wait Until () | Pauses the script until the condition is true. | No
@@ -130,7 +136,8 @@ Delete This Clone (sprites only) | Deletes a clone. | Yes | Use me.Remove()
 # Sensing blocks
 
 Block | Function | Available? | Comments
-Ask () and Wait | An input box appears — you type the value in and it stores the value in the answer variable. | No
+--- | --- | --- | ---
+Ask () and Wait | An input box appears â€” you type the value in and it stores the value in the answer variable. | No
 Reset Timer | Resets the timer. | No
 Turn Video () | Turns the video on. | No
 Set Video Transparency to ()% | Sets the transparency of the video. | No
@@ -154,9 +161,10 @@ Username | The username of a user. | No
 # Operators blocks
 
 Block | Function | Available? | Comments
-() < () | The condition for checking if a value is less than the other. | Yes
+--- | --- | --- | ---
+() &lt; () | The condition for checking if a value is less than the other. | Yes
 () = () | The condition for checking if two values are equal. | Yes
-() > () | The condition for checking if a value is greater than the other. | Yes
+() &gt; () | The condition for checking if a value is greater than the other. | Yes
 () and () | Joins two conditions. | Yes 
 () or () | Joins two conditions, but they function separately. | Yes
 Not () | Makes the condition checked if it is false, not true. | Yes
