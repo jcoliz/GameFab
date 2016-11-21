@@ -8,7 +8,7 @@ Turn () Degrees (Counter-clockwise) | Turns the sprite (counter-clockwise) the s
 Point in Direction () | Points the sprite in the direction. | Yes
 Point Towards () | Points the sprite towards the mouse-pointer or another sprite. | Yes
 Go to X: () Y: () | Moves the sprite to the specified X and Y position. | Yes
-Go to () | Moves the sprite to the mouse-pointer or another sprite. | No
+Go to () | Moves the sprite to the mouse-pointer or another sprite. | Yes | Use me.SetPosition(othersprite.Position)
 Glide () Secs to X: () Y: () | Glides the sprite to the location, taking as long as the specified amount of time. | Yes
 Change X by () | Changes the sprite's X position by the amount. | Yes
 Set X to () | Sets the sprite's X position to the amount. | No | Use SetPosition() for now
