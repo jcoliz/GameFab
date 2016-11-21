@@ -8,7 +8,7 @@ I have chosen to approach this problem using C# and .NET to create Universal Win
 
 This initial choice is largely because it is the environment I am most familiar with, so it's easiest to get up and running. In the future, I would love to give kids the ability to build and distribute on iOS as well. I expect to use Xamarin for this, though I am open to a direct swift/SpriteKit implementation.
 
-Under the hood, the graphics system runs on [Win2D](https://github.com/Microsoft/Win2D), which makes Direct2D immediately accessible to UWP apps. This is an excellent system, which I highly recommend.
+Under the hood, the graphics system runs on [Win2D](https://github.com/Microsoft/Win2D), which makes Direct2D immediately accessible to UWP apps. This is an excellent system--I highly recommend it!
 
 # How to Get Started
 
@@ -203,9 +203,9 @@ Then write the event handler itself:
 
 # Assets: Costumes, Sounds files, etc.
 
-Place all visual and audio assets to be in the "Assets" folder of an app. Within that folder, you can organize or name them however you like. 
+Place all visual and audio assets in the "Assets" folder of an app. Within that folder, you can organize or name them however you like. 
 
-Within your scene, you'll override the "Assets" property of the Scene, and return a list of all image assets used in the scene. This ensures they are loaded into the Win2D drawing system, and ready for drawing.
+Within your scene, you'll override the "Assets" property of the Scene, to return a list of all image assets used in the scene. This ensures they are loaded into the Win2D drawing system and ready for drawing.
 
 ```c#
 	protected override IEnumerable<string> Assets => new[] 
@@ -215,7 +215,7 @@ Within your scene, you'll override the "Assets" property of the Scene, and retur
 	};
 ```
 
-To refer to these assets within blocks, descrbe their name and/or subfolder within 'Assets'. Scratch blocks which would have taken an asset name, such as SetCostume, here take a filename string, which should be in the Assets directory, for example:
+To refer to these assets within blocks, describe their name and/or subfolder within 'Assets'. Scratch blocks which would have taken an asset name, such as SetCostume, here take a filename string, which should be in the Assets directory, for example:
 
 ``` c#
 	me.SetCostume("Vampire/Fly01.png");
@@ -226,7 +226,7 @@ To refer to these assets within blocks, descrbe their name and/or subfolder with
 
 In Scratch, the dimensions of the stage are fixed at 480x360 pixels. Using GameFab, you can set them to whatever you like. Unless you change them, the stage will be 1280x720 pixels. When the application is in a window larger than this size, the stage is surrounded by a black mat. If the application is in a smaller window, all the assets will be automatically scaled down to fit the smaller window.
 
-To change the dimensions, set the 'Dimensions' property of the scene to a new point. In a script, simply do this:
+To change the dimensions, set the 'Dimensions' property of the scene to a new size. In a script, simply do this:
 
 ```c#
 	Dimensions = new Size(480,360);
