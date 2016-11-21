@@ -26,9 +26,9 @@ namespace GameDay.Scenes
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class _02 : Scene
+    public sealed partial class Chapter02 : Scene
     {
-        public _02()
+        public Chapter02()
         {
             this.InitializeComponent();
         }

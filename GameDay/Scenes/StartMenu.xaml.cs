@@ -29,12 +29,12 @@ namespace GameDay.Scenes
 
         private void Scene_02_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Scenes._02));
+            Frame.Navigate(typeof(Scenes.Chapter02));
         }
 
         private void Scene_04_2_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Scenes.New_04));
+            Frame.Navigate(typeof(Scenes.Chapter04));
         }
 
         private void Scene_Flappy_Click(object sender, RoutedEventArgs e)

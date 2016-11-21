@@ -17,9 +17,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GameDay.Scenes
 {
-    public sealed partial class New_04 : Scene
+    public sealed partial class Chapter04 : Scene
     {
-        public New_04()
+        public Chapter04()
         {
             this.InitializeComponent();
         }
