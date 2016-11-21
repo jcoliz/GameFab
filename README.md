@@ -246,6 +246,29 @@ The scene includes helper properties to describe the visisble edges of the scene
 
 As with Scratch, the center of the screen is 0,0. To move a sprite to the right, increase its X position. To move it up, increase its Y position. Sprites can be rotated to any angle, expressed in degrees (0-360), where 0 points straight up.
 
+# Replace the 'Forever' block with 'while (Running)'
+
+We won't use the concept of 'Forever' in Game Fab. There is currently no way for the system to cancel running scripts, so scripts need to be set up to cleanly end themselves. The simple way to do this is use the Scene's 'Running' variable. The following code increments a timer variable once every second, as long as the scene is currently running. Instead of a 'Forever' block, you'll use this 'while (Running)' construct.
+
+```c#
+	while (Running)
+	{
+		++Timer.Value;
+		await Delay(1.0);
+	}
+```
+
+You can control this in your scripts as well. Once you have reached the end of normal operation, you can simply set 'Running' to 'false'. This is like the 'stop all scripts' block.
+
+```C#
+    Chances.Value--;
+    if (Chances.Value <= 0)
+    {
+        Running = false;
+        Sprite.Broadcast("lose");
+    }
+```
+
 # Adding UI
 
 The Scene definition in XAML allows us to add in other UI elements on top of the drawing canvas. For example, here is the XAML scene definition for the Flappy example. This adds an additional bit of XAML UI atop the drawn scene.
