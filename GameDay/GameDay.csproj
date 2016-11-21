@@ -143,6 +143,12 @@
     <Content Include="Assets\04\S.png" />
     <Content Include="Assets\04\U.png" />
     <Content Include="Assets\04\V.png" />
+    <Content Include="Assets\Flappy\Butterfly\Background.png" />
+    <Content Include="Assets\Flappy\Butterfly\Obstacle-Bottom-2.png" />
+    <Content Include="Assets\Flappy\Butterfly\Obstacle-Bottom-1.png" />
+    <Content Include="Assets\Flappy\Butterfly\Obstacle-Top-1.png" />
+    <Content Include="Assets\Flappy\Butterfly\Obstacle-Top-2.png" />
+    <Content Include="Assets\Flappy\Butterfly\Player.png" />
     <Content Include="Assets\Flappy\Pillar.png" />
     <Content Include="Assets\Flappy\Player.png" />
     <Content Include="Properties\Default.rd.xml" />

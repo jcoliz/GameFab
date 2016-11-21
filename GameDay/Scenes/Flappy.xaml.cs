@@ -35,15 +35,25 @@ namespace GameDay.Scenes
             base.OnNavigatedFrom(e);
 
             Running = false;
+            Player.KeyPressed -= Player_KeyPressed;
+            Player.MessageReceived -= Player_MessageReceived;
         }
+
+        public Variable<int> Score = new Variable<int>(0);
+
+        Sprite Player;
 
         private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
+            Player = CreateSprite(Player_SceneLoaded);
+            Player.KeyPressed += Player_KeyPressed;
+            Player.MessageReceived += Player_MessageReceived;
+
+            SetBackground("Flappy/Butterfly/Background.png");
+
             // Spawn the needed number of pillars over the correct time.
             Task.Run(async () => 
             {
-                var player = CreateSprite(Player_SceneLoaded);
-                player.KeyPressed += Player_KeyPressed;
                 while (Running)
                 {
                     CreateSprite(this.Pillar_SceneLoaded);
@@ -62,17 +72,26 @@ namespace GameDay.Scenes
             });
         }
 
+        private void Player_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "gameover")
+            {
+                Running = false;
+                Player.Say("Game over!");
+            }
+        }
+
         double yspeed = 0;
         double gravity = -2; // in pixels per tick squared
         bool Running = true;
 
-        protected override IEnumerable<string> Assets => new[] { "Flappy/Pillar.png", "Flappy/Player.png" };
+        protected override IEnumerable<string> Assets => new[] { "Flappy/Butterfly/Background.png", "Flappy/Butterfly/Obstacle-Top-1.png", "Flappy/Butterfly/Obstacle-Bottom-1.png", "Flappy/Butterfly/Player.png" };
 
         private void Player_SceneLoaded(Sprite me)
         {
             Task.Run(async () => 
             {
-                me.SetCostume("Flappy/Player.png");
+                me.SetCostume("Flappy/Butterfly/Player.png");
                 me.SetPosition(LeftEdge / 2, 0);
                 me.Show();
 
@@ -90,8 +109,11 @@ namespace GameDay.Scenes
             // Apply upward force
             if (what.VirtualKey == Windows.System.VirtualKey.Space)
             {
-                yspeed = 20;
-                me.ChangeYby(yspeed);
+                if (Running)
+                {
+                    yspeed = 20;
+                    me.ChangeYby(yspeed);
+                }
             }
         }
 
@@ -102,15 +124,15 @@ namespace GameDay.Scenes
                 double opening_center = Random(BottomEdge + 200, TopEdge - 200);
                 double opening_bottom = opening_center - 100;
                 double opening_top = opening_center + 100;
-                double pillar_image_height = 300;
+                double pillar_image_height = 472;
 
-                me.SetCostume("Flappy/Pillar.png");
-                me.SetPosition(RightEdge, opening_bottom - pillar_image_height / 2 );
+                me.SetCostume("Flappy/Butterfly/Obstacle-Bottom-1.png");
+                me.SetPosition(RightEdge + 50, opening_bottom - pillar_image_height / 2 );
 
                 var top = CreateSprite();
                 me.Variable["top"] = top;
-                top.SetCostume("Flappy/Pillar.png");
-                top.SetPosition(RightEdge, opening_top + pillar_image_height / 2);
+                top.SetCostume("Flappy/Butterfly/Obstacle-Top-1.png");
+                top.SetPosition(RightEdge + 50, opening_top + pillar_image_height / 2);
                 me.Show();
                 top.Show();
 
@@ -123,13 +145,22 @@ namespace GameDay.Scenes
             if (what.message == "update")
             {
                 var top = me.Variable["top"] as Sprite;
+                var x_before = me.GetPosition().X;
                 top.ChangeXby(-5);
                 var x = me.ChangeXby(-5);
-                if (x < LeftEdge)
+                if (x < Player.Position.X && x_before >= Player.Position.X)
+                    ++Score.Value;
+
+                if (x < LeftEdge - 100)
                 {
                     me.MessageReceived -= Pillar_MessageReceived;
                     me.Destroy();
                     top.Destroy();
+                }
+
+                if (me.IsTouching(Player) || top.IsTouching(Player))
+                {
+                    Broadcast("gameover");
                 }
             }
         }

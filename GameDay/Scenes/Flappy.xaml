@@ -5,7 +5,11 @@
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
     xmlns:gfab="using:GameFab">
 
-    <Grid Background="Black">
-        <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
-    </Grid>
+  <Grid Background="Black">
+    <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
+    <StackPanel HorizontalAlignment="Center" Margin="20,0">
+      <TextBlock Text="Score" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+      <TextBlock Text="{x:Bind Score.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+    </StackPanel>
+  </Grid>
 </gfab:Scene>

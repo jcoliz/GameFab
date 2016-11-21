@@ -214,12 +214,12 @@ namespace GameFab
                 Rect rect2;
 
                 if (Visible)
-                    rect1 = new Rect(Position, CostumeSize);
+                    rect1 = new Rect(new Point( Position.X - CostumeSize.Width/2,Position.Y - CostumeSize.Height/2), CostumeSize);
                 else
                     rect1 = Rect.Empty;
 
                 if (fe2.Visible)
-                    rect2 = new Rect(fe2.Position, fe2.CostumeSize);
+                    rect2 = new Rect(new Point(fe2.Position.X - fe2.CostumeSize.Width / 2, fe2.Position.Y - fe2.CostumeSize.Height / 2), fe2.CostumeSize);
                 else
                     rect2 = Rect.Empty;
 
