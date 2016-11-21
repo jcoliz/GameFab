@@ -259,10 +259,21 @@ The Scene definition in XAML allows us to add in other UI elements on top of the
 		xmlns:gfab="using:GameFab">
 
 	  <Grid Background="Black">
-		<win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
+		<win2d:CanvasAnimatedControl 
+			Draw="CanvasAnimatedControl_Draw" 
+			CreateResources="CanvasAnimatedControl_CreateResources" />
 		<StackPanel HorizontalAlignment="Center" Margin="20,0">
-		  <TextBlock Text="Score" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
-		  <TextBlock Text="{x:Bind Score.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+		  <TextBlock 
+			Text="Score" 
+			FontSize="30" 
+			Foreground="White" 
+			HorizontalAlignment="Center"/>
+		  <TextBlock 
+			Text="{x:Bind Score.Value,Mode=OneWay}" 
+			FontSize="100" 
+			Foreground="White" 
+			HorizontalAlignment="Center" 
+			Margin="0,-20"/>
 		</StackPanel>
 	  </Grid>
 	</gfab:Scene>
