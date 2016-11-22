@@ -40,8 +40,8 @@ Set () Effect to () | Sets the specified effect to the amount. | No
 Clear Graphic Effects | Clears all graphic effects on the sprite. | No
 Change Size by () | Changes the sprite's size by the amount. | No
 Set Size to ()% | Sets the sprite's size to the amount. | No
-Go to Front | Puts a sprite in the front. | No
-Go Back () Layers | Changes the sprite's layer value by the amount. | No
+Go to Front | Puts a sprite in the front. | Yes
+Go Back () Layers | Changes the sprite's layer value by the amount. | Yes
 Costume # (for sprites) | The number of the sprite/Stage's current costume/backdrop in the list. | Yes | Use me.Costume to get the custome name.
 Backdrop # (for the Stage) | | No
 Backdrop Name | Reports the name of the current backdrop. | No

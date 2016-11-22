@@ -82,6 +82,7 @@ namespace GameDay.Scenes
                 me.SetCostume("Flappy/Butterfly/Player.png");
                 me.SetPosition(LeftEdge / 2, 0);
                 me.CollisionRadius = 5.0;
+                me.GoToFront();
                 me.Show();
                 me.KeyPressed += Player_KeyPressed;
                 me.MessageReceived += Player_MessageReceived;

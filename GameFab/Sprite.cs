@@ -386,6 +386,28 @@ namespace GameFab
             }
             this.SetPosition(destination.X, destination.Y);
         }
+
+        /// <summary>
+        /// Bring to the front-most layer
+        /// </summary>
+        public void GoToFront()
+        {
+            lock(Sprites)
+            {
+                var frontest = Sprites.OrderBy(x => -x.Layer).First();
+                Layer = frontest.Layer + 1;
+            }
+        }
+
+        /// <summary>
+        /// Move sprite deeper into the scene (away from camera) this many layers
+        /// </summary>
+        /// <param name="numlayers"></param>
+        public void GoBackLayers(int numlayers)
+        {
+            Layer -= numlayers;
+        }
+
         #endregion
 
         #region Event handlers you use to launch scripts
@@ -503,6 +525,11 @@ namespace GameFab
         /// This is set by the scene when we are drawn.
         /// </summary>
         public Size CostumeSize { get; set; }
+
+        /// <summary>
+        /// Visual layer. Higher numbers are closer to the viewer
+        /// </summary>
+        public int Layer { get; set; } = 0;
 
         public static IReadOnlyList<Sprite> Sprites => All;
 

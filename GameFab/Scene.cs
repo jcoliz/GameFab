@@ -230,7 +230,7 @@ namespace GameFab
                         }
 
                         var center = new Point(sender.Size.Width / 2, sender.Size.Height / 2);
-                        foreach (var sprite in Sprite.Sprites)
+                        foreach (var sprite in Sprite.Sprites.OrderBy(x => x.Layer))
                         {
                             if (sprite.Costume != null && sprite.Visible && bitmaps.ContainsKey(sprite.Costume))
                             {
@@ -274,6 +274,10 @@ namespace GameFab
                         }
 
                     }
+
+                }
+                catch (Exception ex)
+                {
 
                 }
                 finally
