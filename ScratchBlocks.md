@@ -122,9 +122,9 @@ Broadcast () and Wait | Like the Broadcast () block, but pauses the script until
 
 Block | Function | Available? | Comments
 --- | --- | --- | ---
-When I Start as a Clone (sprites only) | This hat block is triggered whenever a clone is created, and will only be run by that clone. | No
+When I Start as a Clone (sprites only) | This hat block is triggered whenever a clone is created, and will only be run by that clone. | Yes | Send your script to CreateSprite()
 Wait () Secs | Pauses the script for the amount of time. | Yes | Use await Delay()
-Wait Until () | Pauses the script until the condition is true. | No
+Wait Until () | Pauses the script until the condition is true. | Yes | Use while(!condition) await Delay()
 Create Clone of () | Creates the specified clone. | Yes | Use CreateSprite()
 Repeat () | A loop that repeats the specified amount of times. | Yes | Use while()
 Forever | A loop that will never end. | Yes | Use while(Running)
@@ -155,8 +155,8 @@ Loudness | How loud the noise is that the microphone is sensing. | No
 Timer | How much time has passed since the Scratch program was opened or the timer reset. | No
 Video () on () | The video motion or direction of video motion on an object. | No
 () of () | The X position, Y position, direction, costume, size or volume of the Stage or a sprite. | No
-Current () | The specified time unit selected. | No
-Days Since 2000 | The number of days since 2000. | No
+Current () | The specified time unit selected. | Yes | Use C# DateTime.Now
+Days Since 2000 | The number of days since 2000. | Yes | Use C# DateTime.Now - new DateTime(2000,1,1)
 Username | The username of a user. | No
 
 # Operators blocks
@@ -178,5 +178,5 @@ Join ()() | The two values put right next to each other. | Yes
 Letter () of () | The specified character of the value. | Yes
 Length of () | The length of the value. | Yes
 () Mod () | The remainder of the division. | Yes
-Round () | Rounds the value to the nearest whole number. | Yes
+Round () | Rounds the value to the nearest whole number. | Yes | Use Math.Round
 () of () | The absolute value (abs), square root (sqrt), sine (sin), cosine (cos), tangent (tan), asine (asin), acosine (acos), atangent (atan), natural logarithm (ln), logarithm (log), exponential function (e^), or base 10 exponential function (10^) of a specified value. | Yes | These functions are available in the 'Math' namespace, e.g. Math.Sin
