@@ -164,12 +164,66 @@ namespace GameFab
         /// </remarks>
         /// <param name="angle">Angle to point, in degrees, where zero is up</param>
         /// <returns></returns>
-        public void PointInDirection_Heading(double angle)
+        public void PointInDirection(double angle)
         {
-            angle -= 90;
-            var radians = angle * Math.PI / 180.0;
-            heading = - radians;
+            heading = - (angle-90) * Math.PI / 180.0;
+
+            if (rotationstyle == RotationStyle.AllAround)
+            {
+                PointInDirection_Rotate(angle);
+            }
+            else if (rotationstyle == RotationStyle.LeftRight)
+            {
+                if (angle > 0)
+                    PointInDirection_Rotate(90);
+                else
+                    PointInDirection_Rotate(-90);
+            }
         }
+
+        public enum RotationStyle { AllAround = 0, LeftRight, DoNotRotate };
+
+        public void SetRotationStyle(RotationStyle style)
+        {
+            rotationstyle = style;
+
+            if (rotationstyle == RotationStyle.DoNotRotate)
+            {
+                PointInDirection_Rotate(90);
+            }
+        }
+
+
+        public enum Facing { None = 0, Left, Right };
+
+        /// <summary>
+        /// Increase/decrease our visual rotation by the indicated amount
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="degrees"></param>
+        public void TurnBy(Facing direction, double degrees)
+        {
+            if (direction == Facing.Left)
+                degrees = -degrees;
+
+            RotationAngle += degrees / 180 * Math.PI;
+
+            if (RotationAngle < 2 * Math.PI)
+                RotationAngle += 2 * Math.PI;
+
+            if (RotationAngle > 2 * Math.PI)
+                RotationAngle -= 2 * Math.PI;
+        }
+
+        /// <summary>
+        /// Set the angle of rotation for the sprite
+        /// </summary>
+        /// <param name="degrees"></param>
+        private void PointInDirection_Rotate(double degrees)
+        {
+            RotationAngle = (degrees - 90) / 180 * Math.PI;
+        }
+
 
         /// <summary>
         /// Move in the heading we're pointing by the indicated distance
@@ -303,37 +357,6 @@ namespace GameFab
 
             return Opacity;
         }
-
-        public enum Facing { None = 0, Left, Right };
-
-        /// <summary>
-        /// Increase/decrease our visual rotation by the indicated amount
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <param name="degrees"></param>
-        public void TurnBy(Facing direction, double degrees)
-        {
-            if (direction == Facing.Left)
-                degrees = -degrees;
-
-            RotationAngle += degrees / 180 * Math.PI;
-
-            if (RotationAngle < 2 * Math.PI)
-                RotationAngle += 2 * Math.PI;
-
-            if (RotationAngle > 2 * Math.PI)
-                RotationAngle -= 2 * Math.PI;
-        }
-
-        /// <summary>
-        /// Set the angle of rotation for the sprite
-        /// </summary>
-        /// <param name="degrees"></param>
-        public void PointInDirection_Rotate(double degrees)
-        {
-            RotationAngle = degrees / 180 * Math.PI;
-        }
-
         /// <summary>
         /// Move the sprite over time to a certain position
         /// </summary>
@@ -492,6 +515,7 @@ namespace GameFab
         int? nextcostumeindex = null;
         double? heading = null;
         bool Removed = false; // If this has been removed from consideration, we will want to clean these up at some point
+        RotationStyle rotationstyle = RotationStyle.AllAround;
 
         private static List<Sprite> All = new List<Sprite>();
 

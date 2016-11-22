@@ -181,7 +181,7 @@ namespace GameDay.Scenes
                 }
 
                 me.SetCostume("02/2.png");
-                me.PointInDirection_Rotate(0);
+                me.PointInDirection(90);
                 me.SetPosition(0, 0);
                 me.Show();
                 me.Say("Stargate Opened!!!");

@@ -15,7 +15,7 @@ Set X to () | Sets the sprite's X position to the amount. | Yes
 Change Y by () | Changes the sprite's Y position by the amount. | Yes
 Set Y to () | Sets the sprite's Y position to the amount. | Yes
 If on Edge, Bounce | If touching the edge of the screen, the sprite's direction flips over. | Yes
-Set Rotation Style () | This sets the rotation style of a sprite. | No
+Set Rotation Style () | This sets the rotation style of a sprite. | Yes
 X Position | The X position of the sprite. | Yes | me.Position.X
 Y Position | The Y position of the sprite. | Yes | me.Position.Y
 Direction | The direction of the sprite. | Yes

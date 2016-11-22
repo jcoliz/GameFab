@@ -90,6 +90,7 @@ namespace GameDay.Scenes
                 me.SetCostumes("04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
                 me.SetPosition(RightEdge, 0);
                 me.PointTowards(Neo_Cat.Position);
+                me.SetRotationStyle(Sprite.RotationStyle.DoNotRotate);
                 me.Show();
 
                 Task.Run(async () =>
@@ -107,7 +108,7 @@ namespace GameDay.Scenes
                     {
                         if (me.IsTouching(Neo_Cat))
                         {
-                            me.PointInDirection_Heading(Random(-45, 45));
+                            me.PointInDirection(Random(-45, 45));
                             Score.Value++;
 
                             if (Score.Value >= 30)

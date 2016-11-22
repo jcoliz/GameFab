@@ -36,9 +36,10 @@ namespace GameDay.Scenes
         private void Player_SceneLoaded_AllAround(Sprite me)
         {
             // Set up the player with all initial values and event handlers
-            me.SetPosition(LeftEdge * 2 / 3, 0);
+            me.SetPosition(LeftEdge * 2 / 3 - 100, 0);
             me.Show();
             me.SetCostume("04/7.png");
+            me.SetRotationStyle(Sprite.RotationStyle.AllAround);
 
             Task.Run(async () =>
             {
@@ -49,9 +50,10 @@ namespace GameDay.Scenes
         private void Player_SceneLoaded_DoNotRotate(Sprite me)
         {
             // Set up the player with all initial values and event handlers
-            me.SetPosition(0, 0);
+            me.SetPosition(-100, 0);
             me.Show();
             me.SetCostume("04/7.png");
+            me.SetRotationStyle(Sprite.RotationStyle.DoNotRotate);
 
             Task.Run(async () =>
             {
@@ -62,9 +64,10 @@ namespace GameDay.Scenes
         private void Player_SceneLoaded_LeftRight(Sprite me)
         {
             // Set up the player with all initial values and event handlers
-            me.SetPosition(RightEdge * 2 / 3, 0);
+            me.SetPosition(RightEdge * 2 / 3 - 100, 0);
             me.Show();
             me.SetCostume("04/7.png");
+            me.SetRotationStyle(Sprite.RotationStyle.LeftRight);
 
             Task.Run(async () =>
             {
@@ -84,20 +87,15 @@ namespace GameDay.Scenes
 
         private async Task Square(Sprite me)
         {
+            int angle = 0;
             while (Running)
             {
-                me.PointInDirection_Heading(0);
-                me.Say("Up");
+                me.PointInDirection(angle);
+                me.Say(angle.ToString());
                 await Move(me);
-                me.PointInDirection_Heading(90);
-                me.Say("Right");
-                await Move(me);
-                me.PointInDirection_Heading(180);
-                me.Say("Down");
-                await Move(me);
-                me.PointInDirection_Heading(-90);
-                me.Say("Left");
-                await Move(me);
+                angle += 45;
+                if (angle > 180)
+                    angle -= 360;
             }
         }
 
