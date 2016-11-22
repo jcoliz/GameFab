@@ -378,8 +378,14 @@ namespace GameFab
             public string message;
         }
 
+        /// <summary>
+        /// Arguments which are passed in for an event involving the pointer
+        /// </summary>
         public struct PointerArgs
         {
+            /// <summary>
+            /// The position of the mouse pointer when the event occurred
+            /// </summary>
             public Point mousepoint;
         }
 
@@ -416,11 +422,15 @@ namespace GameFab
         /// </summary>
         public event SpriteEventHandler SceneLoaded;
 
+        /// <summary>
+        /// Event fired when a key is pressed
+        /// </summary>
         public event SpriteEventHandler<Windows.UI.Core.KeyEventArgs> KeyPressed;
 
         #endregion
 
         #region Public Properties/Methods you might use from scripts, but are not strictly Scratch blocks
+            
         /// <summary>
         /// Stash sprite-specific varaiables here
         /// </summary>
@@ -445,6 +455,7 @@ namespace GameFab
         /// Or set to null to have it behave like a regular rectangle.
         /// </summary>
         public double? CollisionRadius { get; set; } = null;
+        
         #endregion
 
         #region Drawing parameters used by the scene to render us
