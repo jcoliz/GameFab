@@ -170,6 +170,10 @@ namespace GameFab
 
             var x =  args.CurrentPoint.Position.X - (sender.Bounds.Right - sender.Bounds.Left) / 2;
             var y = (sender.Bounds.Bottom - sender.Bounds.Top) / 2 - args.CurrentPoint.Position.Y;
+
+            x /= scale;
+            y /= scale;
+
             MousePoint = new Point(x,y);
             Sprite.SendPointerPressed(MousePoint);
         }
@@ -212,6 +216,7 @@ namespace GameFab
 
         string background;
         Dictionary<string, CanvasBitmap> bitmaps = new Dictionary<string, CanvasBitmap>();
+        float scale = 1.0f;
 
         protected void CanvasAnimatedControl_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
         {
@@ -221,6 +226,7 @@ namespace GameFab
                 {
                     var origin = new Point() { X = (sender.Size.Width - Dimensions.Width) / 2, Y = (sender.Size.Height - Dimensions.Height) / 2 };
                     var destrect = new Rect(origin, Dimensions);
+                    args.DrawingSession.Transform = Matrix3x2.CreateScale(scale,new Vector2((float)(sender.Size.Width/2), (float)(sender.Size.Height / 2)));
 
                     using (args.DrawingSession.CreateLayer(1.0f, destrect))
                     {
