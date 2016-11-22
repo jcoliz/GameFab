@@ -224,6 +224,11 @@ namespace GameFab
             {
                 try
                 {
+                    if (sender.Size.Width < Dimensions.Width || sender.Size.Height < Dimensions.Height)
+                        scale = (float)Math.Min(sender.Size.Width / Dimensions.Width, sender.Size.Height / Dimensions.Height);
+                    else
+                        scale = 1.0f;
+
                     var origin = new Point() { X = (sender.Size.Width - Dimensions.Width) / 2, Y = (sender.Size.Height - Dimensions.Height) / 2 };
                     var destrect = new Rect(origin, Dimensions);
                     args.DrawingSession.Transform = Matrix3x2.CreateScale(scale,new Vector2((float)(sender.Size.Width/2), (float)(sender.Size.Height / 2)));
