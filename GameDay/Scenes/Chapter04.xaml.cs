@@ -17,18 +17,23 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GameDay.Scenes
 {
-    public sealed partial class New_04 : Scene
+    public sealed partial class Chapter04 : Scene
     {
-        public New_04()
+        public Chapter04()
         {
             this.InitializeComponent();
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            Running = false;
         }
 
         public Scene.Variable<int> Chances = new Variable<int>(5);
         public Scene.Variable<int> Score = new Variable<int>();
         public Scene.Variable<int> Timer = new Variable<int>();
-
-        private bool Running { get; set; } = true;
 
         protected override IEnumerable<string> Assets => new[] { "04/21.png", "04/7.png", "04/8.png", "04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png", "04/1.png" };
 
@@ -52,13 +57,13 @@ namespace GameDay.Scenes
             Server1 = CreateSprite((me) =>
             {
                 me.SetCostume("04/1.png");
-                me.SetPosition(10, 500);
+                me.SetPosition(LeftEdge / 2, BottomEdge + 10);
                 me.Show();
             });
             Server2 = CreateSprite((me) =>
             {
                 me.SetCostume("04/1.png");
-                me.SetPosition(510, 500);
+                me.SetPosition(RightEdge / 2, BottomEdge + 10);
                 me.Show();
             });
         }
@@ -82,10 +87,14 @@ namespace GameDay.Scenes
         {
             if (what.message == "start")
             {
+                me.SetCostumes("04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
+                me.SetPosition(RightEdge, 0);
+                me.PointTowards(Neo_Cat.Position);
+                me.SetRotationStyle(Sprite.RotationStyle.DoNotRotate);
+                me.Show();
+
                 Task.Run(async () =>
                 {
-                    me.SetCostumes("04/V.png", "04/I.png", "04/R.png", "04/U.png", "04/S.png");
-                    me.Show();
                     while (Running)
                     {
                         await Delay(0.3);
@@ -95,13 +104,11 @@ namespace GameDay.Scenes
                 Task.Run(async () =>
                 {
                     var deadly = true;
-                    me.SetPosition(500, 200);
-                    me.PointTowards(Neo_Cat.Position);
                     while (Running)
                     {
                         if (me.IsTouching(Neo_Cat))
                         {
-                            me.PointInDirection_Heading(Random(-45, 45));
+                            me.PointInDirection(Random(-45, 45));
                             Score.Value++;
 
                             if (Score.Value >= 30)
@@ -142,11 +149,8 @@ namespace GameDay.Scenes
         {
             if (what.message == "start")
             {
-                Task.Run(() =>
-                {
-                    me.SetCostume("04/7.png");
-                    me.Show();
-                });
+                me.SetCostume("04/7.png");
+                me.Show();
             }
             else if (what.message == "oh")
             {
@@ -164,10 +168,7 @@ namespace GameDay.Scenes
             }
             else if (what.message == "win")
             {
-                Task.Run(() =>
-                {
-                    me.Say("WINNER!!");
-                });
+                me.Say("WINNER!!");
             }
         }
 
@@ -179,19 +180,13 @@ namespace GameDay.Scenes
 
         private void Neo_Cat_PointerReleased(Sprite me, Sprite.PointerArgs what)
         {
-            Task.Run(() =>
-            {
-                me.SetCostume("04/7.png");
-            });
+            me.SetCostume("04/7.png");
         }
 
         private void Neo_Cat_Loaded(Sprite me)
         {
-            Task.Run(() =>
-            {
-                me.SetCostume("04/7.png");
-                me.SetPosition(176, 307);
-            });
+            me.SetCostume("04/7.png");
+            me.SetPosition(0, 0);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿<gfab:Scene
-    x:Class="GameDay.Scenes.New_04"
+    x:Class="GameDay.Scenes.Chapter04"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Example.Scenes"
@@ -7,8 +7,7 @@
     xmlns:gfab="using:GameFab" 
     Loaded="Scene_Loaded">
 
-    <Grid Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Image Source="/Assets/04/21.png" Stretch="UniformToFill" />
+    <Grid Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
         <StackPanel HorizontalAlignment="Left" Margin="20,0">
             <TextBlock Text="Chances" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>

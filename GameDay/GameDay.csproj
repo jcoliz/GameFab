@@ -97,8 +97,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scenes\02.xaml.cs">
-      <DependentUpon>02.xaml</DependentUpon>
+    <Compile Include="Scenes\Chapter02.xaml.cs">
+      <DependentUpon>Chapter02.xaml</DependentUpon>
     </Compile>
     <Compile Include="Scenes\EmptyScene.xaml.cs">
       <DependentUpon>EmptyScene.xaml</DependentUpon>
@@ -106,11 +106,14 @@
     <Compile Include="Scenes\Flappy.xaml.cs">
       <DependentUpon>Flappy.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Scenes\New04.xaml.cs">
-      <DependentUpon>New04.xaml</DependentUpon>
+    <Compile Include="Scenes\Chapter04.xaml.cs">
+      <DependentUpon>Chapter04.xaml</DependentUpon>
     </Compile>
     <Compile Include="Scenes\StartMenu.xaml.cs">
       <DependentUpon>StartMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Scenes\TestDirection.xaml.cs">
+      <DependentUpon>TestDirection.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +149,12 @@
     <Content Include="Assets\04\S.png" />
     <Content Include="Assets\04\U.png" />
     <Content Include="Assets\04\V.png" />
+    <Content Include="Assets\Flappy\Butterfly\Background.png" />
+    <Content Include="Assets\Flappy\Butterfly\Obstacle-Bottom-2.png" />
+    <Content Include="Assets\Flappy\Butterfly\Obstacle-Bottom-1.png" />
+    <Content Include="Assets\Flappy\Butterfly\Obstacle-Top-1.png" />
+    <Content Include="Assets\Flappy\Butterfly\Obstacle-Top-2.png" />
+    <Content Include="Assets\Flappy\Butterfly\Player.png" />
     <Content Include="Assets\Flappy\Pillar.png" />
     <Content Include="Assets\Flappy\Player.png" />
     <Content Include="Properties\Default.rd.xml" />
@@ -162,7 +171,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Scenes\02.xaml">
+    <Page Include="Scenes\Chapter02.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -174,13 +183,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Scenes\New04.xaml">
+    <Page Include="Scenes\Chapter04.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Scenes\StartMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Scenes\TestDirection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

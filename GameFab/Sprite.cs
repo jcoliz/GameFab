@@ -93,6 +93,24 @@ namespace GameFab
         }
 
         /// <summary>
+        /// Sets the X position to the value guven
+        /// </summary>
+        /// <param name="x"></param>
+        public void SetX(double x)
+        {
+            Position = new Point(x, Position.Y);
+        }
+
+        /// <summary>
+        /// Sets the X position to the value guven
+        /// </summary>
+        /// <param name="x"></param>
+        public void SetY(double y)
+        {
+            Position = new Point(Position.X, y);
+        }
+
+        /// <summary>
         /// Get the position of the sprite within the scene
         /// </summary>
         public Point GetPosition()
@@ -105,9 +123,11 @@ namespace GameFab
         /// </summary>
         /// <param name="y"></param>
         /// <returns></returns>
-        public void ChangeYby(double y)
+        public double ChangeYby(double y)
         {
             Position = new Point(Position.X, Position.Y + y);
+
+            return Position.Y;
         }
 
         /// <summary>
@@ -123,12 +143,17 @@ namespace GameFab
         }
 
         /// <summary>
+        /// The direction we are facing, in degrees, where 0 is straight up
+        /// </summary>
+        public double Direction => heading.HasValue ? heading.Value / Math.PI * 180 + 90 : 0.0;
+
+        /// <summary>
         /// Point the sprite toward this target
         /// </summary>
         /// <param name="target"></param>
         public void PointTowards(Point target)
         {
-            heading = HeadingBetween(Position, target);
+            heading = - HeadingBetween(Position, target);
         }
 
         /// <summary>
@@ -139,12 +164,66 @@ namespace GameFab
         /// </remarks>
         /// <param name="angle">Angle to point, in degrees, where zero is up</param>
         /// <returns></returns>
-        public void PointInDirection_Heading(double angle)
+        public void PointInDirection(double angle)
         {
-            angle -= 90;
-            var radians = angle * Math.PI / 180.0;
-            heading = radians;
+            heading = - (angle-90) * Math.PI / 180.0;
+
+            if (rotationstyle == RotationStyle.AllAround)
+            {
+                PointInDirection_Rotate(angle);
+            }
+            else if (rotationstyle == RotationStyle.LeftRight)
+            {
+                if (angle > 0)
+                    PointInDirection_Rotate(90);
+                else
+                    PointInDirection_Rotate(-90);
+            }
         }
+
+        public enum RotationStyle { AllAround = 0, LeftRight, DoNotRotate };
+
+        public void SetRotationStyle(RotationStyle style)
+        {
+            rotationstyle = style;
+
+            if (rotationstyle == RotationStyle.DoNotRotate)
+            {
+                PointInDirection_Rotate(90);
+            }
+        }
+
+
+        public enum Facing { None = 0, Left, Right };
+
+        /// <summary>
+        /// Increase/decrease our visual rotation by the indicated amount
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="degrees"></param>
+        public void TurnBy(Facing direction, double degrees)
+        {
+            if (direction == Facing.Left)
+                degrees = -degrees;
+
+            RotationAngle += degrees / 180 * Math.PI;
+
+            if (RotationAngle < 2 * Math.PI)
+                RotationAngle += 2 * Math.PI;
+
+            if (RotationAngle > 2 * Math.PI)
+                RotationAngle -= 2 * Math.PI;
+        }
+
+        /// <summary>
+        /// Set the angle of rotation for the sprite
+        /// </summary>
+        /// <param name="degrees"></param>
+        private void PointInDirection_Rotate(double degrees)
+        {
+            RotationAngle = (degrees - 90) / 180 * Math.PI;
+        }
+
 
         /// <summary>
         /// Move in the heading we're pointing by the indicated distance
@@ -173,28 +252,28 @@ namespace GameFab
             var position = GetPosition();
             var needstomove = false;
 
-            if (position.X < 10.0)
+            if (position.X < - Owner.Dimensions.Width / 2 )
             {
                 needstomove = true;
-                position.X = 10.0;
+                position.X = - Owner.Dimensions.Width / 2;
                 heading = Math.PI - heading;
             }
-            if (position.X > 990.0)
+            if (position.X > Owner.Dimensions.Width / 2)
             {
                 needstomove = true;
-                position.X = 990.0;
+                position.X = Owner.Dimensions.Width / 2;
                 heading = Math.PI - heading;
             }
-            if (position.Y < 10.0)
+            if (position.Y < - Owner.Dimensions.Height / 2)
             {
                 needstomove = true;
-                position.Y = 10.0;
+                position.Y = -Owner.Dimensions.Height / 2;
                 heading = -heading;
             }
-            if (position.Y > 490.0)
+            if (position.Y > Owner.Dimensions.Height / 2)
             {
                 needstomove = true;
-                position.Y = 490.0;
+                position.Y = Owner.Dimensions.Height / 2;
                 heading = -heading;
             }
             if (needstomove)
@@ -213,15 +292,26 @@ namespace GameFab
                 Rect rect1;
                 Rect rect2;
 
-                if (Visible)
-                    rect1 = new Rect(Position, CostumeSize);
-                else
-                    rect1 = Rect.Empty;
+                if (!Visible || !fe2.Visible)
+                    return false;
 
-                if (fe2.Visible)
-                    rect2 = new Rect(fe2.Position, fe2.CostumeSize);
-                else
-                    rect2 = Rect.Empty;
+                if (CollisionRadius.HasValue && fe2.CollisionRadius.HasValue)
+                    return DistanceBetween(Position, fe2.Position) < CollisionRadius.Value + fe2.CollisionRadius.Value;
+
+                rect1 = new Rect(new Point( Position.X - CostumeSize.Width/2,Position.Y - CostumeSize.Height/2), CostumeSize);
+                rect2 = new Rect(new Point(fe2.Position.X - fe2.CostumeSize.Width / 2, fe2.Position.Y - fe2.CostumeSize.Height / 2), fe2.CostumeSize);
+
+                if (CollisionRadius.HasValue)
+                {
+                    rect2 = new Rect(rect2.X - CollisionRadius.Value, rect2.Y - CollisionRadius.Value, rect2.Width + 2 * CollisionRadius.Value, rect2.Height + 2 * CollisionRadius.Value);
+                    return rect2.Contains(Position);
+                }
+
+                if (fe2.CollisionRadius.HasValue)
+                {
+                    rect1 = new Rect(rect1.X - fe2.CollisionRadius.Value, rect1.Y - fe2.CollisionRadius.Value, rect1.Width + 2 * fe2.CollisionRadius.Value, rect1.Height + 2 * fe2.CollisionRadius.Value);
+                    return rect1.Contains(fe2.Position);
+                }
 
                 rect1.Intersect(rect2);
 
@@ -267,37 +357,6 @@ namespace GameFab
 
             return Opacity;
         }
-
-        public enum Direction { None = 0, Left, Right };
-
-        /// <summary>
-        /// Increase/decrease our visual rotation by the indicated amount
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <param name="degrees"></param>
-        public void TurnBy(Direction direction, double degrees)
-        {
-            if (direction == Direction.Left)
-                degrees = -degrees;
-
-            RotationAngle += degrees / 180 * Math.PI;
-
-            if (RotationAngle < 2 * Math.PI)
-                RotationAngle += 2 * Math.PI;
-
-            if (RotationAngle > 2 * Math.PI)
-                RotationAngle -= 2 * Math.PI;
-        }
-
-        /// <summary>
-        /// Set the angle of rotation for the sprite
-        /// </summary>
-        /// <param name="degrees"></param>
-        public void PointInDirection_Rotate(double degrees)
-        {
-            RotationAngle = degrees / 180 * Math.PI;
-        }
-
         /// <summary>
         /// Move the sprite over time to a certain position
         /// </summary>
@@ -327,6 +386,28 @@ namespace GameFab
             }
             this.SetPosition(destination.X, destination.Y);
         }
+
+        /// <summary>
+        /// Bring to the front-most layer
+        /// </summary>
+        public void GoToFront()
+        {
+            lock(Sprites)
+            {
+                var frontest = Sprites.OrderBy(x => -x.Layer).First();
+                Layer = frontest.Layer + 1;
+            }
+        }
+
+        /// <summary>
+        /// Move sprite deeper into the scene (away from camera) this many layers
+        /// </summary>
+        /// <param name="numlayers"></param>
+        public void GoBackLayers(int numlayers)
+        {
+            Layer -= numlayers;
+        }
+
         #endregion
 
         #region Event handlers you use to launch scripts
@@ -342,8 +423,14 @@ namespace GameFab
             public string message;
         }
 
+        /// <summary>
+        /// Arguments which are passed in for an event involving the pointer
+        /// </summary>
         public struct PointerArgs
         {
+            /// <summary>
+            /// The position of the mouse pointer when the event occurred
+            /// </summary>
             public Point mousepoint;
         }
 
@@ -380,11 +467,15 @@ namespace GameFab
         /// </summary>
         public event SpriteEventHandler SceneLoaded;
 
+        /// <summary>
+        /// Event fired when a key is pressed
+        /// </summary>
         public event SpriteEventHandler<Windows.UI.Core.KeyEventArgs> KeyPressed;
 
         #endregion
 
         #region Public Properties/Methods you might use from scripts, but are not strictly Scratch blocks
+            
         /// <summary>
         /// Stash sprite-specific varaiables here
         /// </summary>
@@ -402,6 +493,14 @@ namespace GameFab
             this.SetCostume(null);
             this.Removed = true;
         }
+
+        /// <summary>
+        /// Setting this will make this sprite act like a circle for the purposes of
+        /// collision detection. The radius of the circle is what you're setting here.
+        /// Or set to null to have it behave like a regular rectangle.
+        /// </summary>
+        public double? CollisionRadius { get; set; } = null;
+        
         #endregion
 
         #region Drawing parameters used by the scene to render us
@@ -427,6 +526,11 @@ namespace GameFab
         /// </summary>
         public Size CostumeSize { get; set; }
 
+        /// <summary>
+        /// Visual layer. Higher numbers are closer to the viewer
+        /// </summary>
+        public int Layer { get; set; } = 0;
+
         public static IReadOnlyList<Sprite> Sprites => All;
 
         #endregion
@@ -438,6 +542,7 @@ namespace GameFab
         int? nextcostumeindex = null;
         double? heading = null;
         bool Removed = false; // If this has been removed from consideration, we will want to clean these up at some point
+        RotationStyle rotationstyle = RotationStyle.AllAround;
 
         private static List<Sprite> All = new List<Sprite>();
 
@@ -495,6 +600,10 @@ namespace GameFab
 
         #region Public methods meant to be called by the Scene
 
+        /// <summary>
+        /// The scene who is containing & drawing us
+        /// </summary>
+        public Scene Owner { get; set; }
         public static void ClearAll()
         {
             lock (Sprites)

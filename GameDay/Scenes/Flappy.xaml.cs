@@ -29,14 +29,20 @@ namespace GameDay.Scenes
             this.InitializeComponent();
         }
 
+        public Variable<int> Score = new Variable<int>(0);
+
+        Sprite Player;
+
         private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
+            Player = CreateSprite(Player_SceneLoaded);
+
+            SetBackground("Flappy/Butterfly/Background.png");
+
             // Spawn the needed number of pillars over the correct time.
             Task.Run(async () => 
             {
-                var player = CreateSprite(Player_SceneLoaded);
-                player.KeyPressed += Player_KeyPressed;
-                while (true)
+                while (Running)
                 {
                     CreateSprite(this.Pillar_SceneLoaded);
                     await Delay(3.0);
@@ -46,7 +52,7 @@ namespace GameDay.Scenes
             // Syncrhonize the visual updates by sending out a message on a regular time
             Task.Run(async () => 
             {
-                while(true)
+                while(Running)
                 {
                     await Delay(0.05);
                     Broadcast("update");
@@ -54,24 +60,40 @@ namespace GameDay.Scenes
             });
         }
 
-        double yspeed = 0;
-        double gravity = 2; // in pixels per tick squared
+        private void Player_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "gameover")
+            {
+                Running = false;
+                Player.Say("Game over!");
+            }
+        }
 
-        protected override IEnumerable<string> Assets => new[] { "Flappy/Pillar.png", "Flappy/Player.png" };
+        double yspeed = 0;
+        double gravity = -2; // in pixels per tick squared
+
+        protected override IEnumerable<string> Assets => new[] { "Flappy/Butterfly/Background.png", "Flappy/Butterfly/Obstacle-Top-1.png", "Flappy/Butterfly/Obstacle-Bottom-1.png", "Flappy/Butterfly/Player.png" };
 
         private void Player_SceneLoaded(Sprite me)
         {
             Task.Run(async () => 
             {
-                me.SetCostume("Flappy/Player.png");
-                me.SetPosition(250.0, 250.0);
+                // Set up the player with all initial values and event handlers
+                me.SetCostume("Flappy/Butterfly/Player.png");
+                me.SetPosition(LeftEdge / 2, 0);
+                me.CollisionRadius = 5.0;
+                me.GoToFront();
                 me.Show();
+                me.KeyPressed += Player_KeyPressed;
+                me.MessageReceived += Player_MessageReceived;
 
                 // Apply gravity
-                while(true)
+                while (Running)
                 {
                     yspeed += gravity;
-                    me.ChangeYby(yspeed);
+                    var y = me.ChangeYby(yspeed);
+                    if (y > TopEdge || y < BottomEdge)
+                        Broadcast("gameover");
                     await Delay(0.1);
                 }
             });
@@ -81,8 +103,11 @@ namespace GameDay.Scenes
             // Apply upward force
             if (what.VirtualKey == Windows.System.VirtualKey.Space)
             {
-                yspeed = -20;
-                me.ChangeYby(yspeed);
+                if (Running)
+                {
+                    yspeed = 20;
+                    me.ChangeYby(yspeed);
+                }
             }
         }
 
@@ -90,14 +115,18 @@ namespace GameDay.Scenes
         {
             Task.Run(() => 
             {
-                double y = Random(200,500);
-                me.SetCostume("Flappy/Pillar.png");
-                me.SetPosition(1000.0, y);
+                double opening_center = Random(BottomEdge + 200, TopEdge - 200);
+                double opening_bottom = opening_center - 100;
+                double opening_top = opening_center + 100;
+                double pillar_image_height = 472;
+
+                me.SetCostume("Flappy/Butterfly/Obstacle-Bottom-1.png");
+                me.SetPosition(RightEdge + 50, opening_bottom - pillar_image_height / 2 );
 
                 var top = CreateSprite();
                 me.Variable["top"] = top;
-                top.SetCostume("Flappy/Pillar.png");
-                top.SetPosition(1000.0, y - 500);
+                top.SetCostume("Flappy/Butterfly/Obstacle-Top-1.png");
+                top.SetPosition(RightEdge + 50, opening_top + pillar_image_height / 2);
                 me.Show();
                 top.Show();
 
@@ -110,13 +139,22 @@ namespace GameDay.Scenes
             if (what.message == "update")
             {
                 var top = me.Variable["top"] as Sprite;
+                var x_before = me.GetPosition().X;
                 top.ChangeXby(-5);
                 var x = me.ChangeXby(-5);
-                if (x < -100.0)
+                if (x < Player.Position.X && x_before >= Player.Position.X)
+                    ++Score.Value;
+
+                if (x < LeftEdge - 100)
                 {
                     me.MessageReceived -= Pillar_MessageReceived;
                     me.Destroy();
                     top.Destroy();
+                }
+
+                if (me.IsTouching(Player) || top.IsTouching(Player))
+                {
+                    Broadcast("gameover");
                 }
             }
         }

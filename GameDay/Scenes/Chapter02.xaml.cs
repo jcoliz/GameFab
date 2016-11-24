@@ -26,9 +26,9 @@ namespace GameDay.Scenes
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class _02 : Scene
+    public sealed partial class Chapter02 : Scene
     {
-        public _02()
+        public Chapter02()
         {
             this.InitializeComponent();
         }
@@ -54,12 +54,12 @@ namespace GameDay.Scenes
         {
             me.SetCostume("02/6.png");
             me.Show();
-            me.SetPosition(176,307);
+            me.SetPosition(0,0);
             me.KeyPressed += Astro_Cat_KeyPressed;
 
             Task.Run(async () =>
             {
-                while (true)
+                while (Running)
                 {
                     me.ChangeYby(2);
                     await Delay(0.3);
@@ -70,7 +70,7 @@ namespace GameDay.Scenes
 
             Task.Run(async () =>
             {
-                while (true)
+                while (Running)
                 {
                     if (me.IsTouching(Lightning))
                     {
@@ -93,11 +93,11 @@ namespace GameDay.Scenes
         {
             if (what.VirtualKey == Windows.System.VirtualKey.Down)
             {
-                me.ChangeYby(15);
+                me.ChangeYby(-15);
             }
             if (what.VirtualKey == Windows.System.VirtualKey.Up)
             {
-                me.ChangeYby(-15);
+                me.ChangeYby(15);
             }
             if (what.VirtualKey == Windows.System.VirtualKey.Left)
             {
@@ -109,14 +109,13 @@ namespace GameDay.Scenes
             }
         }
 
-        private void Banner_Loaded(object sender)
+        private void Banner_Loaded(Sprite me)
         {
-            var me = sender as Sprite;
+            me.SetCostume("02/4.png");
+            me.SetPosition(0, 0);
 
             Task.Run(async () =>
             {
-                me.SetCostume("02/4.png");
-
                 int i = 3;
                 while (i-- > 0)
                 {
@@ -128,24 +127,21 @@ namespace GameDay.Scenes
             });
         }
 
-        private void Lightning_Loaded(object sender)
+        private void Lightning_Loaded(Sprite me)
         {
-            var me = sender as Sprite;
-
             Task.Run(async () =>
             {
                 me.SetCostume("02/5.png");
                 await Delay(1);
-                while (true)
+                while (Running)
                 {
                     await Delay(Random(0, 1.5));
-                    me.SetPosition(Random(0, 950), 10);
+                    me.SetPosition(Random(LeftEdge, RightEdge), TopEdge);
                     me.Show();
 
-                    var i = 8;
-                    while (i-- > 0)
+                    while (me.Position.Y > BottomEdge)
                     {
-                        me.ChangeYby(40);
+                        me.ChangeYby(-40);
                         await Delay(0.3);
                     }
 
@@ -154,27 +150,26 @@ namespace GameDay.Scenes
             });
         }
 
-        private void String_Loaded(object sender)
+        private void String_Loaded(Sprite me)
         {
-            var me = sender as Sprite;
             Task.Run(async () =>
             {
                 me.SetCostume("02/1.png");
                 await Delay(1);
 
                 int i = 7;
-                while (i-- > 0)
+                while (i-- > 0 && Running)
                 {
-                    me.SetPosition(Random(0, 950), Random(0, 500));
+                    me.SetPosition(Random(LeftEdge, RightEdge), Random(BottomEdge, TopEdge));
                     me.Show();
 
-                    while (!me.IsTouching(Astro_Cat))
+                    while (!me.IsTouching(Astro_Cat) && Running)
                     {
                         me.ChangeYby(1);
-                        me.TurnBy(Sprite.Direction.Right, 5);
+                        me.TurnBy(Sprite.Facing.Right, 5);
                         await Delay(0.2);
                         me.ChangeYby(-1);
-                        me.TurnBy(Sprite.Direction.Right, 5);
+                        me.TurnBy(Sprite.Facing.Right, 5);
                         await Delay(0.2);
                     }
 
@@ -186,11 +181,20 @@ namespace GameDay.Scenes
                 }
 
                 me.SetCostume("02/2.png");
-                me.PointInDirection_Rotate(0);
+                me.PointInDirection(90);
+                me.SetPosition(0, 0);
                 me.Show();
                 me.Say("Stargate Opened!!!");
+
+                while (!me.IsTouching(Astro_Cat) && Running)
+                {
+                    await Delay(0.2);
+                }
+                me.Hide();
+                Astro_Cat.Say("Winner!");
+                Running = false;
+
             });
         }
-
     }
 }
