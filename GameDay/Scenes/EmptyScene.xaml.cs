@@ -28,9 +28,26 @@ namespace GameDay.Scenes
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Assets needed by your scene
+        /// </summary>
+        /// <remarks>
+        /// Replace this with all the backdrops and costumes you'll need in the scene
+        /// </remarks>
+        protected override IEnumerable<string> Assets => new[] { "04/7.png" };
 
-        protected override IEnumerable<string> Assets => new List<string>();
-        public void Scene_Loaded(object sender, RoutedEventArgs args) { }
+        Sprite Player;
+
+        public void Scene_Loaded(object sender, RoutedEventArgs args)
+        {
+            Player = CreateSprite(Player_Loaded);
+        }
+
+        private void Player_Loaded(Sprite me)
+        {
+            me.SetPosition(0, 0);
+            me.Show();
+            me.SetCostume("04/7.png");
+        }
     }
-
 }

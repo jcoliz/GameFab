@@ -45,5 +45,9 @@ namespace GameDay.Scenes
         {
             Frame.Navigate(typeof(Scenes.TestDirection));
         }
+        private void EmptyScene_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Scenes.EmptyScene));
+        }
     }
 }
