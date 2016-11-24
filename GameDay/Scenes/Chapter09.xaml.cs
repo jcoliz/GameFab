@@ -31,7 +31,7 @@ namespace GameDay.Scenes
         /// <remarks>
         /// Replace this with all the backdrops and costumes you'll need in the scene
         /// </remarks>
-        protected override IEnumerable<string> Assets => new[] { "09/43.png", "09/18.png", "09/17.png" };
+        protected override IEnumerable<string> Assets => new[] { "09/43.png", "09/18.png", "09/17.png", "09/5.png" };
 
         Sprite Player;
         Sprite Dark;
@@ -45,6 +45,39 @@ namespace GameDay.Scenes
             SetBackdrop("09/43.png");
             Player = CreateSprite(Player_Loaded);
             Dark = CreateSprite(Dark_Loaded);
+            CreateSprite(Fireball_Loaded);
+        }
+
+        private async void Fireball_Loaded(Sprite me)
+        {
+            me.SetCostume("09/5.png");
+            me.SetRotationStyle(Sprite.RotationStyle.AllAround);
+
+            while (Running)
+            {
+                await Delay(Random(1, 5));
+                me.SetPosition(Dark.Position);
+                me.SetRotationStyle(Sprite.RotationStyle.AllAround);
+                me.PointTowards(Player.Position);
+                me.Show();
+
+                int i = 60;
+                while (i-- > 0 && Running)
+                {
+                    await Delay(0.1);
+                    me.Move(20);
+                    if (me.IsTouching(Player))
+                    {
+                        await Delay(0.25);
+                        Broadcast("hit");
+                        break;
+                    }
+                    if (me.IsTouchingEdge())
+                        break;
+                }
+
+                me.Hide();
+            }
         }
 
         private void Player_Loaded(Sprite me)
@@ -55,6 +88,39 @@ namespace GameDay.Scenes
             me.SetRotationStyle(Sprite.RotationStyle.LeftRight);
             me.Show();
             me.KeyPressed += Player_KeyPressed;
+            me.MessageReceived += Player_MessageReceived;
+        }
+
+        private void Player_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "hit")
+            {
+                me.PlaySound("09/3.wav");
+                --PlayerHP.Value;
+                Task.Run(async () => 
+                {
+                    for(int i=10;i>0;i--)
+                    {
+                        me.ReduceOpacityBy(0.1);
+                        await Delay(0.05);
+                    }
+                    for (int i = 10; i > 0; i--)
+                    {
+                        me.ReduceOpacityBy(-0.1);
+                        await Delay(0.05);
+                    }
+                });
+
+                if (PlayerHP.Value <= 0)
+                {
+                    Broadcast("lose");
+                }
+            }
+            if (what.message == "lose")
+            {
+                Running = false;
+            }
+
         }
 
         double yspeed = 0;
@@ -95,13 +161,20 @@ namespace GameDay.Scenes
             }
         }
 
-        private void Dark_Loaded(Sprite me)
+        private async void Dark_Loaded(Sprite me)
         {
-            me.SetPosition(RightEdge / 2, BottomEdge/2);
+            me.SetPosition(RightEdge / 2, BottomEdge/3);
             me.SetCostume("09/17.png");
             me.SetRotationStyle(Sprite.RotationStyle.LeftRight);
             me.PointInDirection(-90);
             me.Show();
+
+            while(Running)
+            {
+                await Delay(1.0);
+                await me.Glide(Random(0.5, 2), new Point(Random(LeftEdge / 2, RightEdge * 2 / 3),BottomEdge/3));
+            }
+
         }
     }
 }

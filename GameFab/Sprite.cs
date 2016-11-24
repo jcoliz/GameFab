@@ -171,7 +171,12 @@ namespace GameFab
         /// <param name="target"></param>
         public void PointTowards(Point target)
         {
-            heading = -HeadingBetween(Position, target);
+            heading = HeadingBetween(Position, target);
+
+            if (rotationstyle == RotationStyle.AllAround)
+            {
+                RotationAngle = -heading.Value;
+            }
         }
 
         /// <summary>
@@ -335,6 +340,16 @@ namespace GameFab
             {
                 return false;
             }
+        }
+
+        public bool IsTouchingEdge()
+        {
+            if (!Visible)
+                return false;
+
+            var screen = new Rect(Owner.LeftEdge, Owner.BottomEdge, Owner.Dimensions.Width, Owner.Dimensions.Height);
+
+            return !screen.Contains(Position);
         }
 
         /// <summary>
