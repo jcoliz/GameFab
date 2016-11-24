@@ -7,6 +7,14 @@
 
     <Grid Background="Black">
         <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
+        <StackPanel HorizontalAlignment="Left" Margin="20,0">
+            <TextBlock Text="Player" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind PlayerHP.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Right" Margin="20,0">
+            <TextBlock Text="CPU" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind CpuHP.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
     </Grid>
 </gfab:Scene>
 
