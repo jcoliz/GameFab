@@ -30,7 +30,7 @@ Think () for () Secs | A thought bubble appears over the sprite and stays for th
 Think () | A thought bubble appears over the sprite and will not go away over time. | No | Use Say
 Show | Shows the sprite. | Yes
 Hide | Hides the sprite. | Yes
-Switch Costume to () | Changes the sprite's/Stage's costume/backdrop to the specified one. | Yes 
+Switch Costume to () | Changes the sprite's/Stage's costume/backdrop to the specified one. | Yes |
 Switch Backdrop to () | | Yes
 Switch Backdrop to () and wait | Like the Switch to Backdrop () block, though it waits until all of the hat blocks triggered by this have completed. (Stage only) | No
 Next Costume | Changes the sprite's/Stage's costume/backdrop to the next one in the costume list. | Yes
@@ -38,8 +38,8 @@ Next Backdrop | | No
 Change () Effect by () | Changes the specified effect by the amount. | No | Can use Opacity property for 'change ghost effect'
 Set () Effect to () | Sets the specified effect to the amount. | No
 Clear Graphic Effects | Clears all graphic effects on the sprite. | No
-Change Size by () | Changes the sprite's size by the amount. | No
-Set Size to ()% | Sets the sprite's size to the amount. | No
+Change Size by () | Changes the sprite's size by the amount. | Yes
+Set Size to ()% | Sets the sprite's size to the amount. | Yes
 Go to Front | Puts a sprite in the front. | Yes
 Go Back () Layers | Changes the sprite's layer value by the amount. | Yes
 Costume # (for sprites) | The number of the sprite/Stage's current costume/backdrop in the list. | Yes | Use me.Costume to get the custome name.

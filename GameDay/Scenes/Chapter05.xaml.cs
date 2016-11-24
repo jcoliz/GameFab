@@ -50,7 +50,7 @@ namespace GameDay.Scenes
 
         public void Scene_Loaded(object sender, RoutedEventArgs args)
         {
-            SetBackground("05/16.png");
+            SetBackdrop("05/16.png");
             CreateSprite((me)=> 
             {
                 me.SetCostume("05/4.png");
@@ -137,7 +137,7 @@ namespace GameDay.Scenes
                 {
                     do
                     {
-                        me.SetSize(me.GetSize() - .1);
+                        me.ChangeSizeBy(-0.075);
                         await Delay(0.1);
                     }
                     while (!donemoving);

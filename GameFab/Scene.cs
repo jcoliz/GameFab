@@ -68,7 +68,7 @@ namespace GameFab
             return s;
         }
 
-        protected void SetBackground(string v)
+        protected void SetBackdrop(string v)
         {
             background = v;
         }

@@ -151,9 +151,13 @@ namespace GameFab
             Scale = Math.Max( size , 0.01 );
         }
 
-        public double GetSize()
+        /// <summary>
+        /// Increase or reduce size by this amount
+        /// </summary>
+        /// <param name="size"></param>
+        public void ChangeSizeBy(double size)
         {
-            return Scale;
+            SetSize(Scale + size);
         }
 
         /// <summary>

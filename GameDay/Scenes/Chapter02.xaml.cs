@@ -47,7 +47,7 @@ namespace GameDay.Scenes
             Astro_Cat = CreateSprite(Astro_Cat_Loaded);
             Banner = CreateSprite(Banner_Loaded);
 
-            SetBackground("02/8.png");
+            SetBackdrop("02/8.png");
         }
 
         private void Astro_Cat_Loaded(Sprite me)

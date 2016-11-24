@@ -44,7 +44,7 @@ namespace GameDay.Scenes
 
         private void Scene_Loaded(object sender, RoutedEventArgs e)
         {
-            SetBackground("04/21.png");
+            SetBackdrop("04/21.png");
 
             Neo_Cat = CreateSprite(this.Neo_Cat_Loaded);
             Neo_Cat.MessageReceived += Neo_Cat_MessageReceived;

@@ -37,7 +37,7 @@ namespace GameDay.Scenes
         {
             Player = CreateSprite(Player_SceneLoaded);
 
-            SetBackground("Flappy/Butterfly/Background.png");
+            SetBackdrop("Flappy/Butterfly/Background.png");
 
             // Spawn the needed number of pillars over the correct time.
             Task.Run(async () => 
