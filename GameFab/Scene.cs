@@ -18,6 +18,7 @@ using Microsoft.Graphics.Canvas.Text;
 using Windows.UI;
 using Microsoft.Graphics.Canvas.Effects;
 using System.Numerics;
+using Windows.UI.ViewManagement;
 
 namespace GameFab
 {
@@ -178,9 +179,34 @@ namespace GameFab
             Sprite.SendPointerPressed(MousePoint);
         }
 
+        bool fullscreen = false;
+
         private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            Sprite.SendKeyPressed(args);
+            if (args.VirtualKey == Windows.System.VirtualKey.F12)
+            {
+                args.Handled = true;
+
+                var view = ApplicationView.GetForCurrentView();
+                if (view.IsFullScreenMode)
+                {
+                    fullscreen = false;
+                    view.ExitFullScreenMode();
+                    ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.Auto;
+                    // The SizeChanged event will be raised when the exit from full-screen mode is complete.
+                }
+                else
+                {
+                    if (view.TryEnterFullScreenMode())
+                    {
+                        fullscreen = true;
+                        ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
+                        // The SizeChanged event will be raised when the entry to full-screen mode is complete.
+                    }
+                }
+            }
+            else
+                Sprite.SendKeyPressed(args);
         }
 
         public class Variable<T>: INotifyPropertyChanged
@@ -224,7 +250,7 @@ namespace GameFab
             {
                 try
                 {
-                    if (sender.Size.Width < Dimensions.Width || sender.Size.Height < Dimensions.Height)
+                    if (sender.Size.Width < Dimensions.Width || sender.Size.Height < Dimensions.Height || fullscreen)
                         scale = (float)Math.Min(sender.Size.Width / Dimensions.Width, sender.Size.Height / Dimensions.Height);
                     else
                         scale = 1.0f;
