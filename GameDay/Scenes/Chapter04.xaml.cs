@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GameDay.Scenes
 {
+    [SceneMenuEntry(Label = "Play Virus Attack", Order = 4)]
     public sealed partial class Chapter04 : Scene
     {
         public Chapter04()

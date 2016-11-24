@@ -15,13 +15,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace GameDay.Scenes
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+    [SceneMenuEntry(Label = "Play Shootout", Order = 5)]
     public sealed partial class Chapter05 : Scene
     {
         public Chapter05()

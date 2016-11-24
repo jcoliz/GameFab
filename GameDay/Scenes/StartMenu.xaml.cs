@@ -1,7 +1,10 @@
-﻿using System;
+﻿using GameFab;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -22,35 +25,35 @@ namespace GameDay.Scenes
     /// </summary>
     public sealed partial class StartMenu : Page
     {
+        public class MenuItem
+        {
+            public Type Destination;
+            public SceneMenuEntryAttribute Details { get; set; }
+        }
+
+        public ObservableCollection<MenuItem> Items { get; } = new ObservableCollection<MenuItem>();
+
         public StartMenu()
         {
             this.InitializeComponent();
+
+            var types = Application.Current.GetType().GetTypeInfo().Assembly.GetTypes();
+
+            foreach (var t in types)
+            {
+                var p = t.GetTypeInfo().GetCustomAttributes<SceneMenuEntryAttribute>();
+                if (p.Count() > 0)
+                {
+                    // TODO: Ordering!!
+                    Items.Add(new MenuItem() { Destination = t, Details = p.First() });
+                }
+            }
         }
 
-        private void Scene_02_Click(object sender, RoutedEventArgs e)
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Frame.Navigate(typeof(Scenes.Chapter02));
-        }
-
-        private void Scene_04_2_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes.Chapter04));
-        }
-        private void Scene_05_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes.Chapter05));
-        }
-        private void Scene_Flappy_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes.Flappy));
-        }
-        private void Scene_TestDirection_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes.TestDirection));
-        }
-        private void EmptyScene_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Scenes.EmptyScene));
+            var m = e.ClickedItem as MenuItem;
+            Frame.Navigate(m.Destination);
         }
     }
 }

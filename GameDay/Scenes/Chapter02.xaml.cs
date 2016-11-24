@@ -19,13 +19,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace GameDay.Scenes
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+    [SceneMenuEntry(Label = "Play Space Portal",Order = 2)]
     public sealed partial class Chapter02 : Scene
     {
         public Chapter02()

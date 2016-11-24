@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GameDay.Scenes
 {
+    [SceneMenuEntry(Label = "Test Directions", Order = 20)]
     public sealed partial class TestDirection : Scene
     {
         public TestDirection()
