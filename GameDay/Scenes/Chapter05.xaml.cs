@@ -65,6 +65,33 @@ namespace GameDay.Scenes
             Ball = CreateSprite(Ball_Loaded);
             Bullseye = CreateSprite(Bullseye_Loaded);
             CreateSprite(Wave_Loaded);
+            CreateSprite(Banner_Loaded);
+        }
+
+        private async void Banner_Loaded(Sprite me)
+        {
+            me.SetCostume("05/10.png");
+            me.MessageReceived += Banner_MessageReceived;
+
+            me.Show();
+            await Delay(0.5);
+            me.Hide();
+        }
+
+        private void Banner_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "win")
+            {
+                Running = false;
+                me.SetCostume("05/12.png");
+                me.Show();
+            }
+            if (what.message == "lose")
+            {
+                Running = false;
+                me.SetCostume("05/14.png");
+                me.Show();
+            }
         }
 
         private async void Wave_Loaded(Sprite me)
@@ -185,12 +212,10 @@ namespace GameDay.Scenes
                     if (Score.Value >= 5)
                     {
                         Broadcast("win");
-                        Running = false;
                     }
                     else if (Score.Value + Chances.Value < 5)
                     {
                         Broadcast("lose");
-                        Running = false;
                     }
                     else
                         Broadcast("reset");
