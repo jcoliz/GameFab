@@ -46,28 +46,52 @@ namespace GameDay.Scenes
         Sprite Banner;
 
         Variable<int> Score = new Variable<int>();
-        Variable<int> BallsLeft = new Variable<int>(8);
+        Variable<int> Chances = new Variable<int>(8);
 
         public void Scene_Loaded(object sender, RoutedEventArgs args)
         {
             SetBackdrop("05/16.png");
-            CreateSprite((me)=> 
-            {
-                me.SetCostume("05/4.png");
-                me.SetPosition(0, TopEdge / 3 + 30);
-                me.SetSize(2.0);
-                me.Show();
-            });
             Net = CreateSprite((me) =>
             {
                 me.SetCostume("05/1.png");
                 me.SetPosition(0, TopEdge / 3);
-                me.SetSize(2.0);
+                me.SetSize(2.5);
+                me.Show();
+            });
+            CreateSprite((me) =>
+            {
+                me.SetCostume("05/4.png");
+                me.SetPosition(0, TopEdge / 3 + 30);
+                me.SetSize(2.5);
                 me.Show();
             });
             Keeper = CreateSprite(Keeper_Loaded);
             Ball = CreateSprite(Ball_Loaded);
             Bullseye = CreateSprite(Bullseye_Loaded);
+            CreateSprite(Wave_Loaded);
+        }
+
+        private async void Wave_Loaded(Sprite me)
+        {
+            me.SetCostume("05/2.png");
+            me.SetSize(2.666);
+            me.SetPosition(0, BottomEdge + 50);
+            me.Show();
+            while (Running)
+            {
+                int i = 3;
+                while (i-- > 0)
+                {
+                    await Delay(0.2);
+                    me.ChangeYby(-25);
+                }
+                i = 3;
+                while (i-- > 0)
+                {
+                    await Delay(0.2);
+                    me.ChangeYby(25);
+                }
+            }
         }
 
         private async void Bullseye_Loaded(Sprite me)
@@ -137,6 +161,7 @@ namespace GameDay.Scenes
 
             if (what.VirtualKey == Windows.System.VirtualKey.Space && ready.Value)
             {
+                --Chances.Value;
                 me.Variable["ready"] = false;
                 Broadcast("shoot");
                 bool donemoving = false;
@@ -156,10 +181,23 @@ namespace GameDay.Scenes
                         me.PlaySound("05/goal.wav");
                         Broadcast("goal");
                         me.Say("Goal!");
+                        ++Score.Value;
                     }
 
                     await Delay(1.0);
-                    Broadcast("reset");
+
+                    if (Score.Value >= 5)
+                    {
+                        Broadcast("win");
+                        Running = false;
+                    }
+                    else if (Score.Value + Chances.Value < 5)
+                    {
+                        Broadcast("lose");
+                        Running = false;
+                    }
+                    else
+                        Broadcast("reset");
                 });
                 Task.Run(async () =>
                 {
@@ -203,6 +241,14 @@ namespace GameDay.Scenes
             if (what.message == "reset")
             {
                 me.SetPosition((me.Variable["start"] as Point?).Value);
+            }
+            if (what.message == "win")
+            {
+                me.Say("Great job!");
+            }
+            if (what.message == "lose")
+            {
+                me.Say("Try again!");
             }
         }
     }
