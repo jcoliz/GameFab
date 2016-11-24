@@ -463,6 +463,18 @@ namespace GameFab
         }
 
         /// <summary>
+        /// Arguments which are passed in for an event involving another sprite
+        /// </summary>
+        public struct OtherSpriteArgs
+        {
+            /// <summary>
+            /// The other sprite involved
+            /// </summary>
+            public Sprite sprite;
+        }
+
+
+        /// <summary>
         /// Represents the method that will handle an event when the event provides data
         /// </summary>
         /// <typeparam name="TEventArgs"></typeparam>
@@ -499,6 +511,14 @@ namespace GameFab
         /// Event fired when a key is pressed
         /// </summary>
         public event SpriteEventHandler<Windows.UI.Core.KeyEventArgs> KeyPressed;
+
+        /// <summary>
+        /// Event fired when a sprite NEWLY touches the indicated sprite.
+        /// </summary>
+        /// <remarks>
+        /// If the sprite has already been touching it, this is NOT thrown
+        /// </remarks>
+        public event SpriteEventHandler<OtherSpriteArgs> Touched;
 
         #endregion
 
@@ -603,6 +623,18 @@ namespace GameFab
                 return result.ToList();
             }
         }
+
+        private static uint NextID = 1;
+
+        /// <summary>
+        /// Unique identifier we can use when that's needed
+        /// </summary>
+        private uint ID = NextID++;
+
+        public override int GetHashCode() => (int)ID;
+
+        public override bool Equals(object obj) => (obj is Sprite && (obj as Sprite).ID == ID);
+
         #endregion
 
         #region Construction/Creation
@@ -693,6 +725,13 @@ namespace GameFab
             foreach (var sprite in AllActive)
                 sprite.KeyPressed?.Invoke(sprite, keys);
         }
+
+        public static void SendTouched(Sprite first,Sprite second)
+        {
+            first.Touched?.Invoke(first, new OtherSpriteArgs() { sprite = second });
+            second.Touched?.Invoke(first, new OtherSpriteArgs() { sprite = first });
+        }
+
         #endregion
 
         #region Private helper methods

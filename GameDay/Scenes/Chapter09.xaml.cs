@@ -35,6 +35,7 @@ namespace GameDay.Scenes
 
         Sprite Player;
         Sprite Dark;
+        Sprite Fireball;
 
         // Variables we want to display
         Variable<int> PlayerHP = new Variable<int>(20);
@@ -45,7 +46,7 @@ namespace GameDay.Scenes
             SetBackdrop("09/43.png");
             Player = CreateSprite(Player_Loaded);
             Dark = CreateSprite(Dark_Loaded);
-            CreateSprite(Fireball_Loaded);
+            Fireball = CreateSprite(Fireball_Loaded);
         }
 
         private async void Fireball_Loaded(Sprite me)
@@ -69,7 +70,6 @@ namespace GameDay.Scenes
                     if (me.IsTouching(Player))
                     {
                         await Delay(0.25);
-                        Broadcast("hit");
                         break;
                     }
                     if (me.IsTouchingEdge())
@@ -89,12 +89,24 @@ namespace GameDay.Scenes
             me.Show();
             me.KeyPressed += Player_KeyPressed;
             me.MessageReceived += Player_MessageReceived;
+            me.Touched += Player_Touched;
         }
+
+        private void Player_Touched(Sprite me, Sprite.OtherSpriteArgs what)
+        {
+            if (what.sprite.Equals(Fireball) || what.sprite.Equals(Dark))
+            {
+                Broadcast("hit");
+            }
+        }
+
+        bool invincible = false;
 
         private void Player_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
         {
-            if (what.message == "hit")
+            if (what.message == "hit" && ! invincible)
             {
+                invincible = true;
                 me.PlaySound("09/3.wav");
                 --PlayerHP.Value;
                 Task.Run(async () => 
@@ -109,6 +121,7 @@ namespace GameDay.Scenes
                         me.ReduceOpacityBy(-0.1);
                         await Delay(0.05);
                     }
+                    invincible = false;
                 });
 
                 if (PlayerHP.Value <= 0)

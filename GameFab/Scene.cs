@@ -156,6 +156,57 @@ namespace GameFab
             Window.Current.CoreWindow.PointerReleased += CoreWindow_PointerReleased;
 
             Sprite.SendSceneLoaded();
+
+            Task.Run(Check_Collisions);
+        }
+
+        /// <summary>
+        /// Set of all sprite pairs that are currently touching
+        /// </summary>
+        HashSet<Tuple<int, int>> AreTouching = new HashSet<Tuple<int, int>>();
+
+        /// <summary>
+        /// Regularly check for collisions between all visible sprites, launch touched events ifapplicable
+        /// </summary>
+        /// <returns></returns>
+        private async Task Check_Collisions()
+        {
+            while(Running)
+            {
+                await Task.Delay(1000 / 15);
+
+                List<Sprite> visible = new List<Sprite>();
+                lock(Sprite.Sprites)
+                {
+                    visible.AddRange(Sprite.Sprites.Where(x => x.Visible).ToList());
+                }
+
+                int i = visible.Count;
+
+                while (i-- > 0)
+                {
+                    int j = i;
+                    while (j-- > 0)
+                    {
+                        var t = new Tuple<int,int>( visible[i].GetHashCode(), visible[j].GetHashCode());
+
+                        if (visible[i].IsTouching(visible[j]))
+                        {
+                            if (! AreTouching.Contains(t))
+                            {
+                                AreTouching.Add(t);
+                                Sprite.SendTouched(visible[i], visible[j]);
+                            }
+                        }
+                        else
+                        {
+                            if (AreTouching.Contains(t))
+                                AreTouching.Remove(t);
+                        }
+                    }
+                }
+
+            }
         }
 
         private void CoreWindow_PointerReleased(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
