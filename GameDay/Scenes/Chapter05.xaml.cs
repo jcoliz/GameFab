@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -39,6 +40,7 @@ namespace GameDay.Scenes
         Sprite Keeper;
         Sprite Bullseye;
         Sprite Ball;
+        Sprite Net;
         Sprite Wave;
         Sprite Cloud;
         Sprite Banner;
@@ -52,11 +54,15 @@ namespace GameDay.Scenes
             CreateSprite((me)=> 
             {
                 me.SetCostume("05/4.png");
+                me.SetPosition(0, TopEdge / 3 + 30);
+                me.SetSize(2.0);
                 me.Show();
             });
-            CreateSprite((me) =>
+            Net = CreateSprite((me) =>
             {
                 me.SetCostume("05/1.png");
+                me.SetPosition(0, TopEdge / 3);
+                me.SetSize(2.0);
                 me.Show();
             });
             Keeper = CreateSprite(Keeper_Loaded);
@@ -64,25 +70,112 @@ namespace GameDay.Scenes
             Bullseye = CreateSprite(Bullseye_Loaded);
         }
 
-        private void Bullseye_Loaded(Sprite me)
+        private async void Bullseye_Loaded(Sprite me)
         {
-            me.SetPosition(-110, 78);
-            me.Show();
+            me.SetSize(2.0);
             me.SetCostume("05/6.png");
+            me.MessageReceived += Bullseye_MessageReceived;
+
+            await Delay(0.1);
+            var net_top = Net.Position.Y + Net.CostumeSize.Height / 3;
+            var net_bottom = Net.Position.Y - Net.CostumeSize.Height / 3;
+            var net_center = Net.Position.Y ;
+            var net_left = Net.Position.X - Net.CostumeSize.Width / 2;
+            var net_right = Net.Position.X + Net.CostumeSize.Width / 2;
+
+            me.SetPosition(net_left,net_top);
+            me.Show();
+
+            while (Running)
+            {
+                await me.Glide(1.0, new Point(net_right, net_top));
+                await me.Glide(1.0, new Point(net_left, net_center));
+                await me.Glide(1.0, new Point(net_right, net_center));
+                await me.Glide(1.0, new Point(net_left, net_bottom));
+                await me.Glide(1.0, new Point(net_right, net_bottom));
+                await me.Glide(0.5, new Point(net_left, net_top));
+            }
+        }
+
+        private void Bullseye_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "shoot")
+            {
+                me.Hide();
+            }
+            if (what.message == "reset")
+            {
+                me.Show();
+            }
         }
 
         private void Ball_Loaded(Sprite me)
         {
             me.SetPosition(0, BottomEdge / 2);
+            me.Variable["start"] = me.Position;
             me.Show();
             me.SetCostume("05/15.png");
+            me.KeyPressed += Ball_KeyPressed;
         }
 
-        private void Keeper_Loaded(Sprite me)
+        private void Ball_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
         {
-            me.SetPosition(0, 0);
+            if (what.VirtualKey == Windows.System.VirtualKey.Space)
+            {
+                Broadcast("shoot");
+                bool donemoving = false;
+                Task.Run(async () => 
+                {
+                    await me.Glide(0.7, Bullseye.Position);
+                    donemoving = true;
+                    Broadcast("reset");
+
+                    me.SetSize(1.0);
+                    me.SetPosition((me.Variable["start"] as Point?).Value);
+                });
+                Task.Run(async () =>
+                {
+                    do
+                    {
+                        me.SetSize(me.GetSize() - .1);
+                        await Delay(0.1);
+                    }
+                    while (!donemoving);
+                });
+            }
+        }
+
+        private async void Keeper_Loaded(Sprite me)
+        {
+            me.SetPosition(0, TopEdge/3 - 30);
+            me.Variable["start"] = me.Position;
             me.Show();
-            me.SetCostume("05/7.png");
+            me.SetCostumes("05/7.png","05/8.png");
+            me.MessageReceived += Keeper_MessageReceived;
+
+            while(Running)
+            {
+                await Delay(0.5);
+                me.NextCostume();
+            }
+        }
+
+        private async void Keeper_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            var net_top = Net.Position.Y + Net.CostumeSize.Height / 3;
+            var net_bottom = Net.Position.Y - Net.CostumeSize.Height / 3;
+            var net_center = Net.Position.Y;
+            var net_left = Net.Position.X - Net.CostumeSize.Width / 2;
+            var net_right = Net.Position.X + Net.CostumeSize.Width / 2;
+
+            if (what.message == "shoot")
+            {
+                await me.Glide(0.5, new Point(Random(net_left, net_right), Random(net_bottom, net_top)));
+            }
+            if (what.message == "reset")
+            {
+                me.SetPosition((me.Variable["start"] as Point?).Value);
+            }
         }
     }
 }

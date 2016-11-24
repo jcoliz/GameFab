@@ -246,7 +246,7 @@ namespace GameFab
                             if (sprite.Costume != null && sprite.Visible && bitmaps.ContainsKey(sprite.Costume))
                             {
                                 var bitmap = bitmaps[sprite.Costume];
-                                sprite.CostumeSize = bitmap.Size;
+                                sprite.CostumeSize = new Size( bitmap.Size.Width * sprite.Scale, bitmap.Size.Height * sprite.Scale );
                                 ICanvasImage drawme = bitmap;
                                 if (sprite.Opacity < 1.0)
                                 {
@@ -265,7 +265,7 @@ namespace GameFab
                                     };
                                 }
                                 var draw_at = new Point(center.X + sprite.Position.X - sprite.CostumeSize.Width / 2, center.Y - sprite.Position.Y - sprite.CostumeSize.Height / 2);
-                                args.DrawingSession.DrawImage(drawme, (float)draw_at.X, (float)draw_at.Y);
+                                args.DrawingSession.DrawImage(drawme, new Rect(draw_at,sprite.CostumeSize), new Rect(new Point(0,0),bitmap.Size));
 
                                 // Render the 'saying'
                                 if (sprite.Saying?.Length > 0)

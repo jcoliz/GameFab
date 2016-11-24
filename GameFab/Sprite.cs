@@ -143,6 +143,20 @@ namespace GameFab
         }
 
         /// <summary>
+        /// Set the size of this relative to its costume size
+        /// </summary>
+        /// <param name="size">1.0 is normal size, 0.5 is half, 2.0 is double</param>
+        public void SetSize(double size)
+        {
+            Scale = Math.Max( size , 0.01 );
+        }
+
+        public double GetSize()
+        {
+            return Scale;
+        }
+
+        /// <summary>
         /// The direction we are facing, in degrees, where 0 is straight up
         /// </summary>
         public double Direction => heading.HasValue ? heading.Value / Math.PI * 180 + 90 : 0.0;
@@ -512,6 +526,8 @@ namespace GameFab
         public bool Visible { get; private set; } = false;
 
         public double Opacity { get; private set; } = 1.0;
+
+        public double Scale { get; private set; } = 1.0;
 
         /// <summary>
         /// Angle of rotation in radians
