@@ -113,25 +113,53 @@ namespace GameDay.Scenes
         {
             me.SetPosition(0, BottomEdge / 2);
             me.Variable["start"] = me.Position;
+            me.Variable["ready"] = true;
             me.Show();
             me.SetCostume("05/15.png");
             me.KeyPressed += Ball_KeyPressed;
+            me.MessageReceived += Ball_MessageReceived;
+        }
+
+        private void Ball_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "reset")
+            {
+                me.SetSize(1.0);
+                me.SetPosition((me.Variable["start"] as Point?).Value);
+                me.Variable["ready"] = true;
+                me.Say();
+            }
         }
 
         private void Ball_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
         {
-            if (what.VirtualKey == Windows.System.VirtualKey.Space)
+            bool? ready = me.Variable["ready"] as bool?;
+
+            if (what.VirtualKey == Windows.System.VirtualKey.Space && ready.Value)
             {
+                me.Variable["ready"] = false;
                 Broadcast("shoot");
                 bool donemoving = false;
                 Task.Run(async () => 
                 {
                     await me.Glide(0.7, Bullseye.Position);
                     donemoving = true;
-                    Broadcast("reset");
 
-                    me.SetSize(1.0);
-                    me.SetPosition((me.Variable["start"] as Point?).Value);
+                    if (me.IsTouching(Keeper))
+                    {
+                        me.PlaySound("05/miss.wav");
+                        Broadcast("miss");
+                        me.Say("Miss!");
+                    }
+                    else if (me.IsTouching(Net))
+                    {
+                        me.PlaySound("05/goal.wav");
+                        Broadcast("goal");
+                        me.Say("Goal!");
+                    }
+
+                    await Delay(1.0);
+                    Broadcast("reset");
                 });
                 Task.Run(async () =>
                 {
