@@ -33,14 +33,12 @@ namespace GameDay.Scenes
         /// </remarks>
         protected override IEnumerable<string> Assets => new[] { "05/1.png", "05/2.png", "05/3.png", "05/4.png", "05/5.png", "05/6.png", "05/7.png", "05/8.png", "05/10.png", "05/12.png", "05/14.png", "05/15.png", "05/16.png", };
 
+        // Sprites we need to keep track of so we can refer to them
         Sprite Keeper;
         Sprite Bullseye;
-        Sprite Ball;
         Sprite Net;
-        Sprite Wave;
-        Sprite Cloud;
-        Sprite Banner;
 
+        // Variables we want to display
         Variable<int> Score = new Variable<int>();
         Variable<int> Chances = new Variable<int>(8);
 
@@ -62,8 +60,8 @@ namespace GameDay.Scenes
                 me.Show();
             });
             Keeper = CreateSprite(Keeper_Loaded);
-            Ball = CreateSprite(Ball_Loaded);
             Bullseye = CreateSprite(Bullseye_Loaded);
+            CreateSprite(Ball_Loaded);
             CreateSprite(Wave_Loaded);
             CreateSprite(Banner_Loaded);
         }
@@ -124,24 +122,29 @@ namespace GameDay.Scenes
             me.SetCostume("05/6.png");
             me.MessageReceived += Bullseye_MessageReceived;
 
-            await Delay(0.1);
-            var net_top = Net.Position.Y + Net.CostumeSize.Height / 3;
-            var net_bottom = Net.Position.Y - Net.CostumeSize.Height / 3;
-            var net_center = Net.Position.Y ;
-            var net_left = Net.Position.X - Net.CostumeSize.Width / 2;
-            var net_right = Net.Position.X + Net.CostumeSize.Width / 2;
+            // Wait until the net is fully loaded and so has a size
+            while (Net.CostumeSize.Height == 0)
+                await Delay(0.1);
 
-            me.SetPosition(net_left,net_top);
+            // Figure out the positions of the net, and use that for
+            // where to roam the bullseye
+            var top = Net.Position.Y + Net.CostumeSize.Height / 3;
+            var bottom = Net.Position.Y - Net.CostumeSize.Height / 3;
+            var center = Net.Position.Y ;
+            var left = Net.Position.X - Net.CostumeSize.Width / 2;
+            var right = Net.Position.X + Net.CostumeSize.Width / 2;
+
+            me.SetPosition(left,top);
             me.Show();
 
             while (Running)
             {
-                await me.Glide(1.0, new Point(net_right, net_top));
-                await me.Glide(1.0, new Point(net_left, net_center));
-                await me.Glide(1.0, new Point(net_right, net_center));
-                await me.Glide(1.0, new Point(net_left, net_bottom));
-                await me.Glide(1.0, new Point(net_right, net_bottom));
-                await me.Glide(0.5, new Point(net_left, net_top));
+                await me.Glide(1.0, new Point(right, top));
+                await me.Glide(1.0, new Point(left, center));
+                await me.Glide(1.0, new Point(right, center));
+                await me.Glide(1.0, new Point(left, bottom));
+                await me.Glide(1.0, new Point(right, bottom));
+                await me.Glide(0.5, new Point(left, top));
             }
         }
 
@@ -251,15 +254,17 @@ namespace GameDay.Scenes
 
         private async void Keeper_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
         {
-            var net_top = Net.Position.Y + Net.CostumeSize.Height / 3;
-            var net_bottom = Net.Position.Y - Net.CostumeSize.Height / 3;
-            var net_center = Net.Position.Y;
-            var net_left = Net.Position.X - Net.CostumeSize.Width / 2;
-            var net_right = Net.Position.X + Net.CostumeSize.Width / 2;
+            // Figure out the positions of the net, and use that for
+            // where to roam the keeper
+            var top = Net.Position.Y + Net.CostumeSize.Height / 3;
+            var bottom = Net.Position.Y - Net.CostumeSize.Height / 3;
+            var center = Net.Position.Y;
+            var left = Net.Position.X - Net.CostumeSize.Width / 2;
+            var right = Net.Position.X + Net.CostumeSize.Width / 2;
 
             if (what.message == "shoot")
             {
-                await me.Glide(0.5, new Point(Random(net_left, net_right), Random(net_bottom, net_top)));
+                await me.Glide(0.5, new Point(Random(left, right), Random(bottom, top)));
             }
             if (what.message == "reset")
             {

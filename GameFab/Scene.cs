@@ -246,34 +246,59 @@ namespace GameFab
 
         protected void CanvasAnimatedControl_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
         {
+            // First, ensure we have exclusive access to the list of sprites. we don't want this changing while we are trying
+            // to draw it. If another thread has access to it, we will skip drawing this frame.
+
             if (Monitor.TryEnter(Sprite.Sprites))
             {
                 try
                 {
+                    // Establish the scale. Normally we draw at 1.0 scale. However, if the drawing surface is SMALLER than our coordinate space, we
+                    // need to scale down. Likewise, if we are in fullscreen mode, we'll need to scale up.
                     if (sender.Size.Width < Dimensions.Width || sender.Size.Height < Dimensions.Height || fullscreen)
                         scale = (float)Math.Min(sender.Size.Width / Dimensions.Width, sender.Size.Height / Dimensions.Height);
                     else
                         scale = 1.0f;
 
-                    var origin = new Point() { X = (sender.Size.Width - Dimensions.Width) / 2, Y = (sender.Size.Height - Dimensions.Height) / 2 };
-                    var destrect = new Rect(origin, Dimensions);
-                    args.DrawingSession.Transform = Matrix3x2.CreateScale(scale,new Vector2((float)(sender.Size.Width/2), (float)(sender.Size.Height / 2)));
+                    // Draw the 'scale' transform into the scene
+                    args.DrawingSession.Transform = Matrix3x2.CreateScale(scale, new Vector2((float)(sender.Size.Width / 2), (float)(sender.Size.Height / 2)));
 
+                    // Upper-left corner of the destination drawing space
+                    var origin = new Point() { X = (sender.Size.Width - Dimensions.Width) / 2, Y = (sender.Size.Height - Dimensions.Height) / 2 };
+
+                    // Rectangle describing the destination drawing space
+                    var destrect = new Rect(origin, Dimensions);
+
+                    // Creating a layer around the destination drawing space is how we clip drawing to only the
+                    // expected drawing space
                     using (args.DrawingSession.CreateLayer(1.0f, destrect))
                     {
+                        // Draw the background
                         if (background != null && bitmaps.ContainsKey(background))
-                        {
                             args.DrawingSession.DrawImage(bitmaps[background], destrect);
-                        }
 
+                        // The sprites are all positioned relative to the 'center', so we need to know where that is
+                        // on the screen right now
                         var center = new Point(sender.Size.Width / 2, sender.Size.Height / 2);
+
+                        // Draw each sprite
                         foreach (var sprite in Sprite.Sprites.OrderBy(x => x.Layer))
                         {
+                            // Only draw the sprite if we have a costume loaded for it
                             if (sprite.Costume != null && sprite.Visible && bitmaps.ContainsKey(sprite.Costume))
                             {
+                                // Fetch the correct drawing resource for this sprite
                                 var bitmap = bitmaps[sprite.Costume];
+
+                                // Figure out how big of space the sprite will occupy in the scene. This is where we
+                                // apply sprite scaling. Also, this value is used for collisions.
                                 sprite.CostumeSize = new Size( bitmap.Size.Width * sprite.Scale, bitmap.Size.Height * sprite.Scale );
+
+                                // The 'drawme' is the canvas image we will ultimately draw. Along the way we will optionally
+                                // apply effects to it.
                                 ICanvasImage drawme = bitmap;
+
+                                // Opacity effect if we are not fully opaque
                                 if (sprite.Opacity < 1.0)
                                 {
                                     drawme = new OpacityEffect()
@@ -282,6 +307,8 @@ namespace GameFab
                                         Opacity = (float)sprite.Opacity
                                     };
                                 }
+
+                                // Rotation effect if we are rotated.
                                 if (sprite.RotationAngle != 0.0)
                                 {
                                     drawme = new Transform2DEffect()
@@ -290,7 +317,11 @@ namespace GameFab
                                         TransformMatrix = Matrix3x2.CreateRotation((float)sprite.RotationAngle, new Vector2((float)bitmap.Size.Width / 2, (float)bitmap.Size.Height / 2))
                                     };
                                 }
+
+                                // Where in the scene to draw the sprite
                                 var draw_at = new Point(center.X + sprite.Position.X - sprite.CostumeSize.Width / 2, center.Y - sprite.Position.Y - sprite.CostumeSize.Height / 2);
+
+                                // Draw the sprite!
                                 args.DrawingSession.DrawImage(drawme, new Rect(draw_at,sprite.CostumeSize), new Rect(new Point(0,0),bitmap.Size));
 
                                 // Render the 'saying'
@@ -315,7 +346,7 @@ namespace GameFab
                 }
                 catch (Exception ex)
                 {
-
+                    // This is not a great thing to do with exceptions...
                 }
                 finally
                 {
