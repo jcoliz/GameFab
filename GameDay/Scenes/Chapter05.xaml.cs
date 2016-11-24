@@ -74,6 +74,7 @@ namespace GameDay.Scenes
             me.MessageReceived += Banner_MessageReceived;
 
             me.Show();
+            me.PlaySound("05/whistle.wav");
             await Delay(0.5);
             me.Hide();
         }
@@ -190,6 +191,7 @@ namespace GameDay.Scenes
                 bool donemoving = false;
                 Task.Run(async () => 
                 {
+                    me.PlaySound("05/kick.wav");
                     await me.Glide(0.7, Bullseye.Position);
                     donemoving = true;
 
