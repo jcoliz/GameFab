@@ -36,7 +36,10 @@ namespace GameDay.Scenes
         {
             Frame.Navigate(typeof(Scenes.Chapter04));
         }
-
+        private void Scene_05_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Scenes.Chapter05));
+        }
         private void Scene_Flappy_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(Scenes.Flappy));

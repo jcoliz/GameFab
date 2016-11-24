@@ -100,6 +100,9 @@
     <Compile Include="Scenes\Chapter02.xaml.cs">
       <DependentUpon>Chapter02.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Scenes\Chapter05.xaml.cs">
+      <DependentUpon>Chapter05.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Scenes\EmptyScene.xaml.cs">
       <DependentUpon>EmptyScene.xaml</DependentUpon>
     </Compile>
@@ -149,6 +152,23 @@
     <Content Include="Assets\04\S.png" />
     <Content Include="Assets\04\U.png" />
     <Content Include="Assets\04\V.png" />
+    <Content Include="Assets\05\0.wav" />
+    <Content Include="Assets\05\1.png" />
+    <Content Include="Assets\05\1.wav" />
+    <Content Include="Assets\05\10.png" />
+    <Content Include="Assets\05\12.png" />
+    <Content Include="Assets\05\14.png" />
+    <Content Include="Assets\05\15.png" />
+    <Content Include="Assets\05\16.png" />
+    <Content Include="Assets\05\2.png" />
+    <Content Include="Assets\05\2.wav" />
+    <Content Include="Assets\05\3.png" />
+    <Content Include="Assets\05\3.wav" />
+    <Content Include="Assets\05\4.png" />
+    <Content Include="Assets\05\5.png" />
+    <Content Include="Assets\05\6.png" />
+    <Content Include="Assets\05\7.png" />
+    <Content Include="Assets\05\8.png" />
     <Content Include="Assets\Flappy\Butterfly\Background.png" />
     <Content Include="Assets\Flappy\Butterfly\Obstacle-Bottom-2.png" />
     <Content Include="Assets\Flappy\Butterfly\Obstacle-Bottom-1.png" />
@@ -172,6 +192,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Scenes\Chapter02.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Scenes\Chapter05.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
