@@ -190,13 +190,8 @@ namespace GameFab
             {
                 PointInDirection_Rotate(angle);
             }
-            else if (rotationstyle == RotationStyle.LeftRight)
-            {
-                if (angle > 0)
-                    PointInDirection_Rotate(90);
-                else
-                    PointInDirection_Rotate(-90);
-            }
+            else 
+                PointInDirection_Rotate(90);
         }
 
         public enum RotationStyle { AllAround = 0, LeftRight, DoNotRotate };
@@ -205,7 +200,7 @@ namespace GameFab
         {
             rotationstyle = style;
 
-            if (rotationstyle == RotationStyle.DoNotRotate)
+            if (rotationstyle != RotationStyle.AllAround)
             {
                 PointInDirection_Rotate(90);
             }
@@ -563,6 +558,8 @@ namespace GameFab
         /// Visual layer. Higher numbers are closer to the viewer
         /// </summary>
         public int Layer { get; set; } = 0;
+
+        public bool FlipHorizontal => rotationstyle == RotationStyle.LeftRight && heading.HasValue && (heading > Math.PI / 2 && heading < 3 * Math.PI / 2);
 
         public static IReadOnlyList<Sprite> Sprites => All;
 

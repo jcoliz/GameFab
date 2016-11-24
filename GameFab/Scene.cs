@@ -318,6 +318,16 @@ namespace GameFab
                                     };
                                 }
 
+                                // Flip horizontal, if so indicated
+                                if (sprite.FlipHorizontal)
+                                {
+                                    drawme = new Transform2DEffect()
+                                    {
+                                        Source = drawme,
+                                        TransformMatrix = Matrix3x2.CreateScale(-1.0f, 1.0f, new Vector2((float)bitmap.Size.Width / 2, (float)bitmap.Size.Height / 2))
+                                    };
+                                }
+
                                 // Where in the scene to draw the sprite
                                 var draw_at = new Point(center.X + sprite.Position.X - sprite.CostumeSize.Width / 2, center.Y - sprite.Position.Y - sprite.CostumeSize.Height / 2);
 
