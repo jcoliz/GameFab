@@ -100,6 +100,9 @@
     <Compile Include="Scenes\02.xaml.cs">
       <DependentUpon>02.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Scenes\EmptyScene.xaml.cs">
+      <DependentUpon>EmptyScene.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Scenes\Flappy.xaml.cs">
       <DependentUpon>Flappy.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,10 @@
     <Page Include="Scenes\02.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Scenes\EmptyScene.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Scenes\Flappy.xaml">
       <Generator>MSBuild:Compile</Generator>
