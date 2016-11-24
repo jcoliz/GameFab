@@ -1,0 +1,12 @@
+﻿<gfab:Scene Loaded="Scene_Loaded"
+    x:Class="GameDay.Scenes.Chapter09"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:gfab="using:GameFab">
+
+    <Grid Background="Black">
+        <win2d:CanvasAnimatedControl Draw="CanvasAnimatedControl_Draw" CreateResources="CanvasAnimatedControl_CreateResources" />
+    </Grid>
+</gfab:Scene>
+

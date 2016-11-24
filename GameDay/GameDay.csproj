@@ -90,6 +90,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="Assets\04\project.json" />
+    <None Include="Assets\09\project.json" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +103,9 @@
     </Compile>
     <Compile Include="Scenes\Chapter05.xaml.cs">
       <DependentUpon>Chapter05.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Scenes\Chapter09.xaml.cs">
+      <DependentUpon>Chapter09.xaml</DependentUpon>
     </Compile>
     <Compile Include="Scenes\EmptyScene.xaml.cs">
       <DependentUpon>EmptyScene.xaml</DependentUpon>
@@ -169,6 +173,54 @@
     <Content Include="Assets\05\6.png" />
     <Content Include="Assets\05\7.png" />
     <Content Include="Assets\05\8.png" />
+    <Content Include="Assets\09\0.wav" />
+    <Content Include="Assets\09\1.png" />
+    <Content Include="Assets\09\1.wav" />
+    <Content Include="Assets\09\10.png" />
+    <Content Include="Assets\09\11.png" />
+    <Content Include="Assets\09\12.png" />
+    <Content Include="Assets\09\13.png" />
+    <Content Include="Assets\09\14.png" />
+    <Content Include="Assets\09\16.png" />
+    <Content Include="Assets\09\17.png" />
+    <Content Include="Assets\09\18.png" />
+    <Content Include="Assets\09\19.png" />
+    <Content Include="Assets\09\2.png" />
+    <Content Include="Assets\09\2.wav" />
+    <Content Include="Assets\09\20.png" />
+    <Content Include="Assets\09\21.png" />
+    <Content Include="Assets\09\22.png" />
+    <Content Include="Assets\09\23.png" />
+    <Content Include="Assets\09\24.png" />
+    <Content Include="Assets\09\25.png" />
+    <Content Include="Assets\09\26.png" />
+    <Content Include="Assets\09\27.png" />
+    <Content Include="Assets\09\28.png" />
+    <Content Include="Assets\09\29.png" />
+    <Content Include="Assets\09\3.wav" />
+    <Content Include="Assets\09\30.png" />
+    <Content Include="Assets\09\31.png" />
+    <Content Include="Assets\09\32.png" />
+    <Content Include="Assets\09\33.png" />
+    <Content Include="Assets\09\34.png" />
+    <Content Include="Assets\09\35.png" />
+    <Content Include="Assets\09\36.png" />
+    <Content Include="Assets\09\37.png" />
+    <Content Include="Assets\09\38.png" />
+    <Content Include="Assets\09\39.png" />
+    <Content Include="Assets\09\4.png" />
+    <Content Include="Assets\09\4.wav" />
+    <Content Include="Assets\09\40.png" />
+    <Content Include="Assets\09\41.png" />
+    <Content Include="Assets\09\42.png" />
+    <Content Include="Assets\09\43.png" />
+    <Content Include="Assets\09\5.png" />
+    <Content Include="Assets\09\5.wav" />
+    <Content Include="Assets\09\6.png" />
+    <Content Include="Assets\09\6.wav" />
+    <Content Include="Assets\09\7.png" />
+    <Content Include="Assets\09\8.png" />
+    <Content Include="Assets\09\9.png" />
     <Content Include="Assets\Flappy\Butterfly\Background.png" />
     <Content Include="Assets\Flappy\Butterfly\Obstacle-Bottom-2.png" />
     <Content Include="Assets\Flappy\Butterfly\Obstacle-Bottom-1.png" />
@@ -196,6 +248,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Scenes\Chapter05.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Scenes\Chapter09.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
