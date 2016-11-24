@@ -65,6 +65,15 @@ namespace GameDay.Scenes
             CreateSprite(Ball_Loaded);
             CreateSprite(Wave_Loaded);
             CreateSprite(Banner_Loaded);
+
+            Task.Run(async () =>
+            {
+                while (Running)
+                {
+                    ++Timer.Value;
+                    await Delay(1.0);
+                }
+            });
         }
 
         private async void Banner_Loaded(Sprite me)

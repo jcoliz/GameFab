@@ -11,6 +11,10 @@
             <TextBlock Text="Chances" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
             <TextBlock Text="{x:Bind Chances.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
         </StackPanel>
+        <StackPanel HorizontalAlignment="Center" Margin="20,0">
+            <TextBlock Text="Timer" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Timer.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
+        </StackPanel>
         <StackPanel HorizontalAlignment="Right" Margin="20,0">
             <TextBlock Text="Score" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
             <TextBlock Text="{x:Bind Score.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
