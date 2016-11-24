@@ -41,6 +41,7 @@ namespace GameDay.Scenes
         // Variables we want to display
         Variable<int> Score = new Variable<int>();
         Variable<int> Chances = new Variable<int>(8);
+        Variable<int> Timer = new Variable<int>(0);
 
         public void Scene_Loaded(object sender, RoutedEventArgs args)
         {
@@ -163,7 +164,7 @@ namespace GameDay.Scenes
         private void Ball_Loaded(Sprite me)
         {
             me.SetPosition(0, BottomEdge / 2);
-            me.Variable["start"] = me.Position;
+            me.SetVariable<Point>("start", me.Position);
             me.Variable["ready"] = true;
             me.Show();
             me.SetCostume("05/15.png");
@@ -175,21 +176,22 @@ namespace GameDay.Scenes
         {
             if (what.message == "reset")
             {
-                me.SetSize(1.0);
-                me.SetPosition((me.Variable["start"] as Point?).Value);
-                me.Variable["ready"] = true;
                 me.Say();
+                me.SetSize(1.0);
+                me.SetVariable<Boolean>("ready", true);
+                var start = me.GetVariable<Point>("start");
+                me.SetPosition(start);
             }
         }
 
         private void Ball_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
         {
-            bool? ready = me.Variable["ready"] as bool?;
+            bool ready = me.GetVariable<Boolean>("ready");
 
-            if (what.VirtualKey == Windows.System.VirtualKey.Space && ready.Value)
+            if (what.VirtualKey == Windows.System.VirtualKey.Space && ready)
             {
                 --Chances.Value;
-                me.Variable["ready"] = false;
+                me.SetVariable<Boolean>("ready", false);
                 Broadcast("shoot");
                 bool donemoving = false;
                 Task.Run(async () => 
@@ -240,7 +242,7 @@ namespace GameDay.Scenes
         private async void Keeper_Loaded(Sprite me)
         {
             me.SetPosition(0, TopEdge/3 - 30);
-            me.Variable["start"] = me.Position;
+            me.SetVariable<Point>("start", me.Position);
             me.Show();
             me.SetCostumes("05/7.png","05/8.png");
             me.MessageReceived += Keeper_MessageReceived;
@@ -268,7 +270,8 @@ namespace GameDay.Scenes
             }
             if (what.message == "reset")
             {
-                me.SetPosition((me.Variable["start"] as Point?).Value);
+                var start = me.GetVariable<Point>("start");
+                me.SetPosition(start);
             }
             if (what.message == "win")
             {

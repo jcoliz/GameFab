@@ -148,7 +148,7 @@ namespace GameFab
         /// <param name="size">1.0 is normal size, 0.5 is half, 2.0 is double</param>
         public void SetSize(double size)
         {
-            Scale = Math.Max( size , 0.01 );
+            Scale = Math.Max(size, 0.01);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace GameFab
         /// <param name="target"></param>
         public void PointTowards(Point target)
         {
-            heading = - HeadingBetween(Position, target);
+            heading = -HeadingBetween(Position, target);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace GameFab
         /// <returns></returns>
         public void PointInDirection(double angle)
         {
-            heading = - (angle-90) * Math.PI / 180.0;
+            heading = -(angle - 90) * Math.PI / 180.0;
 
             if (rotationstyle == RotationStyle.AllAround)
             {
@@ -270,10 +270,10 @@ namespace GameFab
             var position = GetPosition();
             var needstomove = false;
 
-            if (position.X < - Owner.Dimensions.Width / 2 )
+            if (position.X < -Owner.Dimensions.Width / 2)
             {
                 needstomove = true;
-                position.X = - Owner.Dimensions.Width / 2;
+                position.X = -Owner.Dimensions.Width / 2;
                 heading = Math.PI - heading;
             }
             if (position.X > Owner.Dimensions.Width / 2)
@@ -282,7 +282,7 @@ namespace GameFab
                 position.X = Owner.Dimensions.Width / 2;
                 heading = Math.PI - heading;
             }
-            if (position.Y < - Owner.Dimensions.Height / 2)
+            if (position.Y < -Owner.Dimensions.Height / 2)
             {
                 needstomove = true;
                 position.Y = -Owner.Dimensions.Height / 2;
@@ -316,7 +316,7 @@ namespace GameFab
                 if (CollisionRadius.HasValue && fe2.CollisionRadius.HasValue)
                     return DistanceBetween(Position, fe2.Position) < CollisionRadius.Value + fe2.CollisionRadius.Value;
 
-                rect1 = new Rect(new Point( Position.X - CostumeSize.Width/2,Position.Y - CostumeSize.Height/2), CostumeSize);
+                rect1 = new Rect(new Point(Position.X - CostumeSize.Width / 2, Position.Y - CostumeSize.Height / 2), CostumeSize);
                 rect2 = new Rect(new Point(fe2.Position.X - fe2.CostumeSize.Width / 2, fe2.Position.Y - fe2.CostumeSize.Height / 2), fe2.CostumeSize);
 
                 if (CollisionRadius.HasValue)
@@ -410,7 +410,7 @@ namespace GameFab
         /// </summary>
         public void GoToFront()
         {
-            lock(Sprites)
+            lock (Sprites)
             {
                 var frontest = Sprites.OrderBy(x => -x.Layer).First();
                 Layer = frontest.Layer + 1;
@@ -493,11 +493,24 @@ namespace GameFab
         #endregion
 
         #region Public Properties/Methods you might use from scripts, but are not strictly Scratch blocks
-            
+
         /// <summary>
         /// Stash sprite-specific varaiables here
         /// </summary>
         public Dictionary<string, object> Variable { get; } = new Dictionary<string, object>();
+
+        public void SetVariable<T>(string name, T value)
+        {
+            Variable[name] = value;
+        }
+
+        public T GetVariable<T>(string name)
+        {
+            if (Variable.ContainsKey(name))
+                return (T)Variable[name];
+            else
+                return default(T);
+        }
 
         /// <summary>
         /// Flag the sprite as no longer needed
