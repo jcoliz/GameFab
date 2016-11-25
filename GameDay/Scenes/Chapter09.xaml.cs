@@ -245,6 +245,11 @@ namespace GameDay.Scenes
 
         private async void Dark_Loaded(Sprite me)
         {
+            var leftmax = LeftEdge / 2;
+            var rightmax = RightEdge * 2 / 3;
+            me.SetVariable<double>("leftmax", leftmax);
+            me.SetVariable<double>("rightmax", rightmax);
+
             me.SetPosition(RightEdge / 2, BottomEdge/3);
             me.SetCostume("09/17.png");
             me.SetRotationStyle(Sprite.RotationStyle.LeftRight);
@@ -260,7 +265,7 @@ namespace GameDay.Scenes
             while(Running)
             {
                 await Delay(1.0);
-                await me.Glide(Random(0.5, 2), new Point(Random(LeftEdge / 2, RightEdge * 2 / 3),BottomEdge/3));
+                await me.Glide(Random(0.5, 2), new Point(Random(leftmax, rightmax),BottomEdge/3));
             }
             */
 
@@ -272,17 +277,20 @@ namespace GameDay.Scenes
             me.PointTowards(Player.Position);
             Player.PointTowards(me.Position);
 
+            var leftmax = me.GetVariable<double>("leftmax"); 
+            var rightmax = me.GetVariable<double>("rightmax");
+
             if (what.VirtualKey == Windows.System.VirtualKey.Z)
             {
                 me.ChangeXby(-80);
-                if (me.Position.X < LeftEdge /2)
-                    me.SetX(LeftEdge/2);
+                if (me.Position.X < leftmax)
+                    me.SetX(leftmax);
             }
             if (what.VirtualKey == Windows.System.VirtualKey.C)
             {
                 me.ChangeXby(80);
-                if (me.Position.X > RightEdge * 2/3)
-                    me.SetX(RightEdge *2/3);
+                if (me.Position.X > rightmax)
+                    me.SetX(rightmax);
             }
             if (what.VirtualKey == Windows.System.VirtualKey.X)
             {
