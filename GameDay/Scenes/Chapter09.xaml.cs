@@ -76,15 +76,6 @@ namespace GameDay.Scenes
             me.SetCostume("09/5.png");
             me.SetRotationStyle(Sprite.RotationStyle.AllAround);
             me.MessageReceived += Fireball_MessageReceived;
-
-            // CPU Control
-            /*
-            while (Running)
-            {
-                await Delay(Random(1, 5));
-                Broadcast("fire");
-            }
-            */
         }
 
         private async void Fireball_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
@@ -206,7 +197,7 @@ namespace GameDay.Scenes
 
                 });
             }
-            if (what.VirtualKey == Windows.System.VirtualKey.Number1 && canattack)
+            if (what.VirtualKey == Windows.System.VirtualKey.O && canattack)
             {
                 lethal = true;
                 canattack = false;
@@ -224,7 +215,7 @@ namespace GameDay.Scenes
                     canattack = true;
                 });
             }
-            if (what.VirtualKey == Windows.System.VirtualKey.Number3 && canattack)
+            if (what.VirtualKey == Windows.System.VirtualKey.P && canattack)
             {
                 lethal = true;
                 canattack = false;
@@ -256,19 +247,6 @@ namespace GameDay.Scenes
             me.PointInDirection(-90);
             me.Show();
             me.Touched += Dark_Touched;
-
-            // Player Control
-            me.KeyPressed += Dark_KeyPressed;
-
-            // CPU Control
-            /*
-            while(Running)
-            {
-                await Delay(1.0);
-                await me.Glide(Random(0.5, 2), new Point(Random(leftmax, rightmax),BottomEdge/3));
-            }
-            */
-
         }
 
         // For 2nd player control
@@ -321,6 +299,43 @@ namespace GameDay.Scenes
                 });
 
             }
+        }
+
+        private void Button_1P_Click(object sender, RoutedEventArgs e)
+        {
+            StartPanel.Visibility = Visibility.Collapsed;
+
+            // CPU Controls Dark
+            Task.Run(async () => 
+            {
+                var leftmax = Dark.GetVariable<double>("leftmax");
+                var rightmax = Dark.GetVariable<double>("rightmax");
+
+                while (Running)
+                {
+                    await Delay(1.0);
+                    await Dark.Glide(Random(0.5, 2), new Point(Random(leftmax, rightmax),BottomEdge/3));
+                }
+            });
+
+            // CPU Controls Fireball launches
+            Task.Run(async () => 
+            {
+                while (Running)
+                {
+                    await Delay(Random(1, 5));
+                    Broadcast("fire");
+                }
+
+            });
+        }
+
+        private void Button_2P_Click(object sender, RoutedEventArgs e)
+        {
+            StartPanel.Visibility = Visibility.Collapsed;
+
+            // Player Controls Dark
+            Dark.KeyPressed += Dark_KeyPressed;
         }
     }
 }

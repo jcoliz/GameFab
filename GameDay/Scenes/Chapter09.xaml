@@ -15,6 +15,10 @@
             <TextBlock Text="CPU" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
             <TextBlock Text="{x:Bind CpuHP.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
         </StackPanel>
+        <StackPanel x:Name="StartPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" Padding="10">
+            <Button Content="1 Player" Margin="5" Click="Button_1P_Click" />
+            <Button Content="2 Player" Margin="5" Click="Button_2P_Click"/>
+        </StackPanel>
     </Grid>
 </gfab:Scene>
 
