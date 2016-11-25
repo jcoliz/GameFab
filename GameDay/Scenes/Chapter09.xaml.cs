@@ -31,7 +31,7 @@ namespace GameDay.Scenes
         /// <remarks>
         /// Replace this with all the backdrops and costumes you'll need in the scene
         /// </remarks>
-        protected override IEnumerable<string> Assets => new[] { "09/43.png", "09/18.png", "09/17.png", "09/5.png", "09/19.png", "09/20.png", "09/21.png", "09/22.png", "09/23.png", "09/24.png", "09/25.png", "09/26.png", "09/27.png", "09/28.png" };
+        protected override IEnumerable<string> Assets => new[] { "09/4.png", "09/16.png", "09/43.png", "09/18.png", "09/17.png", "09/5.png", "09/19.png", "09/20.png", "09/21.png", "09/22.png", "09/23.png", "09/24.png", "09/25.png", "09/26.png", "09/27.png", "09/28.png", "09/42.png" };
 
         Sprite Player;
         Sprite Dark;
@@ -47,16 +47,50 @@ namespace GameDay.Scenes
             Player = CreateSprite(Player_Loaded);
             Dark = CreateSprite(Dark_Loaded);
             Fireball = CreateSprite(Fireball_Loaded);
+            CreateSprite(Banner_Loaded);
+        }
+
+        private void Banner_Loaded(Sprite me)
+        {
+            me.MessageReceived += Banner_MessageReceived;
+        }
+
+        private void Banner_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "win")
+            {
+                me.SetCostume("09/4.png");
+                me.Show();
+                Running = false;
+            }
+            if (what.message == "lose")
+            {
+                me.SetCostume("09/16.png");
+                me.Show();
+                Running = false;
+            }
         }
 
         private async void Fireball_Loaded(Sprite me)
         {
             me.SetCostume("09/5.png");
             me.SetRotationStyle(Sprite.RotationStyle.AllAround);
+            me.MessageReceived += Fireball_MessageReceived;
 
+            // CPU Control
+            /*
             while (Running)
             {
                 await Delay(Random(1, 5));
+                Broadcast("fire");
+            }
+            */
+        }
+
+        private async void Fireball_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
+        {
+            if (what.message == "fire" && ! me.Visible)
+            {
                 me.SetPosition(Dark.Position);
                 me.SetRotationStyle(Sprite.RotationStyle.AllAround);
                 me.PointTowards(Player.Position);
@@ -129,35 +163,34 @@ namespace GameDay.Scenes
                     Broadcast("lose");
                 }
             }
-            if (what.message == "lose")
-            {
-                Running = false;
-            }
-
         }
 
         double yspeed = 0;
         double gravity = -4;
         bool lethal = false;
         bool canattack = true;
+        bool canmove = true;
 
         private void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
         {
+            me.PointTowards(Dark.Position);
+            Dark.PointTowards(me.Position);
+
             var starty = me.GetVariable<double>("starty");
 
-            if (what.VirtualKey == Windows.System.VirtualKey.Left)
+            if (what.VirtualKey == Windows.System.VirtualKey.Left && canmove)
             {
                 me.ChangeXby(-80);
                 if (me.Position.X < LeftEdge)
                     me.SetX(LeftEdge);
             }
-            if (what.VirtualKey == Windows.System.VirtualKey.Right)
+            if (what.VirtualKey == Windows.System.VirtualKey.Right && canmove)
             {
                 me.ChangeXby(80);
                 if (me.Position.X > RightEdge)
                     me.SetX(RightEdge);
             }
-            if (what.VirtualKey == Windows.System.VirtualKey.Up && me.Position.Y == starty)
+            if (what.VirtualKey == Windows.System.VirtualKey.Up && me.Position.Y == starty && canmove)
             {
                 yspeed = 40;
                 Task.Run(async () => 
@@ -191,6 +224,23 @@ namespace GameDay.Scenes
                     canattack = true;
                 });
             }
+            if (what.VirtualKey == Windows.System.VirtualKey.Number3 && canattack)
+            {
+                lethal = true;
+                canattack = false;
+                canmove = false;
+                Task.Run(async () =>
+                {
+                    me.SetCostume("09/42.png");
+                    me.PlaySound("09/6.wav");
+                    await Delay(2.0);
+                    me.SetCostume("09/18.png");
+                    lethal = false;
+                    await Delay(1.0);
+                    canattack = true;
+                    canmove = true;
+                });
+            }
         }
 
         private async void Dark_Loaded(Sprite me)
@@ -200,13 +250,69 @@ namespace GameDay.Scenes
             me.SetRotationStyle(Sprite.RotationStyle.LeftRight);
             me.PointInDirection(-90);
             me.Show();
+            me.Touched += Dark_Touched;
 
+            // Player Control
+            me.KeyPressed += Dark_KeyPressed;
+
+            // CPU Control
+            /*
             while(Running)
             {
                 await Delay(1.0);
                 await me.Glide(Random(0.5, 2), new Point(Random(LeftEdge / 2, RightEdge * 2 / 3),BottomEdge/3));
             }
+            */
 
+        }
+
+        // For 2nd player control
+        private void Dark_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
+        {
+            me.PointTowards(Player.Position);
+            Player.PointTowards(me.Position);
+
+            if (what.VirtualKey == Windows.System.VirtualKey.Z)
+            {
+                me.ChangeXby(-80);
+                if (me.Position.X < LeftEdge /2)
+                    me.SetX(LeftEdge/2);
+            }
+            if (what.VirtualKey == Windows.System.VirtualKey.C)
+            {
+                me.ChangeXby(80);
+                if (me.Position.X > RightEdge * 2/3)
+                    me.SetX(RightEdge *2/3);
+            }
+            if (what.VirtualKey == Windows.System.VirtualKey.X)
+            {
+                Broadcast("fire");
+            }
+        }
+
+        private void Dark_Touched(Sprite me, Sprite.OtherSpriteArgs what)
+        {
+            if (what.sprite.Equals(Player) && lethal)
+            {
+                --CpuHP.Value;
+                if (CpuHP.Value <= 0)
+                    Broadcast("win");
+
+                Task.Run(async () =>
+                {
+                    for (int i = 10; i > 0; i--)
+                    {
+                        me.ReduceOpacityBy(0.1);
+                        await Delay(0.05);
+                    }
+                    for (int i = 10; i > 0; i--)
+                    {
+                        me.ReduceOpacityBy(-0.1);
+                        await Delay(0.05);
+                    }
+                });
+
+            }
         }
     }
 }

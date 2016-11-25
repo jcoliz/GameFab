@@ -163,7 +163,10 @@ namespace GameFab
         /// <summary>
         /// The direction we are facing, in degrees, where 0 is straight up
         /// </summary>
-        public double Direction => heading.HasValue ? heading.Value / Math.PI * 180 + 90 : 0.0;
+        /// <remarks>
+        /// Valid values are &gt; -180 and &lt;= 180
+        /// </remarks>
+        public double Direction => 90 - Heading / Math.PI * 180;
 
         /// <summary>
         /// Point the sprite toward this target
@@ -171,11 +174,11 @@ namespace GameFab
         /// <param name="target"></param>
         public void PointTowards(Point target)
         {
-            heading = HeadingBetween(Position, target);
+            Heading = HeadingBetween(Position, target);
 
             if (rotationstyle == RotationStyle.AllAround)
             {
-                RotationAngle = -heading.Value;
+                RotationAngle = -Heading;
             }
         }
 
@@ -185,11 +188,11 @@ namespace GameFab
         /// <remarks>
         /// Note that all angles are in degrees where zero is up
         /// </remarks>
-        /// <param name="angle">Angle to point, in degrees, where zero is up</param>
+        /// <param name="angle">Angle to point, in degrees, where zero is up. Valid values are -179 to 180</param>
         /// <returns></returns>
         public void PointInDirection(double angle)
         {
-            heading = -(angle - 90) * Math.PI / 180.0;
+            Heading = DegreesToRadians(angle);
 
             if (rotationstyle == RotationStyle.AllAround)
             {
@@ -211,6 +214,18 @@ namespace GameFab
             }
         }
 
+        /// <summary>
+        /// Convert degrees in Scratch coordinate space to radians in internal coordinate space
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="degrees">Degrees from -179 to 180</param>
+        /// <returns>Radians from 0 to 2*PI</returns>
+        private double DegreesToRadians(double degrees)
+        {
+            return (90-degrees) / 180.0 * Math.PI;
+        }
 
         public enum Facing { None = 0, Left, Right };
 
@@ -225,12 +240,6 @@ namespace GameFab
                 degrees = -degrees;
 
             RotationAngle += degrees / 180 * Math.PI;
-
-            if (RotationAngle < 2 * Math.PI)
-                RotationAngle += 2 * Math.PI;
-
-            if (RotationAngle > 2 * Math.PI)
-                RotationAngle -= 2 * Math.PI;
         }
 
         /// <summary>
@@ -242,17 +251,13 @@ namespace GameFab
             RotationAngle = (degrees - 90) / 180 * Math.PI;
         }
 
-
         /// <summary>
         /// Move in the heading we're pointing by the indicated distance
         /// </summary>
         /// <param name="steps"></param>
         public void Move(double steps)
         {
-            if (!heading.HasValue)
-                return;
-
-            Position = ProgressToward(Position, heading.Value, steps);
+            Position = ProgressToward(Position, Heading, steps);
         }
 
         /// <summary>
@@ -264,9 +269,6 @@ namespace GameFab
         /// </remarks>
         public void IfOnEdgeBounce()
         {
-            if (!heading.HasValue)
-                return;
-
             var position = GetPosition();
             var needstomove = false;
 
@@ -274,25 +276,25 @@ namespace GameFab
             {
                 needstomove = true;
                 position.X = -Owner.Dimensions.Width / 2;
-                heading = Math.PI - heading;
+                Heading = Math.PI - Heading;
             }
             if (position.X > Owner.Dimensions.Width / 2)
             {
                 needstomove = true;
                 position.X = Owner.Dimensions.Width / 2;
-                heading = Math.PI - heading;
+                Heading = Math.PI - Heading;
             }
             if (position.Y < -Owner.Dimensions.Height / 2)
             {
                 needstomove = true;
                 position.Y = -Owner.Dimensions.Height / 2;
-                heading = -heading;
+                Heading = -Heading;
             }
             if (position.Y > Owner.Dimensions.Height / 2)
             {
                 needstomove = true;
                 position.Y = Owner.Dimensions.Height / 2;
-                heading = -heading;
+                Heading = -Heading;
             }
             if (needstomove)
                 SetPosition(position);
@@ -594,7 +596,7 @@ namespace GameFab
         /// </summary>
         public int Layer { get; set; } = 0;
 
-        public bool FlipHorizontal => rotationstyle == RotationStyle.LeftRight && heading.HasValue && (heading > Math.PI / 2 && heading < 3 * Math.PI / 2);
+        public bool FlipHorizontal => rotationstyle == RotationStyle.LeftRight && (Heading > Math.PI / 2 && Heading < 3 * Math.PI / 2);
 
         public static IReadOnlyList<Sprite> Sprites => All;
 
@@ -605,9 +607,31 @@ namespace GameFab
         MediaPlayer player = new MediaPlayer();
         List<string> costumes;
         int? nextcostumeindex = null;
-        double? heading = null;
         bool Removed = false; // If this has been removed from consideration, we will want to clean these up at some point
         RotationStyle rotationstyle = RotationStyle.AllAround;
+
+        /// <summary>
+        /// The direction of motion in which we are heading
+        /// </summary>
+        /// <remarks>
+        /// Valid values are &gt;=0 and &lt;=2PI. Right is 0. Up is PI/2. Left is PI. Down is 3PI/2
+        /// </remarks>
+        double Heading
+        {
+            get
+            {
+                return _Heading;
+            }
+            set
+            {
+                _Heading = value;
+                while (_Heading < 0)
+                    _Heading += 2 * Math.PI;
+                while (_Heading >= 2 * Math.PI)
+                    _Heading -= 2 * Math.PI;
+            }
+        }
+        double _Heading = 0.0;
 
         private static List<Sprite> All = new List<Sprite>();
 
