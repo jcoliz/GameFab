@@ -31,7 +31,7 @@ namespace GameDay.Scenes
         /// <remarks>
         /// Replace this with all the backdrops and costumes you'll need in the scene
         /// </remarks>
-        protected override IEnumerable<string> Assets => new[] { "09/43.png", "09/18.png", "09/17.png", "09/5.png" };
+        protected override IEnumerable<string> Assets => new[] { "09/43.png", "09/18.png", "09/17.png", "09/5.png", "09/19.png", "09/20.png", "09/21.png", "09/22.png", "09/23.png", "09/24.png", "09/25.png", "09/26.png", "09/27.png", "09/28.png" };
 
         Sprite Player;
         Sprite Dark;
@@ -104,7 +104,7 @@ namespace GameDay.Scenes
 
         private void Player_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
         {
-            if (what.message == "hit" && ! invincible)
+            if (what.message == "hit" && ! invincible && ! lethal)
             {
                 invincible = true;
                 me.PlaySound("09/3.wav");
@@ -138,6 +138,8 @@ namespace GameDay.Scenes
 
         double yspeed = 0;
         double gravity = -4;
+        bool lethal = false;
+        bool canattack = true;
 
         private void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
         {
@@ -170,7 +172,24 @@ namespace GameDay.Scenes
                     me.SetY(starty);
 
                 });
-
+            }
+            if (what.VirtualKey == Windows.System.VirtualKey.Number1 && canattack)
+            {
+                lethal = true;
+                canattack = false;
+                Task.Run(async () => 
+                {
+                    me.SetCostumes("09/18.png", "09/19.png", "09/20.png", "09/21.png", "09/22.png", "09/23.png", "09/24.png", "09/25.png", "09/26.png", "09/27.png", "09/28.png");
+                    for (int i = 36; i > 0; i--)
+                    {
+                        me.NextCostume();
+                        await Delay(0.1);
+                    }
+                    me.SetCostume("09/18.png");
+                    lethal = false;
+                    await Delay(1.0);
+                    canattack = true;
+                });
             }
         }
 
