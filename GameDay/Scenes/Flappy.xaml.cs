@@ -82,6 +82,7 @@ namespace GameDay.Scenes
                 me.Show();
                 me.KeyPressed += Player_KeyPressed;
                 me.MessageReceived += Player_MessageReceived;
+                me.PointerPressed += Player_PointerPressed;
 
                 // Apply gravity
                 while (Running)
@@ -94,6 +95,16 @@ namespace GameDay.Scenes
                 }
             });
         }
+
+        private void Player_PointerPressed(Sprite me, Sprite.PointerArgs what)
+        {
+            if (Running)
+            {
+                yspeed = 20;
+                me.ChangeYby(yspeed);
+            }
+        }
+
         private void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
         {
             // Apply upward force

@@ -179,6 +179,12 @@ namespace GameDay.Scenes
             me.SetCostume("05/15.png");
             me.KeyPressed += Ball_KeyPressed;
             me.MessageReceived += Ball_MessageReceived;
+            me.PointerPressed += Ball_PointerPressed;
+        }
+
+        private void Ball_PointerPressed(Sprite me, Sprite.PointerArgs what)
+        {
+            Ball_Fire(me);
         }
 
         private void Ball_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
@@ -199,53 +205,59 @@ namespace GameDay.Scenes
 
             if (what.VirtualKey == Windows.System.VirtualKey.Space && ready)
             {
-                --Chances.Value;
-                me.SetVariable<Boolean>("ready", false);
-                Broadcast("shoot");
-                bool donemoving = false;
-                Task.Run(async () => 
-                {
-                    me.PlaySound("05/kick.wav");
-                    await me.Glide(0.7, Bullseye.Position);
-                    donemoving = true;
-
-                    if (me.IsTouching(Keeper))
-                    {
-                        me.PlaySound("05/miss.wav");
-                        Broadcast("miss");
-                        me.Say("Miss!");
-                    }
-                    else if (me.IsTouching(Net))
-                    {
-                        me.PlaySound("05/goal.wav");
-                        Broadcast("goal");
-                        me.Say("Goal!");
-                        ++Score.Value;
-                    }
-
-                    await Delay(1.0);
-
-                    if (Score.Value >= 5)
-                    {
-                        Broadcast("win");
-                    }
-                    else if (Score.Value + Chances.Value < 5)
-                    {
-                        Broadcast("lose");
-                    }
-                    else
-                        Broadcast("reset");
-                });
-                Task.Run(async () =>
-                {
-                    do
-                    {
-                        me.ChangeSizeBy(-0.075);
-                        await Delay(0.1);
-                    }
-                    while (!donemoving);
-                });
+                Ball_Fire(me);
             }
+        }
+
+        private void Ball_Fire(Sprite me)
+        {
+            --Chances.Value;
+            me.SetVariable<Boolean>("ready", false);
+            Broadcast("shoot");
+            bool donemoving = false;
+            Task.Run(async () =>
+            {
+                me.PlaySound("05/kick.wav");
+                await me.Glide(0.7, Bullseye.Position);
+                donemoving = true;
+
+                if (me.IsTouching(Keeper))
+                {
+                    me.PlaySound("05/miss.wav");
+                    Broadcast("miss");
+                    me.Say("Miss!");
+                }
+                else if (me.IsTouching(Net))
+                {
+                    me.PlaySound("05/goal.wav");
+                    Broadcast("goal");
+                    me.Say("Goal!");
+                    ++Score.Value;
+                }
+
+                await Delay(1.0);
+
+                if (Score.Value >= 5)
+                {
+                    Broadcast("win");
+                }
+                else if (Score.Value + Chances.Value < 5)
+                {
+                    Broadcast("lose");
+                }
+                else
+                    Broadcast("reset");
+            });
+            Task.Run(async () =>
+            {
+                do
+                {
+                    me.ChangeSizeBy(-0.075);
+                    await Delay(0.1);
+                }
+                while (!donemoving);
+            });
+
         }
 
         private async void Keeper_Loaded(Sprite me)
