@@ -227,9 +227,9 @@ namespace GameDay.Scenes
                     await Delay(2.0);
                     me.SetCostume("09/18.png");
                     lethal = false;
+                    canmove = true;
                     await Delay(1.0);
                     canattack = true;
-                    canmove = true;
                 });
             }
         }
