@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Gaming.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -92,17 +93,22 @@ namespace GameDay.Scenes
                     if (y > TopEdge || y < BottomEdge)
                         Broadcast("gameover");
                     await Delay(0.1);
+
+                    if (IsGamePadButtonPressed(GamepadButtons.A))
+                        Player_Jump(me);
+                }
+                while(true)
+                {
+                    if (IsGamePadButtonPressed(GamepadButtons.Menu))
+                        GoBack();
+                    await Delay(0.1);
                 }
             });
         }
 
         private void Player_PointerPressed(Sprite me, Sprite.PointerArgs what)
         {
-            if (Running)
-            {
-                yspeed = 20;
-                me.ChangeYby(yspeed);
-            }
+            Player_Jump(me);
         }
 
         private void Player_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
@@ -110,11 +116,16 @@ namespace GameDay.Scenes
             // Apply upward force
             if (what.VirtualKey == Windows.System.VirtualKey.Space)
             {
-                if (Running)
-                {
-                    yspeed = 20;
-                    me.ChangeYby(yspeed);
-                }
+                Player_Jump(me);
+            }
+        }
+
+        private void Player_Jump(Sprite me)
+        {
+            if (Running)
+            {
+                yspeed = 20;
+                me.ChangeYby(yspeed);
             }
         }
 

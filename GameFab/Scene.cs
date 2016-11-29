@@ -19,6 +19,8 @@ using Windows.UI;
 using Microsoft.Graphics.Canvas.Effects;
 using System.Numerics;
 using Windows.UI.ViewManagement;
+using Windows.Gaming.Input;
+using System.Diagnostics;
 
 namespace GameFab
 {
@@ -73,6 +75,14 @@ namespace GameFab
         {
             background = v;
         }
+        
+        protected void GoBack()
+        {
+            var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ()=>
+            {
+                this.Frame.GoBack();
+            });
+        }
 
         #endregion
 
@@ -103,6 +113,18 @@ namespace GameFab
         public double RightEdge => Dimensions.Width / 2;
         public double TopEdge => Dimensions.Height / 2;
         public double BottomEdge => -Dimensions.Height / 2;
+
+        public bool IsGamePadButtonPressed(GamepadButtons what)
+        {
+            if (Gamepad.Gamepads?.Count > 0)
+            {
+                var reading = Gamepad.Gamepads[0].GetCurrentReading();
+                var result = reading.Buttons.HasFlag(what);
+                return result;
+            }
+            else
+                return true;
+        }
 
         #endregion
 
