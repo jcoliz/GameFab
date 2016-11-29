@@ -7,7 +7,7 @@
     mc:Ignorable="d">
 
     <Grid Background="Black" >
-        <ListView ItemsSource="{x:Bind Items}" IsItemClickEnabled="True" ItemClick="ListView_ItemClick">
+        <ListView x:Name="ListItems" ItemsSource="{x:Bind Items}" IsItemClickEnabled="True" ItemClick="ListView_ItemClick" >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Foreground="White" Text="{Binding Details.Label}" FontSize="40" Margin="10"/>

@@ -35,10 +35,7 @@ namespace GameDay.Scenes
 
         public StartMenu()
         {
-            this.InitializeComponent();
-
             var types = Application.Current.GetType().GetTypeInfo().Assembly.GetTypes();
-
             foreach (var t in types)
             {
                 var p = t.GetTypeInfo().GetCustomAttributes<SceneMenuEntryAttribute>();
@@ -48,7 +45,14 @@ namespace GameDay.Scenes
                     Items.Add(new MenuItem() { Destination = t, Details = p.First() });
                 }
             }
+
+            this.InitializeComponent();
+
+            ListItems.Loaded += (s, e) => { ListItems.SelectedIndex = 0; };
+
         }
+
+        public int Index { get; set; } = 0;
 
         private void ListView_ItemClick(object sender, ItemClickEventArgs e)
         {

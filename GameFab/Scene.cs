@@ -80,7 +80,8 @@ namespace GameFab
         {
             var ignore = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ()=>
             {
-                this.Frame.GoBack();
+                if (this.Frame.CanGoBack)
+                    this.Frame.GoBack();
             });
         }
 
@@ -149,6 +150,12 @@ namespace GameFab
                 Frame.CanGoBack ?
                 AppViewBackButtonVisibility.Visible :
                 AppViewBackButtonVisibility.Collapsed;
+
+            var view = ApplicationView.GetForCurrentView();
+            if (view.IsFullScreenMode)
+            {
+                fullscreen = true;
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
