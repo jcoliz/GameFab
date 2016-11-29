@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Gaming.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -67,11 +68,12 @@ namespace GameDay.Scenes
                 me.SetPosition(RightEdge / 2, BottomEdge + 10);
                 me.Show();
             });
+
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender=null, RoutedEventArgs e=null)
         {
-            (sender as FrameworkElement).Visibility = Visibility.Collapsed;
+            StartButton.Visibility = Visibility.Collapsed;
             Broadcast("start");
 
             Task.Run(async () =>
@@ -100,6 +102,12 @@ namespace GameDay.Scenes
                     {
                         await Delay(0.3);
                         me.NextCostume();
+                    }
+                    while (true)
+                    {
+                        if (IsGamePadButtonPressed(GamepadButtons.Menu))
+                            GoBack();
+                        await Delay(0.1);
                     }
                 });
                 Task.Run(async () =>
@@ -188,6 +196,31 @@ namespace GameDay.Scenes
         {
             me.SetCostume("04/7.png");
             me.SetPosition(0, 0);
+
+            Task.Factory.StartNew(async () =>
+            {
+                while (Running)
+                {
+                    var stick = GetGamePadLeftStick();
+                    if (stick.HasValue)
+                    {
+                        me.ChangeXby(stick.Value.X * 30);
+                        me.ChangeYby(stick.Value.Y * 30);
+                    }
+                    if (IsGamePadButtonPressed(GamepadButtons.A))
+                    {
+                        var ignore = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => 
+                        {
+                            if (StartButton.Visibility == Visibility.Visible)
+                                StartButton_Click();
+                        });
+                    }
+
+                    await Delay(0.05);
+                }
+
+            }, TaskCreationOptions.LongRunning);
+
         }
     }
 }

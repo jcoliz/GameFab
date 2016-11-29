@@ -21,7 +21,7 @@
             <TextBlock Text="Score" FontSize="30" Foreground="White" HorizontalAlignment="Center"/>
             <TextBlock Text="{x:Bind Score.Value,Mode=OneWay}" FontSize="100" Foreground="White" HorizontalAlignment="Center" Margin="0,-20"/>
         </StackPanel>
-        <Button  HorizontalAlignment="Center" VerticalAlignment="Center" Click="StartButton_Click" BorderBrush="White">
+        <Button x:Name="StartButton"  HorizontalAlignment="Center" VerticalAlignment="Center" Click="StartButton_Click" BorderBrush="White">
             <TextBlock Text="START" FontSize="75" Foreground="White" Margin="10,5"/>
         </Button>
     </Grid>
