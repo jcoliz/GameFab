@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Gaming.Input;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.UI.Popups;
@@ -83,6 +84,21 @@ namespace GameDay.Scenes
                         await Delay(0.2);
                 }
             });
+
+            Task.Factory.StartNew(async () =>
+            {
+                while (Running)
+                {
+                    var stick = GetGamePadLeftStick();
+                    if (stick.HasValue)
+                    {
+                        me.ChangeXby(stick.Value.X * 20);
+                        me.ChangeYby(stick.Value.Y * 20);
+                    }
+                    await Delay(0.05);
+                }
+
+            }, TaskCreationOptions.LongRunning);
         }
 
         private void Astro_Cat_KeyPressed(Sprite me, Windows.UI.Core.KeyEventArgs what)
@@ -189,6 +205,13 @@ namespace GameDay.Scenes
                 me.Hide();
                 Astro_Cat.Say("Winner!");
                 Running = false;
+
+                while (true)
+                {
+                    if (IsGamePadButtonPressed(GamepadButtons.Menu))
+                        GoBack();
+                    await Delay(0.1);
+                }
 
             });
         }

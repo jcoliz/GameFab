@@ -127,6 +127,18 @@ namespace GameFab
                 return true;
         }
 
+        public Point? GetGamePadLeftStick()
+        {
+            if (Gamepad.Gamepads?.Count > 0)
+            {
+                var reading = Gamepad.Gamepads[0].GetCurrentReading();
+                var result = new Point(reading.LeftThumbstickX, reading.LeftThumbstickY);
+                return result;
+            }
+            else
+                return null;
+        }
+
         #endregion
 
         #region Constructor
