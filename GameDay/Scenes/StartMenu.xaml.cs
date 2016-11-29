@@ -6,8 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Gaming.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -33,6 +35,8 @@ namespace GameDay.Scenes
 
         public ObservableCollection<MenuItem> Items { get; } = new ObservableCollection<MenuItem>();
 
+        bool Running = true;
+
         public StartMenu()
         {
             var types = Application.Current.GetType().GetTypeInfo().Assembly.GetTypes();
@@ -50,6 +54,46 @@ namespace GameDay.Scenes
 
             ListItems.Loaded += (s, e) => { ListItems.SelectedIndex = 0; };
 
+            GamepadButtons old_buttons = GamepadButtons.None;
+            Task.Run(async () => 
+            {
+                while (Running)
+                {
+                    await Task.Delay(1000 / 15);
+                    if (Gamepad.Gamepads.Count > 0)
+                    {
+                        var buttons = Gamepad.Gamepads[0].GetCurrentReading().Buttons;
+                        if (buttons.HasFlag(GamepadButtons.DPadDown) && !old_buttons.HasFlag(GamepadButtons.DPadDown))
+                        {
+                            var ignore = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => 
+                            {
+                                if (ListItems.SelectedIndex < Items.Count - 1)
+                                    ++ListItems.SelectedIndex;
+                            });
+                        }
+                        if (buttons.HasFlag(GamepadButtons.DPadUp) && !old_buttons.HasFlag(GamepadButtons.DPadUp))
+                        {
+                            var ignore = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            {
+                                if (ListItems.SelectedIndex > 0)
+                                    --ListItems.SelectedIndex;
+                            });
+                        }
+                        if (buttons.HasFlag(GamepadButtons.A) && !old_buttons.HasFlag(GamepadButtons.A))
+                        {
+                            var ignore = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            {
+                                var m = ListItems.SelectedItem as MenuItem;
+                                Running = false;
+                                Frame.Navigate(m.Destination);
+                            });
+                        }
+                        old_buttons = buttons;
+                    }
+                }
+
+            });
+
         }
 
         public int Index { get; set; } = 0;
@@ -57,6 +101,7 @@ namespace GameDay.Scenes
         private void ListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var m = e.ClickedItem as MenuItem;
+            Running = false;
             Frame.Navigate(m.Destination);
         }
     }
