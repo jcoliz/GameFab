@@ -73,6 +73,17 @@ namespace GameDay.Scenes
 
         private void Player_SceneLoaded(Sprite me)
         {
+            Task.Factory.StartNew(async () => 
+            {
+                while (Running)
+                {
+                    if (IsGamePadButtonPressed(GamepadButtons.A))
+                        Player_Jump(me);
+                    await Delay(0.05);
+                }
+
+            }, TaskCreationOptions.LongRunning);
+
             Task.Run(async () => 
             {
                 // Set up the player with all initial values and event handlers
@@ -93,9 +104,6 @@ namespace GameDay.Scenes
                     if (y > TopEdge || y < BottomEdge)
                         Broadcast("gameover");
                     await Delay(0.1);
-
-                    if (IsGamePadButtonPressed(GamepadButtons.A))
-                        Player_Jump(me);
                 }
                 while(true)
                 {
