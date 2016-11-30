@@ -1,12 +1,14 @@
 ﻿using GameFab;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Gaming.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -115,6 +117,45 @@ namespace GameDay.Scenes
             me.KeyPressed += Player_KeyPressed;
             me.MessageReceived += Player_MessageReceived;
             me.Touched += Player_Touched;
+
+            Task.Factory.StartNew(Player_Gamepad, TaskCreationOptions.LongRunning);
+        }
+        
+        private async Task Player_Gamepad()
+        {
+            while (Running)
+            {
+                Sprite me = Player;
+
+                var stick = GetGamePadLeftStick();
+                if (stick.HasValue && canmove)
+                {
+                    me.ChangeXby(stick.Value.X * 30);
+
+                    if (me.Position.X < LeftEdge)
+                        me.SetX(LeftEdge);
+                    if (me.Position.X > RightEdge)
+                        me.SetX(RightEdge);
+                }
+                if (IsGamePadButtonPressed(GamepadButtons.A))
+                {
+                    Player_Jump(me);
+                }
+                if (IsGamePadButtonPressed(GamepadButtons.X))
+                {
+                    Player_Attack_Spin(me);
+                }
+                if (IsGamePadButtonPressed(GamepadButtons.Y))
+                {
+                    Player_Attack_Fwoosh(me);
+                }
+                await Delay(0.05);
+            }
+            while (!IsGamePadButtonPressed(GamepadButtons.Menu))
+            {
+                await Delay(0.1);
+            }
+            GoBack();
         }
 
         private void Player_Touched(Sprite me, Sprite.OtherSpriteArgs what)
@@ -183,55 +224,82 @@ namespace GameDay.Scenes
             }
             if (what.VirtualKey == Windows.System.VirtualKey.Up && me.Position.Y == starty && canmove)
             {
-                yspeed = 40;
-                Task.Run(async () => 
-                {
-                    me.ChangeYby(yspeed);
-                    while(me.Position.Y > starty)
-                    {
-                        await Delay(0.05);
-                        yspeed += gravity;
-                        me.ChangeYby(yspeed);
-                    }
-                    me.SetY(starty);
-
-                });
+                Player_Jump(me);
             }
             if (what.VirtualKey == Windows.System.VirtualKey.O && canattack)
             {
-                lethal = true;
-                canattack = false;
-                Task.Run(async () => 
-                {
-                    me.SetCostumes("09/18.png", "09/19.png", "09/20.png", "09/21.png", "09/22.png", "09/23.png", "09/24.png", "09/25.png", "09/26.png", "09/27.png", "09/28.png");
-                    for (int i = 36; i > 0; i--)
-                    {
-                        me.NextCostume();
-                        await Delay(0.1);
-                    }
-                    me.SetCostume("09/18.png");
-                    lethal = false;
-                    await Delay(1.0);
-                    canattack = true;
-                });
+                Player_Attack_Spin(me);
             }
             if (what.VirtualKey == Windows.System.VirtualKey.P && canattack)
             {
-                lethal = true;
-                canattack = false;
-                canmove = false;
-                Task.Run(async () =>
-                {
-                    me.SetCostume("09/42.png");
-                    me.PlaySound("09/6.wav");
-                    await Delay(2.0);
-                    me.SetCostume("09/18.png");
-                    lethal = false;
-                    canmove = true;
-                    await Delay(1.0);
-                    canattack = true;
-                });
+                Player_Attack_Fwoosh(me);
             }
+        }
+
+        private void Player_Jump(Sprite me)
+        {
+            var starty = me.GetVariable<double>("starty");
+            if (me.Position.Y != starty)
+                return;
+
+            yspeed = 40;
+
+            var ignore = Task.Run(async () =>
+            {
+                me.ChangeYby(yspeed);
+                while (me.Position.Y > starty)
+                {
+                    await Delay(0.05);
+                    yspeed += gravity;
+                    me.ChangeYby(yspeed);
+                }
+                me.SetY(starty);
+
+            });
+        }
+
+        private void Player_Attack_Spin(Sprite me)
+        {
+            if (!canattack)
+                return;
+
+            lethal = true;
+            canattack = false;
+            Task.Run(async () =>
+            {
+                me.SetCostumes("09/18.png", "09/19.png", "09/20.png", "09/21.png", "09/22.png", "09/23.png", "09/24.png", "09/25.png", "09/26.png", "09/27.png", "09/28.png");
+                for (int i = 36; i > 0; i--)
+                {
+                    me.NextCostume();
+                    await Delay(0.1);
+                }
+                me.SetCostume("09/18.png");
+                lethal = false;
+                await Delay(1.0);
+                canattack = true;
+            });
+        }
+
+        private void Player_Attack_Fwoosh(Sprite me)
+        {
+            if (!canattack)
+                return;
+
+            lethal = true;
+            canattack = false;
+            canmove = false;
+            Task.Run(async () =>
+            {
+                me.SetCostume("09/42.png");
+                me.PlaySound("09/6.wav");
+                await Delay(2.0);
+                me.SetCostume("09/18.png");
+                lethal = false;
+                canmove = true;
+                await Delay(1.0);
+                canattack = true;
+            });
+
         }
 
         private async void Dark_Loaded(Sprite me)
