@@ -186,7 +186,6 @@ namespace GameDay.Scenes
             {
                 while (Running)
                 {
-                    var stick = GetGamePadLeftStick();
                     if (IsGamePadButtonPressed(GamepadButtons.A))
                     {
                         bool ready = me.GetVariable<Boolean>("ready");
