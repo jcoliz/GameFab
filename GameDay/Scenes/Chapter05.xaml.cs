@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Gaming.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -180,11 +181,35 @@ namespace GameDay.Scenes
             me.KeyPressed += Ball_KeyPressed;
             me.MessageReceived += Ball_MessageReceived;
             me.PointerPressed += Ball_PointerPressed;
+
+            Task.Factory.StartNew(async () =>
+            {
+                while (Running)
+                {
+                    var stick = GetGamePadLeftStick();
+                    if (IsGamePadButtonPressed(GamepadButtons.A))
+                    {
+                        bool ready = me.GetVariable<Boolean>("ready");
+                        if (ready)
+                            Ball_Fire(me);
+                    }
+
+                    await Delay(0.05);
+                }
+                while (!IsGamePadButtonPressed(GamepadButtons.Menu))
+                {
+                    await Delay(0.1);
+                }
+                GoBack();
+
+            }, TaskCreationOptions.LongRunning);
         }
 
         private void Ball_PointerPressed(Sprite me, Sprite.PointerArgs what)
         {
-            Ball_Fire(me);
+            bool ready = me.GetVariable<Boolean>("ready");
+            if (ready)
+                Ball_Fire(me);
         }
 
         private void Ball_MessageReceived(Sprite me, Sprite.MessageReceivedArgs what)
